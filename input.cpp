@@ -4,16 +4,14 @@ void input::Update() {
     // キーボード //
     DxLib::GetHitKeyStateAll(this->Key);
     // マウス //
-    int *X, *Y;
-    DxLib::GetMousePoint(X, Y);
-    this->MousePos.SetPos((double)*X, (double)*Y);
-    free(X);
-    free(Y);
+    int X = 0, Y = 0;
+    DxLib::GetMousePoint(&X, &Y);
+    this->MousePos.SetPos((double)X, (double)Y);
     this->MouseInput = DxLib::GetMouseInput();
 }
 
-bool input::GetKey(char KeyCode) {
-    return this->Key[KeyCode];
+bool input::GetKey(unsigned char KeyCode) {
+    return this->Key[KeyCode] == 1;
 }
 
 pos input::GetMousePos() {

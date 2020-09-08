@@ -1,17 +1,16 @@
 #include "Game.hpp"
 
-Game::Game(bool Debug = false, std::string ConfigFilePath = "config.ini") {
+Game::Game(bool Debug, std::string ConfigFilePaths) {
 
     this->Debug = Debug;
     this->ConfigFilePath = ConfigFilePath;
     this->Frame = 0;
-    bool Error = false;
 
-    input Input();
+    bool Error = false;
 
     this->Load();
     while (this->Update()) {
-        Input.Update();
+        this->Input.Update();
         if (DxLib::ProcessMessage()) {
             Error = true;
             break;
@@ -26,16 +25,22 @@ Game::Game(bool Debug = false, std::string ConfigFilePath = "config.ini") {
 
 void Game::Load() {
 
-    
+
 
 }
 
 bool Game::Update() {
 
-    DxLib::ClearDrawScreen();
-    DxLib::DrawBox(0, 0, 100, 100, 0x00ff00, FALSE);
+    // ˆ— //
+    this->Player.Move();
 
-    if (DxLib::CheckHitKey(KEY_INPUT_ESCAPE)) return false;
+    // •`‰æ //
+    DxLib::ClearDrawScreen();
+    DxLib::DrawBox(0, 0, 1280, 720, 0x00FF00, TRUE);
+    this->Player.Draw();
+    DxLib::ScreenFlip();
+
+    if (this->Input.GetKey(KEY_INPUT_ESCAPE)) return false;
     return true;
 
 }

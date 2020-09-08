@@ -3,6 +3,7 @@
 #include <string>
 #include "input.hpp"
 #include "pos.hpp"
+#include "player.hpp"
 
 class Game {
 
@@ -11,6 +12,9 @@ private:
     bool Debug;
     unsigned int Frame;
     std::string ConfigFilePath;
+    input Input{};
+
+    player Player{&Input};
 
     void Load();                // 一番最初
     bool Update();              // マイフレーム return false:終了

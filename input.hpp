@@ -11,8 +11,9 @@ private:
     char Key[256];
 
     // マウス //
-    pos MousePos;
+    pos MousePos{};
     int MouseInput;
+    // int MouseScroll
 
     // タッチパネル//
 
@@ -24,7 +25,7 @@ public:
 
     void Update();
 
-    bool GetKey(char KeyCode);
+    bool GetKey(unsigned char KeyCode);
     pos GetMousePos();
     bool GetMouseInput(short MouseCode);
 
