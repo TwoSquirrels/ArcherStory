@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include <string>
 #include <map>
+#include <cmath>
 #include "sprite.hpp"
 #include "input.hpp"
 
