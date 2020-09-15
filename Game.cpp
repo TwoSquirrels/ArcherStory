@@ -37,6 +37,7 @@ bool Game::Update() {
     // •`‰æ //
     DxLib::ClearDrawScreen();
     DxLib::DrawBox(0, 0, 1280, 720, 0x00FF00, TRUE);
+    this->Map.Draw(0);
     this->Player.Draw();
     DxLib::ScreenFlip();
 

@@ -135,12 +135,14 @@
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="map.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="input.hpp" />
+    <ClInclude Include="map.hpp" />
     <ClInclude Include="player.hpp" />
     <ClInclude Include="pos.hpp" />
     <ClInclude Include="sprite.hpp" />

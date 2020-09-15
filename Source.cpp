@@ -20,6 +20,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     SetMainWindowText("DxLib");
     //SetWindowIconID(IDI_ICON1);
     SetWindowSizeChangeEnableFlag(TRUE);
+    SetWindowSizeExtendRate(0.8);
     if (DxLib_Init() == -1) return -1;
 
     Game(DebugMode);

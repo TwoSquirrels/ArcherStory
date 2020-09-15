@@ -4,6 +4,7 @@
 #include "input.hpp"
 #include "pos.hpp"
 #include "player.hpp"
+#include "map.hpp"
 
 class Game {
 
@@ -14,6 +15,7 @@ private:
     std::string ConfigFilePath;
     input Input{};
 
+    map Map{};
     player Player{&Input};
 
     void Load();                // ˆê”ÔÅ‰

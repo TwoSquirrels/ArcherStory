@@ -30,7 +30,7 @@ void player::Draw() {
 
     DxLib::DrawGraph(this->Sprite.Pos.GetXInt(), this->Sprite.Pos.GetYInt(), this->Img["ring"], TRUE);
     DxLib::DrawRotaGraph(
-        this->Sprite.Pos.GetXInt() + 16, this->Sprite.Pos.GetYInt() + 16,
+        this->Sprite.Pos.GetXInt() + this->ImgSize["right"].GetX() / 2, this->Sprite.Pos.GetYInt() + this->ImgSize["right"].GetY() / 2,
         1.0, (this->Sprite.GetPosFromDirection().GetX() >= 0.0) ? this->Sprite.Direction : this->Sprite.Direction + DX_PI,
         this->Img["right"], TRUE, (this->Sprite.GetPosFromDirection().GetX() < 0.0)
     );
@@ -43,8 +43,17 @@ player::player(input *Input) {
 
     this->Input = Input;
 
+    this->Sprite.Size.SetPos(32, 32);
+
     // ‰æ‘œ
+    int X, Y;
+
     this->Img["ring"]   = DxLib::LoadGraph("data/stable/img/player/ring.png");
+    DxLib::GetGraphSize(this->Img["ring"], &X, &Y);
+    this->ImgSize["ring"].SetPos(X, Y);
+
     this->Img["right"]  = DxLib::LoadGraph("data/stable/img/player/right.png");
+    DxLib::GetGraphSize(this->Img["right"], &X, &Y);
+    this->ImgSize["right"].SetPos(X, Y);
 
 }

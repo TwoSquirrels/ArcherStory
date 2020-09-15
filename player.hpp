@@ -12,6 +12,7 @@ private:
 
     sprite Sprite;
     std::map<std::string, int> Img;
+    std::map<std::string, pos> ImgSize;
 
     input *Input;
 
