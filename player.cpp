@@ -28,9 +28,9 @@ void player::Move() {
 
 void player::Draw() {
 
-    DxLib::DrawGraph(this->Sprite.Pos.GetXInt(), this->Sprite.Pos.GetYInt(), this->Img["ring"], TRUE);
+    DxLib::DrawGraph(this->Sprite.Pos.GetXInt(), 96 + this->Sprite.Pos.GetYInt(), this->Img["ring"], TRUE);
     DxLib::DrawRotaGraph(
-        this->Sprite.Pos.GetXInt() + this->ImgSize["right"].GetX() / 2, this->Sprite.Pos.GetYInt() + this->ImgSize["right"].GetY() / 2,
+        this->Sprite.Pos.GetXInt() + this->ImgSize["right"].GetX() / 2, 96 + this->Sprite.Pos.GetYInt() + this->ImgSize["right"].GetY() / 2,
         1.0, (this->Sprite.GetPosFromDirection().GetX() >= 0.0) ? this->Sprite.Direction : this->Sprite.Direction + DX_PI,
         this->Img["right"], TRUE, (this->Sprite.GetPosFromDirection().GetX() < 0.0)
     );
