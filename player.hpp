@@ -5,6 +5,7 @@
 #include <cmath>
 #include "sprite.hpp"
 #include "input.hpp"
+#include "map.hpp"
 
 class player {
 
@@ -15,6 +16,14 @@ private:
     std::map<std::string, pos> ImgSize;
 
     input *Input;
+    map *Map;
+
+    std::vector<bool> BlockCol = {
+        false,  // air
+        true,   // wall
+        true,   // stone
+        true,   // pond
+    };
 
 public:
 
@@ -22,6 +31,6 @@ public:
 
     void Draw();
 
-    player(input *Input);
+    player(input *Input, map *Map);
 
 };

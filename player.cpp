@@ -1,5 +1,7 @@
 #include "player.hpp"
 
+std::vector<bool> Where;
+
 void player::Move() {
 
     // ‘€ì
@@ -24,6 +26,9 @@ void player::Move() {
     // Pos += Motion
     this->Sprite.Pos.AddPos(this->Sprite.Motion.GetX(), this->Sprite.Motion.GetY());
 
+    // “–‚½‚è”»’è
+    Where = this->Map->Collision(&(this->Sprite), this->BlockCol);
+
 }
 
 void player::Draw() {
@@ -35,14 +40,16 @@ void player::Draw() {
         this->Img["right"], TRUE, (this->Sprite.GetPosFromDirection().GetX() < 0.0)
     );
 
-    DxLib::DrawFormatString(16, 16, 0x000000, "Direction : %f (x:%f,y:%f)", this->Sprite.Direction, this->Sprite.GetPosFromDirection(4.0).GetX(), this->Sprite.GetPosFromDirection(4.0).GetY());
+    DxLib::DrawFormatString(16, 16, 0x000000, "Up:%s, Down:%s, Left:%s, Right:%s, Col:%s", (Where[MAP_UP] ? "true" : "false"), (Where[MAP_DOWN] ? "true" : "false"), (Where[MAP_LEFT] ? "true" : "false"), (Where[MAP_RIGHT] ? "true" : "false"), (Where[4] ? "true" : "false"));
 
 }
 
-player::player(input *Input) {
+player::player(input *Input, map *Map) {
 
     this->Input = Input;
+    this->Map = Map;
 
+    this->Sprite.Pos.SetPos(48 * 2 + 8, 48 * 6 + 8);
     this->Sprite.Size.SetPos(32, 32);
 
     // ‰æ‘œ

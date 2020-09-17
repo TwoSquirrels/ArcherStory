@@ -16,7 +16,7 @@ private:
     input Input{};
 
     map Map{};
-    player Player{&Input};
+    player Player{&Input, &Map};
 
     void Load();                // 一番最初
     bool Update();              // マイフレーム return false:終了
