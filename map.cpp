@@ -25,11 +25,11 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
     if (End_j >= this->Map[0].size()) End_j = this->Map[0].size() - 1;
 
     // returnóp
-    std::vector<bool> Where(5);
-    Where[MAP_UP   ] = false;
-    Where[MAP_DOWN ] = false;
-    Where[MAP_LEFT ] = false;
-    Where[MAP_RIGHT] = false;
+    std::vector<bool> Where(4);
+    Where[this->UP   ] = false;
+    Where[this->DOWN ] = false;
+    Where[this->LEFT ] = false;
+    Where[this->RIGHT] = false;
 
     // ÉÅÉCÉì
 
@@ -45,7 +45,6 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
                     Sprite->Pos.GetX() + Sprite->Size.GetX() > 48 * j &&
                     Sprite->Pos.GetX() < 48 * j + 48
                     ) {
-                    Where[4] = true;
 
                     // Ç«Ç±Ç©ÇÁÇ†ÇΩÇ¡ÇΩÇ©
 
@@ -55,14 +54,14 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                             Sprite->Pos.SetY(48 * i - Sprite->Size.GetY());
                             //Sprite->Motion.SetY(0);
-                            Where[MAP_UP] = true;
+                            Where[this->UP] = true;
 
                         }
                         else {                            // ê^â∫Ç©ÇÁ
 
                             Sprite->Pos.SetY(48 * i + 48);
                             //Sprite->Motion.SetY(0);
-                            Where[MAP_DOWN] = true;
+                            Where[this->DOWN] = true;
 
                         }
 
@@ -83,7 +82,7 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                                 Sprite->Pos.SetY(48 * i - Sprite->Size.GetY());
                                 //Sprite->Motion.SetY(0);
-                                Where[MAP_UP] = true;
+                                Where[this->UP] = true;
 
                             }
 
@@ -94,7 +93,7 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                                 Sprite->Pos.SetY(48 * i + 48);
                                 //Sprite->Motion.SetY(0);
-                                Where[MAP_DOWN] = true;
+                                Where[this->DOWN] = true;
 
                             }
 
@@ -105,7 +104,7 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                                 Sprite->Pos.SetX(48 * j - Sprite->Size.GetX());
                                 //Sprite->Motion.SetX(0);
-                                Where[MAP_LEFT] = true;
+                                Where[this->LEFT] = true;
 
                             }
 
@@ -128,7 +127,7 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                                 Sprite->Pos.SetY(48 * i - Sprite->Size.GetY());
                                 //Sprite->Motion.SetY(0);
-                                Where[MAP_UP] = true;
+                                Where[this->UP] = true;
 
                             }
 
@@ -139,7 +138,7 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                                 Sprite->Pos.SetY(48 * i + 48);
                                 //Sprite->Motion.SetY(0);
-                                Where[MAP_DOWN] = true;
+                                Where[this->DOWN] = true;
 
                             }
 
@@ -150,7 +149,7 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                                 Sprite->Pos.SetX(48 * j + 48);
                                 //Sprite->Motion.SetX(0);
-                                Where[MAP_RIGHT] = true;
+                                Where[this->RIGHT] = true;
 
                             }
 

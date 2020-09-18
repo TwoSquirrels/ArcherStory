@@ -40,8 +40,6 @@ void player::Draw() {
         this->Img["right"], TRUE, (this->Sprite.GetPosFromDirection().GetX() < 0.0)
     );
 
-    DxLib::DrawFormatString(16, 16, 0x000000, "Up:%s, Down:%s, Left:%s, Right:%s, Col:%s", (Where[MAP_UP] ? "true" : "false"), (Where[MAP_DOWN] ? "true" : "false"), (Where[MAP_LEFT] ? "true" : "false"), (Where[MAP_RIGHT] ? "true" : "false"), (Where[4] ? "true" : "false"));
-
 }
 
 player::player(input *Input, map *Map) {
