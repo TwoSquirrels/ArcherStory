@@ -79,3 +79,10 @@ public:
     
 };
 
+// 2“_ŠÔ‚Ì‹——£
+static double Distance2d(pos Pos1, pos Pos2) {
+    return std::sqrt(
+        std::pow(Pos1.GetX() - Pos2.GetX(), 2) +
+        std::pow(Pos1.GetY() - Pos2.GetY(), 2)
+    );
+}

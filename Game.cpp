@@ -39,6 +39,7 @@ bool Game::Update() {
     DxLib::DrawBox(0, 0, 1280, 720, 0x00FF00, TRUE);
     this->Map.Draw(0);
     this->Player.Draw();
+    this->Player.JoystickDraw();
     DxLib::ScreenFlip();
 
     if (this->Input.GetKey(KEY_INPUT_ESCAPE)) return false;

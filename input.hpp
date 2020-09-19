@@ -13,6 +13,7 @@ private:
     // マウス //
     pos MousePos{};
     int MouseInput;
+    int BeforeMouseInput;
     // int MouseScroll
 
     // タッチパネル//
@@ -28,6 +29,8 @@ public:
     bool GetKey(unsigned char KeyCode);
     pos GetMousePos();
     bool GetMouseInput(short MouseCode);
+    bool GetMouseDown(short MouseCode);
+    bool GetMouseUp(short MouseCode);
 
     input();
 

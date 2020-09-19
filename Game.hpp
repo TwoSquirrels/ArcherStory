@@ -1,6 +1,7 @@
 #pragma once
 #include "DxLib.h"
 #include <string>
+#include "ExternalHeaderFiles/json.hpp"
 #include "input.hpp"
 #include "pos.hpp"
 #include "player.hpp"
