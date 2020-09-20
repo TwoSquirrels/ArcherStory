@@ -3,15 +3,17 @@
 #include <string>
 #include <map>
 #include <cmath>
+#include "ExternalHeaderFiles/json.hpp"
 #include "sprite.hpp"
 #include "input.hpp"
 #include "map.hpp"
+
+using json = nlohmann::json;
 
 class player {
 
 private:
 
-    sprite Sprite;
     std::map<std::string, int> Img;
     std::map<std::string, pos> ImgSize;
 
@@ -25,7 +27,7 @@ private:
         int Size = 64;
     } Joystick;
 
-    double Speed = 4.0;
+    double Speed = 7.0;
     std::vector<bool> BlockCol = {
         false,  // air
         true,   // wall
@@ -38,11 +40,15 @@ private:
 
 public:
 
+    pos StartPos{ 48.0 * 12 + 8.0, 48.0 * 6 + 8.0 };
+    sprite Sprite;
+
     void Move();
 
     void Draw();
     void JoystickDraw();
 
-    player(input *Input, map *Map);
+    player();
+    player(input *Input, map *Map, json Config);
 
 };

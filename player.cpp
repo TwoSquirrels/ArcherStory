@@ -31,9 +31,9 @@ void player::Move() {
 
 void player::Draw() {
 
-    DxLib::DrawGraph(this->Sprite.Pos.GetXInt(), 96 + this->Sprite.Pos.GetYInt(), this->Img["ring"], TRUE);
+    DxLib::DrawGraph(this->StartPos.GetXInt(), 96 + this->Sprite.Pos.GetYInt(), this->Img["ring"], TRUE);
     DxLib::DrawRotaGraph(
-        this->Sprite.Pos.GetXInt() + this->ImgSize["right"].GetX() / 2, 96 + this->Sprite.Pos.GetYInt() + this->ImgSize["right"].GetY() / 2,
+        this->StartPos.GetXInt() + this->ImgSize["right"].GetX() / 2, 96 + this->Sprite.Pos.GetYInt() + this->ImgSize["right"].GetY() / 2,
         1.0, (this->Sprite.GetPosFromDirection().GetX() >= 0.0) ? this->Sprite.Direction : this->Sprite.Direction + DX_PI,
         this->Img["right"], TRUE, (this->Sprite.GetPosFromDirection().GetX() < 0.0)
     );
@@ -108,12 +108,16 @@ void player::JoystickInput(pos *InputDirection) {
 
 }
 
-player::player(input *Input, map *Map) {
+player::player() {}
+
+player::player(input *Input, map *Map, json Config) {
 
     this->Input = Input;
     this->Map = Map;
 
-    this->Sprite.Pos.SetPos(48 * 2 + 8, 48 * 6 + 8);
+    this->Joystick.Size = Config["JoystickSize"].get<int>();
+    this->Speed = Config["Speed"].get<double>();
+    this->Sprite.Pos = this->StartPos;
     this->Sprite.Size.SetPos(32, 32);
 
     // ‰æ‘œ

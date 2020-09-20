@@ -182,8 +182,8 @@ void map::Draw(int Scroll) {
                 break;
             case 1:
                 DxLib::DrawBox(
-                    Scroll + 48 * j,      96 + 48 * i,
-                    Scroll + 48 * j + 48, 96 + 48 * i + 48,
+                    -Scroll + 48 * j,      96 + 48 * i,
+                    -Scroll + 48 * j + 48, 96 + 48 * i + 48,
                     0x808080, TRUE
                 );
                 break;

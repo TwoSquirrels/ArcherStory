@@ -1,0 +1,8 @@
+{
+    "WindowName": "アーチャー物語",
+    "WindowExtendRate": 0.8,
+    "Player": {
+        "JoystickSize": 64,
+        "Speed": 7.0
+    }
+}
