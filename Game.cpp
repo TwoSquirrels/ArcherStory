@@ -50,6 +50,8 @@ int Game::Load() {
     this->Map = map();
     this->Player = player(&(this->Input), &(this->Map), this->Config["Player"]);
 
+    this->FlowerPlant = flower_plant(this->Map, &(this->Ball), pos(100, 100), 100);
+
     return 0;
 
 }
@@ -58,11 +60,13 @@ bool Game::Update() {
 
     // ˆ— //
     this->Player.Move();
+    this->FlowerPlant.Update();
 
     // •`‰æ //
     DxLib::ClearDrawScreen();
     DxLib::DrawBox(0, 0, 1280, 720, 0x00FF00, TRUE);
     this->Map.Draw(this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX());
+    this->FlowerPlant.Draw(this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX());
     this->Player.Draw();
     this->Player.JoystickDraw();
     DxLib::ScreenFlip();

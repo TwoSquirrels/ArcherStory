@@ -157,6 +157,10 @@
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ExternalHeaderFiles\strconv.h" />
+    <ClInclude Include="monster.hpp" />
+    <ClInclude Include="monsters\ball.hpp" />
+    <ClInclude Include="monsters\flower_plant.hpp" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="input.hpp" />
@@ -164,7 +168,6 @@
     <ClInclude Include="player.hpp" />
     <ClInclude Include="pos.hpp" />
     <ClInclude Include="sprite.hpp" />
-    <ClInclude Include="strconv.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -173,7 +176,12 @@
     <Image Include="icon1.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="config.json" />
+    <None Include="config.json">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

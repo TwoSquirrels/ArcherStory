@@ -43,14 +43,14 @@ void player::Draw() {
 void player::JoystickDraw() {
 
     if (this->Joystick.UseFlag) {
-        DxLib::DrawGraph(
-            this->Joystick.Pos.GetXInt() - this->ImgSize["joystick_base"].GetXInt() / 2,
-            this->Joystick.Pos.GetYInt() - this->ImgSize["joystick_base"].GetYInt() / 2,
+        DxLib::DrawExtendGraph(
+            this->Joystick.Pos.GetXInt() - this->Joystick.Size, this->Joystick.Pos.GetYInt() - this->Joystick.Size,
+            this->Joystick.Pos.GetXInt() + this->Joystick.Size, this->Joystick.Pos.GetYInt() + this->Joystick.Size,
             this->Img["joystick_base"], TRUE
         );
-        DxLib::DrawGraph(
-            this->Joystick.Stick.GetXInt() - this->ImgSize["joystick_stick"].GetXInt() / 2,
-            this->Joystick.Stick.GetYInt() - this->ImgSize["joystick_stick"].GetYInt() / 2,
+        DxLib::DrawExtendGraph(
+            this->Joystick.Stick.GetXInt() - this->Joystick.Size / 2, this->Joystick.Stick.GetYInt() - this->Joystick.Size / 2,
+            this->Joystick.Stick.GetXInt() + this->Joystick.Size / 2, this->Joystick.Stick.GetYInt() + this->Joystick.Size / 2,
             this->Img["joystick_stick"], TRUE
         );
     }
