@@ -25,6 +25,7 @@ public:
     void LoadFromFile(std::string FIlePath);
 
     std::vector<bool> Collision(sprite *Sprite, std::vector<bool> Block);
+    std::vector<int> GetSidePos();
 
     void Draw(int Scroll);
 

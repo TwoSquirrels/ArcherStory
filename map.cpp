@@ -168,6 +168,15 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
 }
 
+std::vector<int> map::GetSidePos() {
+    std::vector<int> SidePos(4);
+    SidePos[this->LEFT] = 0;
+    SidePos[this->RIGHT] = 48 * this->Map[0].size() + 48;
+    SidePos[this->UP] = 0;
+    SidePos[this->DOWN] = 48 * this->Map.size() + 48;
+    return SidePos;
+}
+
 void map::Draw(int Scroll) {
     // 720 - (48*11=528) = 192
     for (int i = 0; i < this->Map.size(); i++) {

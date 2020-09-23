@@ -1,6 +1,7 @@
 #pragma once
 #include "DxLib.h"
 #include "../sprite.hpp"
+#include "../map.hpp"
 
 class ball {
 
@@ -8,14 +9,17 @@ private:
 
     int Type;
     sprite Sprite;
-    bool Use;
 
 public:
 
-    void Update() {
+    bool Use;
+
+    void Update(map Map) {
         if (this->Use) {
             // ˆÚ“®
             this->Sprite.Pos.AddPos(this->Sprite.Motion.GetX(), this->Sprite.Motion.GetY());
+            // ŠO‚Éo‚Ä‚½‚çÁ‚·
+            //if (this->Sprite.Pos.GetX() > )
         }
     }
 
@@ -25,6 +29,7 @@ public:
                 -Scroll + this->Sprite.Pos.GetXInt() + this->Sprite.Size.GetXInt() / 2, 96 + this->Sprite.Pos.GetYInt() + this->Sprite.Size.GetYInt() / 2,
                 4, 0xff0000, TRUE
             );
+            //DxLib::DrawFormatString(16, 16, 0x000000, "%f, %f", this->Sprite.Pos.GetX(), this->Sprite.Pos.GetY());
         }
     }
 

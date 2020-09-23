@@ -50,7 +50,7 @@ int Game::Load() {
     this->Map = map();
     this->Player = player(&(this->Input), &(this->Map), this->Config["Player"]);
 
-    this->FlowerPlant = flower_plant(this->Map, &(this->Ball), pos(100, 100), 100);
+    this->FlowerPlant = flower_plant(&(this->Ball), pos(100, 100), 100);
 
     return 0;
 
@@ -60,7 +60,25 @@ bool Game::Update() {
 
     // 処理 //
     this->Player.Move();
-    this->FlowerPlant.Update();
+    this->FlowerPlant.Update(this->Map);
+    for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Update(this->Map);
+    // ボールがマップ外に出てたら削除(1秒ごと)
+    if (this->Frame % 60 == 0) {
+        int Size = this->Ball.size();
+        for (int i = 0; i < Size; i++) {
+            if (!this->Ball[i].Use) {
+                // 終わりだったら消すだけ/途中なら最後を代入して最後を消す
+                if (i == Size - 1) {
+                    Ball.pop_back();
+                    break;
+                }
+                Ball[i] = Ball.back();
+                Ball.pop_back();
+                Size--;
+                i--;
+            }
+        }
+    }
 
     // 描画 //
     DxLib::ClearDrawScreen();
@@ -68,6 +86,7 @@ bool Game::Update() {
     this->Map.Draw(this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX());
     this->FlowerPlant.Draw(this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX());
     this->Player.Draw();
+    for (ball b : this->Ball) b.Draw(this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX());
     this->Player.JoystickDraw();
     DxLib::ScreenFlip();
 

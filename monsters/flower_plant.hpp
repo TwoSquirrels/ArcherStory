@@ -8,20 +8,19 @@ private:
 
     monster Monster;
 
-    map Map;
     std::vector<ball>* Ball;
 
 public:
 
-    void Update() {
+    void Update(map Map) {
 
         if (this->Monster.HP > 0) {
 
-            Monster.Update(this->Map);
+            Monster.Update(Map);
 
             // UŒ‚
             if (Monster.GetAttack()) {
-                this->Ball->push_back(ball(0, this->Monster.Sprite.Pos), pos(1, 0));
+                this->Ball->push_back(ball(0, this->Monster.Sprite.Pos, pos(4, 0)));
             }
 
         }
@@ -42,9 +41,8 @@ public:
     }
 
     flower_plant() {}
-    flower_plant(map Map, std::vector<ball> *Ball, pos StartPos, int HP, int StartAttackCount = 120) {
+    flower_plant(std::vector<ball> *Ball, pos StartPos, int HP, int StartAttackCount = 120) {
         
-        this->Map = Map;
         this->Ball = Ball;
         this->Monster = monster(StartPos, HP, StartAttackCount);
 
