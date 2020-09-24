@@ -12,7 +12,7 @@ private:
 
 public:
 
-    void Update(map Map) {
+    void Update(map Map, pos PlayerPos) {
 
         if (this->Monster.HP > 0) {
 
@@ -20,7 +20,14 @@ public:
 
             // UŒ‚
             if (Monster.GetAttack()) {
-                this->Ball->push_back(ball(0, this->Monster.Sprite.Pos, pos(4, 0)));
+                this->Ball->push_back(ball(
+                    0,
+                    this->Monster.Sprite.GetCenterPos(),
+                    sprite().SetDrectionFromPos(pos(
+                        PlayerPos.GetX() - this->Monster.Sprite.Pos.GetX(),
+                        PlayerPos.GetY() - this->Monster.Sprite.Pos.GetY()
+                    ))
+                ));
             }
 
         }
@@ -32,8 +39,8 @@ public:
         if (this->Monster.HP > 0) {
             this->Monster.DrawRing(Scroll);
             DxLib::DrawBox(
-                -Scroll + this->Monster.Sprite.Pos.GetXInt(), 96 + this->Monster.Sprite.Pos.GetYInt(),
-                -Scroll + this->Monster.Sprite.Pos.GetXInt() + this->Monster.Sprite.Size.GetXInt(), 96 + this->Monster.Sprite.Pos.GetYInt() + this->Monster.Sprite.Size.GetXInt(),
+                -Scroll + this->Monster.Sprite.GetSidePos(this->Monster.Sprite.LEFT ), 96 + this->Monster.Sprite.GetSidePos(this->Monster.Sprite.UP  ),
+                -Scroll + this->Monster.Sprite.GetSidePos(this->Monster.Sprite.RIGHT), 96 + this->Monster.Sprite.GetSidePos(this->Monster.Sprite.DOWN),
                 0xff00ff, TRUE
             );
         }

@@ -171,10 +171,18 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 std::vector<int> map::GetSidePos() {
     std::vector<int> SidePos(4);
     SidePos[this->LEFT] = 0;
-    SidePos[this->RIGHT] = 48 * this->Map[0].size() + 48;
+    SidePos[this->RIGHT] = 48 * this->Map[0].size();
     SidePos[this->UP] = 0;
-    SidePos[this->DOWN] = 48 * this->Map.size() + 48;
+    SidePos[this->DOWN] = 48 * this->Map.size();
     return SidePos;
+}
+bool map::GetInMap(sprite Sprite) {
+    std::vector<int> SidePos = this->GetSidePos();
+    if (Sprite.GetSidePos(Sprite.LEFT ) < SidePos[this->LEFT ]) return false;
+    if (Sprite.GetSidePos(Sprite.RIGHT) > SidePos[this->RIGHT]) return false;
+    if (Sprite.GetSidePos(Sprite.UP   ) < SidePos[this->UP   ]) return false;
+    if (Sprite.GetSidePos(Sprite.DOWN ) > SidePos[this->DOWN ]) return false;
+    return true;
 }
 
 void map::Draw(int Scroll) {

@@ -26,6 +26,7 @@ public:
 
     std::vector<bool> Collision(sprite *Sprite, std::vector<bool> Block);
     std::vector<int> GetSidePos();
+    bool GetInMap(sprite Sprite);
 
     void Draw(int Scroll);
 

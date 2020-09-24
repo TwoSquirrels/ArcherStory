@@ -39,7 +39,7 @@ public:
     void DrawRing(int Scroll) {
 
         DxLib::DrawCircle(
-            -Scroll + this->Sprite.Pos.GetXInt() + this->Sprite.Size.GetXInt() / 2, 96 + this->Sprite.Pos.GetYInt() + this->Sprite.Size.GetYInt() / 2,
+            -Scroll + this->Sprite.GetCenterPos().GetXInt(), 96 + this->Sprite.GetCenterPos().GetYInt(),
             min(this->Sprite.Size.GetXInt(), this->Sprite.Size.GetYInt()) / 2,
             0xFF0000, FALSE, 4
         );

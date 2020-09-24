@@ -21,4 +21,28 @@ public:
         );
     }
 
+    pos GetCenterPos() {
+        return pos(
+            this->Pos.GetX() + this->Size.GetX() / 2,
+            this->Pos.GetY() + this->Size.GetY() / 2
+        );
+    }
+
+    enum direction {
+        UP, DOWN, LEFT, RIGHT
+    };
+    double GetSidePos(enum direction Direction) {
+        switch (Direction) {
+        case this->UP:
+            return this->Pos.GetY();
+        case this->DOWN:
+            return this->Pos.GetY() + this->Size.GetY();
+        case this->LEFT:
+            return this->Pos.GetX();
+        case this->RIGHT:
+            return this->Pos.GetX() + this->Size.GetX();
+        }
+        return 0;
+    }
+
 };
