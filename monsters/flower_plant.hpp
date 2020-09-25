@@ -12,7 +12,7 @@ private:
 
 public:
 
-    void Update(map Map, pos PlayerPos) {
+    void Update(map Map, sprite Player) {
 
         if (this->Monster.HP > 0) {
 
@@ -21,12 +21,9 @@ public:
             // UŒ‚
             if (Monster.GetAttack()) {
                 this->Ball->push_back(ball(
-                    0,
+                    ball().JUMP,
                     this->Monster.Sprite.GetCenterPos(),
-                    sprite().SetDrectionFromPos(pos(
-                        PlayerPos.GetX() - this->Monster.Sprite.Pos.GetX(),
-                        PlayerPos.GetY() - this->Monster.Sprite.Pos.GetY()
-                    ))
+                    Player.GetCenterPos()
                 ));
             }
 

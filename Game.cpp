@@ -60,9 +60,9 @@ bool Game::Update() {
 
     // 処理 //
     this->Player.Move();
-    this->FlowerPlant.Update(this->Map, this->Player.Sprite.Pos);
+    this->FlowerPlant.Update(this->Map, this->Player.Sprite);
     for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Update(this->Map);
-    // ボールがマップ外に出てたら削除(1秒ごと)
+    // ボールが使われなくなってたら削除(1秒ごと)
     if (this->Frame % 60 == 0) {
         int Size = this->Ball.size();
         for (int i = 0; i < Size; i++) {
