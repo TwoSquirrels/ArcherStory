@@ -3,6 +3,19 @@
     "WindowExtendRate": 0.8,
     "Player": {
         "JoystickSize": 64,
-        "Speed": 7.0
+        "Speed": 7.0,
+        "DefaultMaxHP": 500,
+        "GodTimeMax": 60
+    },
+    "Monsters": {
+        "FlowerPlant": {
+            "AttackSpeed": 120
+        }
+    },
+    "Balls": {
+        "Jump": {
+            "High": 64.0,
+            "Speed":  8.0
+        }
     }
 }

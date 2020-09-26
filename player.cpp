@@ -2,6 +2,15 @@
 
 std::vector<bool> Where;
 
+void player::Update() {
+
+    // 移動
+    this->Move();
+    // 無敵時間更新   
+    if (this->GodTime > 0) this->GodTime--;
+
+}
+
 void player::Move() {
 
     // 操作
@@ -36,6 +45,26 @@ void player::Draw() {
         this->StartPos.GetXInt() + this->ImgSize["right"].GetX() / 2, 96 + this->Sprite.Pos.GetYInt() + this->ImgSize["right"].GetY() / 2,
         1.0, (this->Sprite.GetPosFromDirection().GetX() >= 0.0) ? this->Sprite.Direction : this->Sprite.Direction + DX_PI,
         this->Img["right"], TRUE, (this->Sprite.GetPosFromDirection().GetX() < 0.0)
+    );
+    // HPバー
+    DxLib::DrawBox(
+        this->StartPos.GetXInt() - 16, 96 + this->Sprite.Pos.GetYInt() - 16,
+        this->StartPos.GetXInt() + 48, 96 + this->Sprite.Pos.GetYInt() - 8,
+        0xff0000, TRUE
+    );
+    DxLib::DrawBox(
+        this->StartPos.GetXInt() - 16, 96 + this->Sprite.Pos.GetYInt() - 16,
+        this->StartPos.GetXInt() - 16 + 1 + (64 - 1) * this->HP / this->MaxHP, 96 + this->Sprite.Pos.GetYInt() - 8,
+        0x00ff00, TRUE
+    );
+    DxLib::DrawBox(
+        this->StartPos.GetXInt() - 16, 96 + this->Sprite.Pos.GetYInt() - 16,
+        this->StartPos.GetXInt() + 48, 96 + this->Sprite.Pos.GetYInt() - 8,
+        0x000000, FALSE
+    );
+    DxLib::DrawFormatString(
+        this->StartPos.GetXInt() - 16, 96 + this->Sprite.Pos.GetYInt() - 32,
+        0x000000, "%d", this->HP
     );
 
 }
@@ -108,17 +137,49 @@ void player::JoystickInput(pos *InputDirection) {
 
 }
 
-player::player() {}
+int player::GetHP() {
+    return this->HP;
+}
 
-player::player(input *Input, map *Map, json Config) {
+void player::Heel(int AddHP) {
+    this->HP += AddHP;
+    if (this->HP > this->MaxHP) this->HP = this->MaxHP;
+}
+
+void player::Damage(int Damage) {
+    if (this->GodTime <= 0) {
+        this->HP -= Damage;
+        this->GodTime = this->GodTimeMax;
+        if (this->HP <= 0) {
+            // 死んじゃった！
+            this->HP = 0;
+            *this->Death = true;
+        }
+    }
+}
+
+bool player::CheckHit(sprite Sprite) {
+    if (this->Sprite.GetSidePos(sprite().LEFT) >= Sprite.GetSidePos(sprite().RIGHT)) return false;
+    if (this->Sprite.GetSidePos(sprite().RIGHT) <= Sprite.GetSidePos(sprite().LEFT)) return false;
+    if (this->Sprite.GetSidePos(sprite().UP) >= Sprite.GetSidePos(sprite().DOWN)) return false;
+    if (this->Sprite.GetSidePos(sprite().DOWN) <= Sprite.GetSidePos(sprite().UP)) return false;
+    return true;
+}
+
+player::player() {}
+player::player(input *Input, map *Map, bool *Death, json Config) {
 
     this->Input = Input;
     this->Map = Map;
+    this->Death = Death;
 
     this->Joystick.Size = Config["JoystickSize"].get<int>();
     this->Speed = Config["Speed"].get<double>();
     this->Sprite.Pos = this->StartPos;
     this->Sprite.Size.SetPos(32, 32);
+    this->MaxHP = Config["DefaultMaxHP"].get<int>();
+    this->HP = this->MaxHP;
+    this->GodTimeMax = Config["GodTimeMax"].get<int>();
 
     // 画像
     int X, Y;

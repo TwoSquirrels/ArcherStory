@@ -29,11 +29,16 @@ int Game::Load() {
     this->Config = json::parse(JsonString);
 
     // ない項目は補足 文字列はあれば文字コード変換
-    if (this->Config["WindowName"].empty())             this->Config["WindowName"] = "アーチャー物語";
+    if (this->Config["WindowName"].empty())         this->Config["WindowName"] = "アーチャー物語";
     else this->Config["WindowName"] = utf8_to_sjis(this->Config["WindowName"].get<std::string>());
-    if (this->Config["WindowExtendRate"].empty())       this->Config["WindowExtendRate"] = 1.0;
+    if (this->Config["WindowExtendRate"].empty())   this->Config["WindowExtendRate"] = 1.0;
     if (this->Config["Player"]["JoystickSize"].empty()) this->Config["Player"]["JoystickSize"] = 64;
     if (this->Config["Player"]["Speed"].empty())        this->Config["Player"]["Speed"] = 7.0;
+    if (this->Config["Player"]["DefaultMaxHP"].empty()) this->Config["Player"]["DefaultMaxHP"] = 500;
+    if (this->Config["Player"]["GodTimeMax"].empty())   this->Config["Player"]["GodTimeMax"] = 60;
+    if (this->Config["Monster"]["FlowerPlant"]["AttackSpeed"].empty())  this->Config["Monster"]["FlowerPlant"]["AttackSpeed"] = 120;
+    if (this->Config["Balls"]["Jump"]["High"].empty())      this->Config["Balls"]["Jump"]["High"] = 64.0;
+    if (this->Config["Balls"]["Jump"]["Speed"].empty())     this->Config["Balls"]["Jump"]["Speed"] = 8.0;
 
     // 初期設定
     SetOutApplicationLogValidFlag(this->Debug);
@@ -48,19 +53,57 @@ int Game::Load() {
 
     this->Input = input();
     this->Map = map();
-    this->Player = player(&(this->Input), &(this->Map), this->Config["Player"]);
+    this->Player = player(&(this->Input), &(this->Map), &(this->Death), this->Config["Player"]);
 
-    this->FlowerPlant = flower_plant(&(this->Ball), pos(100, 100), 100);
+    for (int i = 0; i < 16; i++) {
+        this->FlowerPlant.push_back(flower_plant(&(this->Ball), pos(48 + DxLib::GetRand(1072), 48 + DxLib::GetRand(496)), 100, 100, &(this->Player), this->Config));
+    }
 
     return 0;
 
 }
 
 bool Game::Update() {
+    if (this->Input.GetKey(KEY_INPUT_ESCAPE)) return false;
+    switch (this->Seen) {
+    case this->INTRO:
+        return this->Intro();
+    case this->STAGE:
+        return this->Stage();
+    case this->PAUSE:
+        return this->Pause();
+    case this->SKILL_SELECT:
+        return this->SkillSelect();
+    case this->DIE:
+        return this->Die();
+    }
+}
+
+void Game::Unload(bool Error) {
+
+    DxLib::DxLib_End();
+
+}
+
+bool Game::Intro() {
 
     // 処理 //
-    this->Player.Move();
-    this->FlowerPlant.Update(this->Map, this->Player.Sprite);
+    if (this->Input.GetKey(KEY_INPUT_SPACE)) this->Seen = this->STAGE;
+
+    // 描画
+    DxLib::ClearDrawScreen();
+    DxLib::DrawBox(64, 64, 256, 256, 0x00ffff, TRUE);
+    DxLib::ScreenFlip();
+
+    return true;
+
+}
+
+bool Game::Stage() {
+
+    // 処理 //
+    this->Player.Update();
+    for (int i = 0; i < FlowerPlant.size(); i++) this->FlowerPlant[i].Update(this->Map, this->Player.Sprite);
     for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Update(this->Map);
     // ボールが使われなくなってたら削除(1秒ごと)
     if (this->Frame % 60 == 0) {
@@ -79,25 +122,65 @@ bool Game::Update() {
             }
         }
     }
+    // 死んじゃった！
+    if (this->Death) {
+        this->Death = false;
+        this->Seen = this->DIE;
+    }
 
     // 描画 //
     DxLib::ClearDrawScreen();
     DxLib::DrawBox(0, 0, 1280, 720, 0x00FF00, TRUE);
     this->Map.Draw(this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX());
-    this->FlowerPlant.Draw(this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX());
+    for (int i = 0; i < FlowerPlant.size(); i++) this->FlowerPlant[i].Draw(this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX());
     this->Player.Draw();
     for (ball b : this->Ball) b.Draw(this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX());
     this->Player.JoystickDraw();
     DxLib::ScreenFlip();
 
-    if (this->Input.GetKey(KEY_INPUT_ESCAPE)) return false;
     return true;
 
 }
 
-void Game::Unload(bool Error) {
+bool Game::Pause() {
 
-    DxLib::DxLib_End();
+    // 処理 //
+
+
+    // 描画
+    DxLib::ClearDrawScreen();
+
+    DxLib::ScreenFlip();
+
+    return true;
+
+}
+
+bool Game::SkillSelect() {
+
+    // 処理 //
+
+
+    // 描画
+    DxLib::ClearDrawScreen();
+
+    DxLib::ScreenFlip();
+
+    return true;
+
+}
+
+bool Game::Die() {
+
+    // 処理 //
+
+
+    // 描画
+    DxLib::ClearDrawScreen();
+
+    DxLib::ScreenFlip();
+
+    return true;
 
 }
 

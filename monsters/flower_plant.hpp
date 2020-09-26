@@ -1,6 +1,10 @@
 #pragma once
 #include "DxLib.h"
+#include "ExternalHeaderFiles/json.hpp"
 #include "../monster.hpp"
+#include "../player.hpp"
+
+using json = nlohmann::json;
 
 class flower_plant {
 
@@ -8,7 +12,10 @@ private:
 
     monster Monster;
 
+    int Attack;
+    player *Player;
     std::vector<ball>* Ball;
+    json BallConfig;
 
 public:
 
@@ -22,8 +29,11 @@ public:
             if (Monster.GetAttack()) {
                 this->Ball->push_back(ball(
                     ball().JUMP,
+                    this->Attack,
+                    this->Player,
                     this->Monster.Sprite.GetCenterPos(),
-                    Player.GetCenterPos()
+                    Player.GetCenterPos(),
+                    this->BallConfig
                 ));
             }
 
@@ -45,10 +55,13 @@ public:
     }
 
     flower_plant() {}
-    flower_plant(std::vector<ball> *Ball, pos StartPos, int HP, int StartAttackCount = 120) {
+    flower_plant(std::vector<ball> *Ball, pos StartPos, int HP, int Attack, player *Player, json Config) {
         
         this->Ball = Ball;
-        this->Monster = monster(StartPos, HP, StartAttackCount);
+        this->Monster = monster(StartPos, HP, Config["Monster"]["FlowerPlant"]["AttackSpeed"].get<int>());
+        this->Attack = Attack;
+        this->Player = Player;
+        this->BallConfig = Config["Balls"]["Jump"];
 
     }
 
