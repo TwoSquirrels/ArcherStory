@@ -1,8 +1,11 @@
 #pragma once
 #include "DxLib.h"
+#include "ExternalHeaderFiles/json.hpp"
 #include "../sprite.hpp"
 #include "../map.hpp"
 #include "../player.hpp"
+
+using json = nlohmann::json;
 
 class ball {
 
@@ -32,20 +35,21 @@ public:
 
     void Update(map Map) {
         if (this->Use) {
+
             switch (this->Type) {
             case this->JUMP:
                 // Shadow移動
-                this->Shadow.Pos.AddPos(this->Shadow.Motion.GetX(), this->Shadow.Motion.GetY());
+                this->Shadow.Move();
                 // Ball移動
                 this->Sprite.Pos.SetY(
-                    this->Shadow.Pos.GetY() - (this->Jump_a * pow(this->Jump_CenterX - this->Shadow.Pos.GetX(), 2) + this->Config["High"].get<double>())
+                    this->Shadow.Pos.GetY() - (this->Jump_a * pow(this->Jump_CenterX - this->Shadow.Pos.GetX(), 2) + this->Config["Jump"]["High"].get<double>())
                 );
                 // 半径がスピード/2以内なら消す
-                if (Distance2d(this->Shadow.Pos, this->PlayerCenterPos) <= Config["Speed"].get<double>() / 2) this->Use = false;
+                if (Distance2d(this->Shadow.Pos, this->PlayerCenterPos) <= Config["Jump"]["Speed"].get<double>() / 2) this->Use = false;
                 break;
             }
             // 移動
-            this->Sprite.Pos.AddPos(this->Sprite.Motion.GetX(), this->Sprite.Motion.GetY());
+            this->Sprite.Move();
             // ダメージ
             if (this->Type == this->TEST || this->Type == this->JUMP) {
                 if (this->Player->CheckHit(this->Sprite)) {
@@ -55,11 +59,13 @@ public:
             }
             // 外に出てたら消す
             if (!Map.GetInMap(this->Sprite)) this->Use = false;
+
         }
     }
 
     void Draw(int Scroll) {
         if (this->Use) {
+
             switch (this->Type) {
             case this->TEST:
                 DxLib::DrawCircle(
@@ -78,7 +84,7 @@ public:
                 );
                 break;
             }
-            //DxLib::DrawFormatString(16, 16, 0x000000, "%f, %f", this->Sprite.Pos.GetX(), this->Sprite.Pos.GetY());
+
         }
     }
 
@@ -104,13 +110,13 @@ public:
             this->Sprite.Motion = this->Sprite.GetPosFromDirection(4.0);
             break;
         case JUMP:
-            this->Jump_a = -4 * this->Config["High"].get<double>() / std::pow(this->PlayerCenterPos.GetX() - this->Sprite.Pos.GetX(), 2);
+            this->Jump_a = -4 * this->Config["Jump"]["High"].get<double>() / std::pow(this->PlayerCenterPos.GetX() - this->Sprite.Pos.GetX(), 2);
             this->Shadow.Pos = this->Sprite.Pos;
             this->Shadow.SetDrectionFromPos(pos(
                 this->PlayerCenterPos.GetX() - this->Sprite.Pos.GetX(),
                 this->PlayerCenterPos.GetY() - this->Sprite.Pos.GetY()
             ));
-            this->Shadow.Motion = this->Shadow.GetPosFromDirection(Config["Speed"].get<double>());
+            this->Shadow.Motion = this->Shadow.GetPosFromDirection(Config["Jump"]["Speed"].get<double>());
             this->Sprite.Motion.SetX(Shadow.Motion.GetX());
             this->Jump_CenterX = (this->Sprite.Pos.GetX() + this->PlayerCenterPos.GetX()) / 2;
             break;

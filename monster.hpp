@@ -11,6 +11,8 @@ private:
 
 public:
 
+    bool Use;
+
     sprite Sprite;
     int HP, MaxHP;
     std::vector<bool> BlockCol = {
@@ -30,7 +32,7 @@ public:
         if (this->AttackCount > 0) this->AttackCount--;
 
         // Motion‚Ì•ª‚¾‚¯ˆÚ“®
-        this->Sprite.Pos.AddPos(this->Sprite.Motion.GetX(), this->Sprite.Motion.GetY());
+        this->Sprite.Move();
         // ƒuƒƒbƒN‚Æ‚Ì“–‚½‚è”»’è
         Map.Collision(&(this->Sprite), BlockCol);
 
@@ -55,10 +57,14 @@ public:
         else return false;
     }
 
-    monster() {}
-    monster(pos StartPos, int HP, int StartAttackCount, pos Size = pos(32, 32)) {
+    monster() {
+        this->Use = false;
+    }
+    monster(pos Pos, int HP, int StartAttackCount, pos Size = pos(32, 32)) {
 
-        this->Sprite.Pos = StartPos;
+        this->Use = true;
+
+        this->Sprite.Pos = Pos;
         this->MaxHP = HP;
         this->HP = HP;
         this->AttackCount = StartAttackCount;

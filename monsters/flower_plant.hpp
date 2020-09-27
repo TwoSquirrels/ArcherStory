@@ -10,8 +10,6 @@ class flower_plant {
 
 private:
 
-    monster Monster;
-
     int Attack;
     player *Player;
     std::vector<ball>* Ball;
@@ -19,7 +17,9 @@ private:
 
 public:
 
-    void Update(map Map, sprite Player) {
+    monster Monster;
+
+    void Update(map Map) {
 
         if (this->Monster.HP > 0) {
 
@@ -27,12 +27,16 @@ public:
 
             // UŒ‚
             if (Monster.GetAttack()) {
+                this->Monster.Sprite.SetDrectionFromPos(pos(
+                    this->Player->Sprite.GetCenterPos().GetX() - this->Monster.Sprite.GetCenterPos().GetX(),
+                    this->Player->Sprite.GetCenterPos().GetY() - this->Monster.Sprite.GetCenterPos().GetY()
+                ));
                 this->Ball->push_back(ball(
                     ball().JUMP,
                     this->Attack,
                     this->Player,
                     this->Monster.Sprite.GetCenterPos(),
-                    Player.GetCenterPos(),
+                    this->Player->Sprite.GetCenterPos(),
                     this->BallConfig
                 ));
             }
@@ -55,13 +59,13 @@ public:
     }
 
     flower_plant() {}
-    flower_plant(std::vector<ball> *Ball, pos StartPos, int HP, int Attack, player *Player, json Config) {
+    flower_plant(std::vector<ball> *Ball, pos Pos, int HP, int Attack, player *Player, json Config) {
         
         this->Ball = Ball;
-        this->Monster = monster(StartPos, HP, Config["Monster"]["FlowerPlant"]["AttackSpeed"].get<int>());
+        this->Monster = monster(Pos, HP, Config["Monsters"]["FlowerPlant"]["AttackSpeed"].get<int>());
         this->Attack = Attack;
         this->Player = Player;
-        this->BallConfig = Config["Balls"]["Jump"];
+        this->BallConfig = Config["Balls"];
 
     }
 

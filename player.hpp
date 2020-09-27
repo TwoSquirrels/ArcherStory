@@ -1,12 +1,14 @@
 #pragma once
 #include "DxLib.h"
 #include <string>
+#include <vector>
 #include <map>
 #include <cmath>
 #include "ExternalHeaderFiles/json.hpp"
 #include "sprite.hpp"
 #include "input.hpp"
 #include "map.hpp"
+#include "arrow.hpp"
 
 using json = nlohmann::json;
 
@@ -14,12 +16,16 @@ class player {
 
 private:
 
+    json Config;
+
     std::map<std::string, int> Img;
     std::map<std::string, pos> ImgSize;
 
     input *Input;
     map *Map;
+    std::vector<arrow> *Arrow;
     bool *Death;
+    std::vector<monster *> *Monster;
 
     struct {
         bool UseFlag = false;
@@ -29,7 +35,9 @@ private:
     } Joystick;
 
     int HP, MaxHP;
-    int GodTime = 0, GodTimeMax;    // –³“GŽžŠÔ
+    int GodTime = 0, GodTimeMax;
+    int AttackCooldown, AttackCooldownMax;
+    int Attack;
 
     double Speed = 7.0;
     std::vector<bool> BlockCol = {
@@ -60,6 +68,6 @@ public:
     bool CheckHit(sprite Sprite);
 
     player();
-    player(input *Input, map *Map, bool *Death, json Config);
+    player(input *Input, map *Map, std::vector<arrow> *Arrow, bool *Death, std::vector<monster *> *Monster, json Config);
 
 };

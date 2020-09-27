@@ -10,6 +10,11 @@ public:
     double Direction = 0;   // 0:Right PI/2:Down PI:Left 3PI/2:Up
     pos Size{};
 
+    pos Move() {
+        this->Pos.AddPos(this->Motion.GetX(), this->Motion.GetY());
+        return this->Pos;
+    }
+
     double SetDrectionFromPos(pos Pos) {
         this->Direction = std::atan2(Pos.GetY(), Pos.GetX());
         return this->Direction;

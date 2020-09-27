@@ -1,5 +1,6 @@
 #pragma once
 #include "DxLib.h"
+#include <vector>
 #include <string>
 #include <fstream>
 #include "ExternalHeaderFiles/strconv.h"
@@ -7,6 +8,7 @@
 #include "input.hpp"
 #include "pos.hpp"
 #include "player.hpp"
+#include "arrow.hpp"
 #include "map.hpp"
 // monster
 #include "monsters/ball.hpp"
@@ -35,8 +37,11 @@ private:
     map Map;
     player Player;
     bool Death = false;
+    std::vector<arrow> Arrow;
 
+    std::vector<monster *> Monster;
     std::vector<ball> Ball;
+
     std::vector<flower_plant> FlowerPlant;
 
     int Load();                 // àÍî‘ç≈èâ
@@ -54,4 +59,3 @@ public:
     Game(bool Debug = false, std::string ConfigFilePath = "config.json");
 
 };
-

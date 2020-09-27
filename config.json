@@ -5,7 +5,12 @@
         "JoystickSize": 64,
         "Speed": 7.0,
         "DefaultMaxHP": 500,
-        "GodTimeMax": 60
+        "GodTimeMax": 60,
+        "AttackCooldownMax": 40,
+        "DefaultAttack": 40,
+        "Arrow": {
+            "Speed": 16.0
+        }
     },
     "Monsters": {
         "FlowerPlant": {
@@ -15,7 +20,7 @@
     "Balls": {
         "Jump": {
             "High": 64.0,
-            "Speed":  8.0
+            "Speed": 8.0
         }
     }
 }

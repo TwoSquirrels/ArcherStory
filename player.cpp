@@ -8,6 +8,34 @@ void player::Update() {
     this->Move();
     // –³“GŽžŠÔXV   
     if (this->GodTime > 0) this->GodTime--;
+    // UŒ‚
+    if (--this->AttackCooldown <= 0) {
+        if (!this->Monster->empty()) {
+            this->AttackCooldown = this->AttackCooldownMax;
+
+            // ˆê”Ô‹ß‚­‚Ì“G‚ð’²‚×‚é
+            int Nearest = -1;
+            double NearestDistance = -1;
+            for (int i = 0; i < this->Monster->size(); i++) {
+                if ((*this->Monster)[i]->Use) {
+                    double Distance = Distance2d((*this->Monster)[i]->Sprite.Pos, this->Sprite.Pos);
+                    if (Nearest < 0 || Distance < NearestDistance) {
+                        NearestDistance = Distance;
+                        Nearest = i;
+                    }
+                }
+            }
+
+            // Œ‚‚Â
+            if (Nearest >= 0) {
+                this->Sprite.SetDrectionFromPos(pos(
+                    (*this->Monster)[Nearest]->Sprite.GetCenterPos().GetX() - this->Sprite.GetCenterPos().GetX(),
+                    (*this->Monster)[Nearest]->Sprite.GetCenterPos().GetY() - this->Sprite.GetCenterPos().GetY()
+                ));
+                this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction, this->Monster, this->Config["Arrow"]));
+            }
+        }
+    }
 
 }
 
@@ -31,7 +59,7 @@ void player::Move() {
         );
     }
     // Pos += Motion
-    this->Sprite.Pos.AddPos(this->Sprite.Motion.GetX(), this->Sprite.Motion.GetY());
+    this->Sprite.Move();
 
     // “–‚½‚è”»’è
     Where = this->Map->Collision(&(this->Sprite), this->BlockCol);
@@ -167,11 +195,14 @@ bool player::CheckHit(sprite Sprite) {
 }
 
 player::player() {}
-player::player(input *Input, map *Map, bool *Death, json Config) {
+player::player(input *Input, map *Map, std::vector<arrow> *Arrow, bool *Death, std::vector<monster *> *Monster, json Config) {
 
     this->Input = Input;
     this->Map = Map;
+    this->Arrow = Arrow;
     this->Death = Death;
+    this->Monster = Monster;
+    this->Config = Config;
 
     this->Joystick.Size = Config["JoystickSize"].get<int>();
     this->Speed = Config["Speed"].get<double>();
@@ -180,6 +211,9 @@ player::player(input *Input, map *Map, bool *Death, json Config) {
     this->MaxHP = Config["DefaultMaxHP"].get<int>();
     this->HP = this->MaxHP;
     this->GodTimeMax = Config["GodTimeMax"].get<int>();
+    this->AttackCooldownMax = Config["AttackCooldownMax"].get<int>();
+    this->AttackCooldown = this->AttackCooldownMax;
+    this->Attack = Config["DefaultAttack"].get<int>();
 
     // ‰æ‘œ
     int X, Y;

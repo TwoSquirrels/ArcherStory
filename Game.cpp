@@ -32,11 +32,14 @@ int Game::Load() {
     if (this->Config["WindowName"].empty())         this->Config["WindowName"] = "ƒA[ƒ`ƒƒ[•¨Œê";
     else this->Config["WindowName"] = utf8_to_sjis(this->Config["WindowName"].get<std::string>());
     if (this->Config["WindowExtendRate"].empty())   this->Config["WindowExtendRate"] = 1.0;
-    if (this->Config["Player"]["JoystickSize"].empty()) this->Config["Player"]["JoystickSize"] = 64;
-    if (this->Config["Player"]["Speed"].empty())        this->Config["Player"]["Speed"] = 7.0;
-    if (this->Config["Player"]["DefaultMaxHP"].empty()) this->Config["Player"]["DefaultMaxHP"] = 500;
-    if (this->Config["Player"]["GodTimeMax"].empty())   this->Config["Player"]["GodTimeMax"] = 60;
-    if (this->Config["Monster"]["FlowerPlant"]["AttackSpeed"].empty())  this->Config["Monster"]["FlowerPlant"]["AttackSpeed"] = 120;
+    if (this->Config["Player"]["JoystickSize"].empty())         this->Config["Player"]["JoystickSize"] = 64;
+    if (this->Config["Player"]["Speed"].empty())                this->Config["Player"]["Speed"] = 7.0;
+    if (this->Config["Player"]["DefaultMaxHP"].empty())         this->Config["Player"]["DefaultMaxHP"] = 500;
+    if (this->Config["Player"]["GodTimeMax"].empty())           this->Config["Player"]["GodTimeMax"] = 60;
+    if (this->Config["Player"]["AttackCooldownMax"].empty())    this->Config["Player"]["AttackCooldownMax"] = 40;
+    if (this->Config["Player"]["DefaultAttack"].empty())        this->Config["Player"]["DefaultAttack"] = 40;
+    if (this->Config["Player"]["Arrow"]["Speed"].empty())       this->Config["Player"]["Arrow"]["Speed"] = 16.0;
+    if (this->Config["Monsters"]["FlowerPlant"]["AttackSpeed"].empty())  this->Config["Monsters"]["FlowerPlant"]["AttackSpeed"] = 120;
     if (this->Config["Balls"]["Jump"]["High"].empty())      this->Config["Balls"]["Jump"]["High"] = 64.0;
     if (this->Config["Balls"]["Jump"]["Speed"].empty())     this->Config["Balls"]["Jump"]["Speed"] = 8.0;
 
@@ -53,10 +56,10 @@ int Game::Load() {
 
     this->Input = input();
     this->Map = map();
-    this->Player = player(&(this->Input), &(this->Map), &(this->Death), this->Config["Player"]);
+    this->Player = player(&this->Input, &this->Map, &this->Arrow, &this->Death, &this->Monster, this->Config["Player"]);
 
     for (int i = 0; i < 16; i++) {
-        this->FlowerPlant.push_back(flower_plant(&(this->Ball), pos(48 + DxLib::GetRand(1072), 48 + DxLib::GetRand(496)), 100, 100, &(this->Player), this->Config));
+        this->FlowerPlant.push_back(flower_plant(&this->Ball, pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)), 100, 100, &this->Player, this->Config));
     }
 
     return 0;
@@ -81,6 +84,7 @@ bool Game::Update() {
 
 void Game::Unload(bool Error) {
 
+    for (monster *m: this->Monster) free(m);
     DxLib::DxLib_End();
 
 }
@@ -102,12 +106,20 @@ bool Game::Intro() {
 bool Game::Stage() {
 
     // ˆ— //
+    // MonsterXV
+    for (monster *m : this->Monster) free(m);
+    this->Monster.resize(0);
+    for (flower_plant f : this->FlowerPlant) this->Monster.push_back(&f.Monster);
+    // Update
     this->Player.Update();
-    for (int i = 0; i < FlowerPlant.size(); i++) this->FlowerPlant[i].Update(this->Map, this->Player.Sprite);
+    for (int i = 0; i < this->Arrow.size(); i++) this->Arrow[i].Update(this->Map);
+    for (int i = 0; i < this->FlowerPlant.size(); i++) this->FlowerPlant[i].Update(this->Map);
     for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Update(this->Map);
-    // ƒ{[ƒ‹‚ªŽg‚í‚ê‚È‚­‚È‚Á‚Ä‚½‚çíœ(1•b‚²‚Æ)
+    // Žg‚í‚ê‚Ä‚È‚¢‚à‚Ì‚ðíœ(1•b‚²‚Æ)
     if (this->Frame % 60 == 0) {
-        int Size = this->Ball.size();
+        int Size;
+        // ƒ{[ƒ‹
+        Size = this->Ball.size();
         for (int i = 0; i < Size; i++) {
             if (!this->Ball[i].Use) {
                 // I‚í‚è‚¾‚Á‚½‚çÁ‚·‚¾‚¯/“r’†‚È‚çÅŒã‚ð‘ã“ü‚µ‚ÄÅŒã‚ðÁ‚·
@@ -121,6 +133,21 @@ bool Game::Stage() {
                 i--;
             }
         }
+        // –î
+        Size = this->Arrow.size();
+        for (int i = 0; i < Size; i++) {
+            if (!this->Arrow[i].Use) {
+                // I‚í‚è‚¾‚Á‚½‚çÁ‚·‚¾‚¯/“r’†‚È‚çÅŒã‚ð‘ã“ü‚µ‚ÄÅŒã‚ðÁ‚·
+                if (i == Size - 1) {
+                    Arrow.pop_back();
+                    break;
+                }
+                Arrow[i] = Arrow.back();
+                Arrow.pop_back();
+                Size--;
+                i--;
+            }
+        }
     }
     // Ž€‚ñ‚¶‚á‚Á‚½I
     if (this->Death) {
@@ -130,11 +157,19 @@ bool Game::Stage() {
 
     // •`‰æ //
     DxLib::ClearDrawScreen();
+    int Scroll = this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX();
+    // ”wŒi
     DxLib::DrawBox(0, 0, 1280, 720, 0x00FF00, TRUE);
-    this->Map.Draw(this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX());
-    for (int i = 0; i < FlowerPlant.size(); i++) this->FlowerPlant[i].Draw(this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX());
+    this->Map.Draw(Scroll);
+    // –î
+    for (arrow a : this->Arrow) a.Draw(Scroll);
+    // “G
+    for (flower_plant f : this->FlowerPlant) f.Draw(Scroll);
+    // ƒvƒŒƒCƒ„[
     this->Player.Draw();
-    for (ball b : this->Ball) b.Draw(this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX());
+    // “G‚Ì’e
+    for (ball b : this->Ball) b.Draw(Scroll);
+    // GUI
     this->Player.JoystickDraw();
     DxLib::ScreenFlip();
 
