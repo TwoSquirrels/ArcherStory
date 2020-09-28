@@ -58,7 +58,7 @@ int Game::Load() {
     this->Map = map();
     this->Player = player(&this->Input, &this->Map, &this->Arrow, &this->Death, &this->Monster, this->Config["Player"]);
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 16; i++) {
         this->FlowerPlant.push_back(flower_plant(&this->Ball, pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)), 100, 100, &this->Player, this->Config));
     }
 

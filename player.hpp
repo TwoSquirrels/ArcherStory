@@ -41,13 +41,21 @@ private:
     int GodTime = 0, GodTimeMax;
     int AttackCooldown, AttackCooldownMax;
     int Attack;
-
-    double Speed = 7.0;
+    double Speed;
     std::vector<bool> BlockCol = {
         false,  // air
         true,   // wall
         true,   // stone
         true,   // pond
+    };
+
+    enum skill {
+        HEAL, HP_MAX_UP, ATTACK_SPEED_UP, ATTACK_UP, DEFENSE_UP, GOD_TIME_EXTENSION, WALK_SPEED_UP,
+        HEART_DROPRATE_UP, DIAGONAL_ARROW, FRONT_ARROW, SIDE_ARROW, BACK_ARROW, MULTI_SHOT, BOUNCE, BOUND_WALL, POISON, HEADSHOT,
+    SKILL_NUM };
+    std::vector<int> SkillCounter{SKILL_NUM};
+    std::vector<int> SkillCounterMax = {
+
     };
 
     void Move();

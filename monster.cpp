@@ -72,6 +72,7 @@ void monster::Heel(int AddHP) {
 
 void monster::Damage(int Damage) {
     this->HP -= Damage;
+    this->AttackCount += 10;
     if (this->HP <= 0) {
         // Ž€‚ñ‚¶‚á‚Á‚½I
         this->HP = 0;

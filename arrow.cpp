@@ -10,7 +10,7 @@ void arrow::Update(map Map) {
         for (bool b : Col) if (b == true) this->Use = false;
         // UŒ‚Hit
         for (int i = 0; i < this->Monster->size(); i++) {
-            if ((*this->Monster)[i]->CheckHit(this->Sprite, monster().CIRCLE)) {
+            if ((*this->Monster)[i]->Use && (*this->Monster)[i]->CheckHit(this->Sprite, monster().CIRCLE)) {
                 (*this->Monster)[i]->Damage(40);
                 this->Use = false;
             }
