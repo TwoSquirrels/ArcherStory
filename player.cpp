@@ -9,6 +9,9 @@ void player::Update() {
     // –³“GŽžŠÔXV   
     if (this->GodTime > 0) this->GodTime--;
     // UŒ‚
+    if (this->Sprite.Motion.GetX() != 0.0 || this->Sprite.Motion.GetY() != 0.0) {
+        this->AttackCooldown = this->AttackCooldownMax * 3 / 4;
+    }
     if (--this->AttackCooldown <= 0) {
         if (!this->Monster->empty()) {
             this->AttackCooldown = this->AttackCooldownMax;
@@ -78,7 +81,7 @@ void player::Draw() {
     DxLib::DrawBox(
         this->StartPos.GetXInt() - 16, 96 + this->Sprite.Pos.GetYInt() - 16,
         this->StartPos.GetXInt() + 48, 96 + this->Sprite.Pos.GetYInt() - 8,
-        0xff0000, TRUE
+        0x000000, TRUE
     );
     DxLib::DrawBox(
         this->StartPos.GetXInt() - 16, 96 + this->Sprite.Pos.GetYInt() - 16,
@@ -186,12 +189,24 @@ void player::Damage(int Damage) {
     }
 }
 
-bool player::CheckHit(sprite Sprite) {
-    if (this->Sprite.GetSidePos(sprite().LEFT) >= Sprite.GetSidePos(sprite().RIGHT)) return false;
-    if (this->Sprite.GetSidePos(sprite().RIGHT) <= Sprite.GetSidePos(sprite().LEFT)) return false;
-    if (this->Sprite.GetSidePos(sprite().UP) >= Sprite.GetSidePos(sprite().DOWN)) return false;
-    if (this->Sprite.GetSidePos(sprite().DOWN) <= Sprite.GetSidePos(sprite().UP)) return false;
-    return true;
+bool player::CheckHit(sprite Sprite, enum shape Shape) {
+
+    switch (Shape) {
+    case this->SQUARE:
+        if (this->Sprite.GetSidePos(sprite().LEFT) >= Sprite.GetSidePos(sprite().RIGHT)) return false;
+        if (this->Sprite.GetSidePos(sprite().RIGHT) <= Sprite.GetSidePos(sprite().LEFT)) return false;
+        if (this->Sprite.GetSidePos(sprite().UP) >= Sprite.GetSidePos(sprite().DOWN)) return false;
+        if (this->Sprite.GetSidePos(sprite().DOWN) <= Sprite.GetSidePos(sprite().UP)) return false;
+        return true;
+    case this->CIRCLE:
+        if (Distance2d(
+            this->Sprite.GetCenterPos(), Sprite.GetCenterPos()
+        ) < (
+            min(this->Sprite.Size.GetX(), this->Sprite.Size.GetY()) + min(Sprite.Size.GetX(), Sprite.Size.GetY())
+        )) return true;
+        return false;
+    }
+    
 }
 
 player::player() {}

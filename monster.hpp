@@ -12,6 +12,7 @@ private:
 public:
 
     bool Use;
+    bool Hide = false;
 
     sprite Sprite;
     int HP, MaxHP;
@@ -24,53 +25,23 @@ public:
 
     int AttackCount;
 
-    void Update(map Map) {
+    void Update(map Map);
 
-        // もしHPがカンストしてたら直す
-        if (this->HP > this->MaxHP) this->HP = this->MaxHP;
-        // AttackCountを更新
-        if (this->AttackCount > 0) this->AttackCount--;
+    void DrawRing(int Scroll);
+    void DrawHP(int Scroll);
 
-        // Motionの分だけ移動
-        this->Sprite.Move();
-        // ブロックとの当たり判定
-        Map.Collision(&(this->Sprite), BlockCol);
+    bool GetAttack(int ResetAttackCount = 0);
 
-    }
+    int GetHP();
+    void Heel(int AddHP);
+    void Damage(int Damage);
 
-    void DrawRing(int Scroll) {
+    enum shape {
+        SQUARE, CIRCLE
+    };
+    bool CheckHit(sprite Sprite, enum shape Shape = SQUARE);
 
-        DxLib::DrawCircle(
-            -Scroll + this->Sprite.GetCenterPos().GetXInt(), 96 + this->Sprite.GetCenterPos().GetYInt(),
-            min(this->Sprite.Size.GetXInt(), this->Sprite.Size.GetYInt()) / 2,
-            0xFF0000, FALSE, 4
-        );
-
-    }
-
-    bool GetAttack(int ResetAttackCount = 0) {
-        if (this->AttackCount == 0) {
-            this->AttackCount = ResetAttackCount;
-            if (this->AttackCount == 0) this->AttackCount = this->MaxAttackCount;
-            return true;
-        }
-        else return false;
-    }
-
-    monster() {
-        this->Use = false;
-    }
-    monster(pos Pos, int HP, int StartAttackCount, pos Size = pos(32, 32)) {
-
-        this->Use = true;
-
-        this->Sprite.Pos = Pos;
-        this->MaxHP = HP;
-        this->HP = HP;
-        this->AttackCount = StartAttackCount;
-        this->MaxAttackCount = StartAttackCount;
-        this->Sprite.Size = Size;
-
-    }
+    monster();
+    monster(pos Pos, int HP, int StartAttackCount, pos Size = pos(32, 32));
 
 };

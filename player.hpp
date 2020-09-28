@@ -10,6 +10,9 @@
 #include "map.hpp"
 #include "arrow.hpp"
 
+class arrow;
+class monster;
+
 using json = nlohmann::json;
 
 class player {
@@ -65,7 +68,10 @@ public:
     void Heel(int AddHP);
     void Damage(int Damage);
 
-    bool CheckHit(sprite Sprite);
+    enum shape {
+        SQUARE, CIRCLE
+    };
+    bool CheckHit(sprite Sprite, enum shape Shape = SQUARE);
 
     player();
     player(input *Input, map *Map, std::vector<arrow> *Arrow, bool *Death, std::vector<monster *> *Monster, json Config);

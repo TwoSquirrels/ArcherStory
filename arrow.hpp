@@ -6,6 +6,8 @@
 #include "player.hpp"
 #include "monster.hpp"
 
+class monster;
+
 using json = nlohmann::json;
 
 class arrow {
@@ -16,46 +18,23 @@ private:
 
     sprite Sprite;
     std::vector<monster *> *Monster;
+    
+    std::vector<bool> BlockCol = {
+        false,  // air
+        true,   // wall
+        true,   // stone
+        false,  // pond
+    };
 
 public:
 
     bool Use;
 
-    void Update(map Map) {
-        if (this->Use) {
+    void Update(map Map);
 
-            // ˆÚ“®
-            this->Sprite.Move();
-            // UŒ‚Hit
+    void Draw(int Scroll);
 
-            // ŠO‚Éo‚Ä‚½‚çÁ‚·
-            if (!Map.GetInMap(this->Sprite)) this->Use = false;
-
-        }
-    }
-
-    void Draw(int Scroll) {
-        if (this->Use) {
-
-            DxLib::DrawCircle(-Scroll + this->Sprite.Pos.GetXInt(), 96 + this->Sprite.Pos.GetYInt(), 8, 0x00ffff, TRUE);
-            DxLib::DrawCircle(-Scroll + this->Sprite.Pos.GetXInt(), 96 + this->Sprite.Pos.GetYInt(), 8, 0x0000ff, FALSE, 3);
-
-        }
-    }
-
-    arrow() {
-        this->Use = false;
-    }
-    arrow(pos Pos, double Direction, std::vector<monster *> *Monster, json Config) {
-
-        this->Use = true;
-        this->Sprite.Pos = Pos;
-        this->Sprite.Direction = Direction;
-        this->Monster = Monster;
-        this->Config = Config;
-
-        this->Sprite.Motion = this->Sprite.GetPosFromDirection(this->Config["Speed"]);
-
-    }
+    arrow();
+    arrow(pos Pos, double Direction, std::vector<monster *> *Monster, json Config);
 
 };

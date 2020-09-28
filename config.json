@@ -9,7 +9,8 @@
         "AttackCooldownMax": 40,
         "DefaultAttack": 40,
         "Arrow": {
-            "Speed": 16.0
+            "Speedについて": "この値は4倍されます",
+            "Speed": 8.0
         }
     },
     "Monsters": {
