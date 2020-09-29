@@ -11,6 +11,8 @@ void monster::Update(map Map) {
     this->Sprite.Move();
     // ブロックとの当たり判定
     Map.Collision(&(this->Sprite), BlockCol);
+    // 接触ダメージ
+    if (!this->Hide && this->Player->CheckHit(this->Sprite, player::CIRCLE)) this->Player->Damage(this->Player->GetMaxHP() / 16);
 
 }
 
@@ -90,10 +92,10 @@ bool monster::CheckHit(sprite Sprite, enum shape Shape) {
 
     switch (Shape) {
     case this->SQUARE:
-        if (this->Sprite.GetSidePos(sprite().LEFT) >= Sprite.GetSidePos(sprite().RIGHT)) return false;
-        if (this->Sprite.GetSidePos(sprite().RIGHT) <= Sprite.GetSidePos(sprite().LEFT)) return false;
-        if (this->Sprite.GetSidePos(sprite().UP) >= Sprite.GetSidePos(sprite().DOWN)) return false;
-        if (this->Sprite.GetSidePos(sprite().DOWN) <= Sprite.GetSidePos(sprite().UP)) return false;
+        if (this->Sprite.GetSidePos(sprite::LEFT) >= Sprite.GetSidePos(sprite::RIGHT)) return false;
+        if (this->Sprite.GetSidePos(sprite::RIGHT) <= Sprite.GetSidePos(sprite::LEFT)) return false;
+        if (this->Sprite.GetSidePos(sprite::UP) >= Sprite.GetSidePos(sprite::DOWN)) return false;
+        if (this->Sprite.GetSidePos(sprite::DOWN) <= Sprite.GetSidePos(sprite::UP)) return false;
         return true;
     case this->CIRCLE:
         if (Distance2d(
@@ -109,7 +111,7 @@ bool monster::CheckHit(sprite Sprite, enum shape Shape) {
 monster::monster() {
     this->Use = false;
 }
-monster::monster(pos Pos, int HP, int StartAttackCount, pos Size) {
+monster::monster(pos Pos, int HP, int StartAttackCount, player *Player, pos Size) {
 
     this->Use = true;
 
@@ -118,6 +120,7 @@ monster::monster(pos Pos, int HP, int StartAttackCount, pos Size) {
     this->HP = HP;
     this->AttackCount = StartAttackCount;
     this->MaxAttackCount = StartAttackCount;
+    this->Player = Player;
     this->Sprite.Size = Size;
 
 }

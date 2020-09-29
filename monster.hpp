@@ -1,7 +1,10 @@
 #pragma once
 #include "sprite.hpp"
 #include "map.hpp"
+#include "player.hpp"
 #include "monsters/ball.hpp"
+
+class player;
 
 class monster {
 
@@ -26,6 +29,8 @@ public:
 
     int AttackCount;
 
+    player *Player;
+
     void Update(map Map);
 
     void DrawRing(int Scroll);
@@ -44,6 +49,6 @@ public:
     bool CheckHit(sprite Sprite, enum shape Shape = SQUARE);
 
     monster();
-    monster(pos Pos, int HP, int StartAttackCount, pos Size = pos(32, 32));
+    monster(pos Pos, int HP, int StartAttackCount, player *Player, pos Size = pos(32, 32));
 
 };

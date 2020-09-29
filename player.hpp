@@ -77,6 +77,7 @@ public:
     void JoystickDraw();
 
     int GetHP();
+    int GetMaxHP();
     void Heal(int AddHP);
     void Damage(int Damage);
 

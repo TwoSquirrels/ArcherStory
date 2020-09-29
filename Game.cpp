@@ -63,7 +63,7 @@ int Game::Load() {
         this->FlowerPlant.push_back(flower_plant(&this->Ball, pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)), 100, 100, &this->Player, this->Config));
     }
     for (int i = 0; i < 4; i++) {
-        this->Slime.push_back(slime(pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)), 100, 2, &this->Player, &this->Slime, this->Config));
+        this->Slime.push_back(slime(pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)), 100, 2, &this->Player, this->Config));
     }
 
     return 0;
@@ -121,7 +121,13 @@ bool Game::Stage() {
         for (int i = 0; i < this->Arrow.size(); i++) this->Arrow[i].Update(this->Map);
     }
     for (int i = 0; i < this->FlowerPlant.size(); i++) this->FlowerPlant[i].Update(this->Map);
-    for (int i = 0; i < this->Slime.size(); i++) this->Slime[i].Update(this->Map);
+    std::vector<slime> SlimeToAdd;
+    for (int i = 0; i < this->Slime.size(); i++) {
+        SlimeToAdd = this->Slime[i].Update(this->Map);
+        for (int j = 0; j < SlimeToAdd.size(); j++) {
+            this->Slime.push_back(SlimeToAdd[j]);
+        }
+    }
     for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Update(this->Map);
     // Žg‚í‚ê‚Ä‚È‚¢‚à‚Ì‚ðíœ(1•b‚²‚Æ)
     if (this->Frame % 60 == 0) {

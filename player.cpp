@@ -172,6 +172,10 @@ int player::GetHP() {
     return this->HP;
 }
 
+int player::GetMaxHP() {
+    return this->MaxHP;
+}
+
 void player::Heal(int AddHP) {
     this->HP += AddHP;
     if (this->HP > this->MaxHP) this->HP = this->MaxHP;
@@ -220,10 +224,10 @@ bool player::CheckHit(sprite Sprite, enum shape Shape) {
 
     switch (Shape) {
     case this->SQUARE:
-        if (this->Sprite.GetSidePos(sprite().LEFT) >= Sprite.GetSidePos(sprite().RIGHT)) return false;
-        if (this->Sprite.GetSidePos(sprite().RIGHT) <= Sprite.GetSidePos(sprite().LEFT)) return false;
-        if (this->Sprite.GetSidePos(sprite().UP) >= Sprite.GetSidePos(sprite().DOWN)) return false;
-        if (this->Sprite.GetSidePos(sprite().DOWN) <= Sprite.GetSidePos(sprite().UP)) return false;
+        if (this->Sprite.GetSidePos(sprite::LEFT) >= Sprite.GetSidePos(sprite::RIGHT)) return false;
+        if (this->Sprite.GetSidePos(sprite::RIGHT) <= Sprite.GetSidePos(sprite::LEFT)) return false;
+        if (this->Sprite.GetSidePos(sprite::UP) >= Sprite.GetSidePos(sprite::DOWN)) return false;
+        if (this->Sprite.GetSidePos(sprite::DOWN) <= Sprite.GetSidePos(sprite::UP)) return false;
         return true;
     case this->CIRCLE:
         if (Distance2d(
