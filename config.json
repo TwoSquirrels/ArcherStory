@@ -1,5 +1,5 @@
 {
-    "WindowName": "アーチャー物語 ver0.1",
+    "WindowName": "アーチャー物語 ver0.5",
     "WindowExtendRate": 0.8,
     "Player": {
         "JoystickSize": 64,
@@ -16,6 +16,9 @@
     "Monsters": {
         "FlowerPlant": {
             "AttackSpeed": 120
+        },
+        "Slime": {
+            "MoveCooldown": 60
         }
     },
     "Balls": {

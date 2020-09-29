@@ -13,6 +13,7 @@
 // monster
 #include "monsters/ball.hpp"
 #include "monsters/flower_plant.hpp"
+#include "monsters/slime.hpp"
 
 using json = nlohmann::json;
 
@@ -43,6 +44,7 @@ private:
     std::vector<ball> Ball;
 
     std::vector<flower_plant> FlowerPlant;
+    std::vector<slime> Slime;
 
     int Load();                 // 一番最初
     bool Update();              // マイフレーム return false:終了

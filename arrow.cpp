@@ -11,7 +11,7 @@ void arrow::Update(map Map) {
         // çUåÇHit
         for (int i = 0; i < this->Monster->size(); i++) {
             if ((*this->Monster)[i]->Use && (*this->Monster)[i]->CheckHit(this->Sprite, monster().CIRCLE)) {
-                (*this->Monster)[i]->Damage(40);
+                (*this->Monster)[i]->Damage(this->Attack);
                 this->Use = false;
             }
         }
@@ -33,12 +33,13 @@ void arrow::Draw(int Scroll) {
 arrow::arrow() {
     this->Use = false;
 }
-arrow::arrow(pos Pos, double Direction, std::vector<monster *> *Monster, json Config) {
+arrow::arrow(pos Pos, double Direction, std::vector<monster *> *Monster, int Attack, json Config) {
 
     this->Use = true;
     this->Sprite.Pos = Pos;
     this->Sprite.Direction = Direction;
     this->Monster = Monster;
+    this->Attack = Attack;
     this->Config = Config;
 
     this->Sprite.Motion = this->Sprite.GetPosFromDirection(this->Config["Speed"]);

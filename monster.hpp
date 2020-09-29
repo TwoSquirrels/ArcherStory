@@ -8,6 +8,7 @@ class monster {
 private:
 
     int MaxAttackCount;
+    int BeforeHP = this->MaxHP;
 
 public:
 
@@ -31,9 +32,10 @@ public:
     void DrawHP(int Scroll);
 
     bool GetAttack(int ResetAttackCount = 0);
+    bool GetDeath();
 
     int GetHP();
-    void Heel(int AddHP);
+    void Heal(int AddHP);
     void Damage(int Damage);
 
     enum shape {

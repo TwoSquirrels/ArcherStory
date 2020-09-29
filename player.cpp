@@ -35,7 +35,7 @@ void player::Update() {
                     (*this->Monster)[Nearest]->Sprite.GetCenterPos().GetX() - this->Sprite.GetCenterPos().GetX(),
                     (*this->Monster)[Nearest]->Sprite.GetCenterPos().GetY() - this->Sprite.GetCenterPos().GetY()
                 ));
-                this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction, this->Monster, this->Config["Arrow"]));
+                this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction, this->Monster, this->Attack, this->Config["Arrow"]));
             }
         }
     }
@@ -172,7 +172,7 @@ int player::GetHP() {
     return this->HP;
 }
 
-void player::Heel(int AddHP) {
+void player::Heal(int AddHP) {
     this->HP += AddHP;
     if (this->HP > this->MaxHP) this->HP = this->MaxHP;
 }
@@ -187,6 +187,33 @@ void player::Damage(int Damage) {
             *this->Death = true;
         }
     }
+}
+
+std::map<player::skill, int> player::GetSkillLeft() {
+    return this->SkillLeft;
+}
+
+bool player::GiveSkill(skill Skill) {
+
+    if (this->SkillLeft[Skill] == 0) return false;
+    this->SkillLeft[Skill]--;
+    switch (Skill) {
+    case this->HEAL:
+        this->Heal(this->MaxHP * 0.5);
+        break;
+    case this->HP_MAX_UP:
+        this->MaxHP *= 1.3;
+        this->HP *= 1.3;
+        break;
+    case this->ATTACK_SPEED_UP:
+        this->AttackCooldownMax *= 0.8;
+        break;
+    case this->ATTACK_UP:
+        this->Attack *= 1.3;
+        break;
+    }
+    return true;
+
 }
 
 bool player::CheckHit(sprite Sprite, enum shape Shape) {
@@ -229,6 +256,8 @@ player::player(input *Input, map *Map, std::vector<arrow> *Arrow, bool *Death, s
     this->AttackCooldownMax = Config["AttackCooldownMax"].get<int>();
     this->AttackCooldown = this->AttackCooldownMax;
     this->Attack = Config["DefaultAttack"].get<int>();
+
+    this->SkillLeft = this->SkillMax;
 
     // ‰æ‘œ
     int X, Y;

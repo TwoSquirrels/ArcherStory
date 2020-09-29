@@ -17,6 +17,13 @@ using json = nlohmann::json;
 
 class player {
 
+public:
+
+    enum skill {
+        HEAL, HP_MAX_UP, ATTACK_SPEED_UP, ATTACK_UP, DEFENSE_UP, GOD_TIME_EXTENSION, WALK_SPEED_UP,
+        HEART_DROPRATE_UP, DIAGONAL_ARROW, FRONT_ARROW, SIDE_ARROW, BACK_ARROW, MULTI_SHOT, BOUNCE, BOUND_WALL, POISON, HEADSHOT,
+    };
+
 private:
 
     json Config;
@@ -49,12 +56,9 @@ private:
         true,   // pond
     };
 
-    enum skill {
-        HEAL, HP_MAX_UP, ATTACK_SPEED_UP, ATTACK_UP, DEFENSE_UP, GOD_TIME_EXTENSION, WALK_SPEED_UP,
-        HEART_DROPRATE_UP, DIAGONAL_ARROW, FRONT_ARROW, SIDE_ARROW, BACK_ARROW, MULTI_SHOT, BOUNCE, BOUND_WALL, POISON, HEADSHOT,
-    SKILL_NUM };
-    std::vector<int> SkillCounter{SKILL_NUM};
-    std::vector<int> SkillCounterMax = {
+    std::map<skill, int> SkillLeft;
+    std::map<skill, int> SkillMax = {
+        { HEAL, -1 }, { HP_MAX_UP, 8 }, { ATTACK_SPEED_UP, 4 }, { ATTACK_UP, -1 }, { DEFENSE_UP, -1 }, { GOD_TIME_EXTENSION, 4 }, { WALK_SPEED_UP, 4 },
 
     };
 
@@ -73,8 +77,11 @@ public:
     void JoystickDraw();
 
     int GetHP();
-    void Heel(int AddHP);
+    void Heal(int AddHP);
     void Damage(int Damage);
+
+    std::map<skill, int> GetSkillLeft();
+    bool GiveSkill(skill Skill);
 
     enum shape {
         SQUARE, CIRCLE

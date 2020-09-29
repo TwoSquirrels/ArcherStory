@@ -26,6 +26,8 @@ private:
         false,  // pond
     };
 
+    int Attack;
+
 public:
 
     bool Use;
@@ -35,6 +37,6 @@ public:
     void Draw(int Scroll);
 
     arrow();
-    arrow(pos Pos, double Direction, std::vector<monster *> *Monster, json Config);
+    arrow(pos Pos, double Direction, std::vector<monster *> *Monster, int Attack, json Config);
 
 };

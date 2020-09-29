@@ -39,7 +39,8 @@ int Game::Load() {
     if (this->Config["Player"]["AttackCooldownMax"].empty())    this->Config["Player"]["AttackCooldownMax"] = 40;
     if (this->Config["Player"]["DefaultAttack"].empty())        this->Config["Player"]["DefaultAttack"] = 40;
     if (this->Config["Player"]["Arrow"]["Speed"].empty())       this->Config["Player"]["Arrow"]["Speed"] = 8.0;
-    if (this->Config["Monsters"]["FlowerPlant"]["AttackSpeed"].empty())  this->Config["Monsters"]["FlowerPlant"]["AttackSpeed"] = 120;
+    if (this->Config["Monsters"]["FlowerPlant"]["AttackSpeed"].empty()) this->Config["Monsters"]["FlowerPlant"]["AttackSpeed"] = 120;
+    if (this->Config["Monsters"]["Slime"]["MoveCooldown"].empty())      this->Config["Monsters"]["Slime"]["MoveCooldown"] = 60;
     if (this->Config["Balls"]["Jump"]["High"].empty())      this->Config["Balls"]["Jump"]["High"] = 64.0;
     if (this->Config["Balls"]["Jump"]["Speed"].empty())     this->Config["Balls"]["Jump"]["Speed"] = 8.0;
 
@@ -58,8 +59,11 @@ int Game::Load() {
     this->Map = map();
     this->Player = player(&this->Input, &this->Map, &this->Arrow, &this->Death, &this->Monster, this->Config["Player"]);
 
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < 4; i++) {
         this->FlowerPlant.push_back(flower_plant(&this->Ball, pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)), 100, 100, &this->Player, this->Config));
+    }
+    for (int i = 0; i < 4; i++) {
+        this->Slime.push_back(slime(pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)), 100, 2, &this->Player, &this->Slime, this->Config));
     }
 
     return 0;
@@ -110,12 +114,14 @@ bool Game::Stage() {
     //for (monster *m : this->Monster) free(m);
     this->Monster.resize(0);
     for (int i = 0; i < this->FlowerPlant.size(); i++) this->Monster.push_back(&this->FlowerPlant[i].Monster);
+    for (int i = 0; i < this->Slime.size(); i++) this->Monster.push_back(&this->Slime[i].Monster);
     // Update
     this->Player.Update();
     for (int j = 0; j < 4; j++) {   // スピードを上げるため二重
         for (int i = 0; i < this->Arrow.size(); i++) this->Arrow[i].Update(this->Map);
     }
     for (int i = 0; i < this->FlowerPlant.size(); i++) this->FlowerPlant[i].Update(this->Map);
+    for (int i = 0; i < this->Slime.size(); i++) this->Slime[i].Update(this->Map);
     for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Update(this->Map);
     // 使われてないものを削除(1秒ごと)
     if (this->Frame % 60 == 0) {
@@ -167,6 +173,7 @@ bool Game::Stage() {
     for (arrow a : this->Arrow) a.Draw(Scroll);
     // 敵
     for (flower_plant f : this->FlowerPlant) f.Draw(Scroll);
+    for (slime s : this->Slime) s.Draw(Scroll);
     // プレイヤー
     this->Player.Draw();
     // 敵の弾

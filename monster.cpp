@@ -61,11 +61,17 @@ bool monster::GetAttack(int ResetAttackCount) {
     else return false;
 }
 
+bool monster::GetDeath() {
+    bool Death = (this->BeforeHP > 0 && HP <= 0);
+    this->BeforeHP = this->HP;
+    return Death;
+}
+
 int monster::GetHP() {
     return this->HP;
 }
 
-void monster::Heel(int AddHP) {
+void monster::Heal(int AddHP) {
     this->HP += AddHP;
     if (this->HP > this->MaxHP) this->HP = this->MaxHP;
 }
