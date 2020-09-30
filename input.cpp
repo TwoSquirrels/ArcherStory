@@ -31,6 +31,6 @@ bool input::GetMouseUp(short MouseCode) {
     return ((this->BeforeMouseInput ^ this->MouseInput) & this->BeforeMouseInput) & MouseCode;
 }
 
-input::input() {
-    this->Update();
+input::input(bool Init) {
+    if (!Init) this->Update();
 }

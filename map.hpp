@@ -12,6 +12,8 @@ private:
 
     std::vector<std::vector<int>> Map{13};
 
+    std::map<std::string, int> Graph;
+
 public:
 
     enum block {
@@ -31,5 +33,6 @@ public:
     void Draw(int Scroll);
 
     map();
+    map(std::map<std::string, int> Graph);
 
 };

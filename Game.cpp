@@ -53,10 +53,30 @@ int Game::Load() {
     //SetWindowIconID(IDI_ICON1);
     SetWindowSizeChangeEnableFlag(TRUE);
     SetWindowSizeExtendRate(this->Config["WindowExtendRate"].get<double>());
-    if (DxLib_Init() == -1) return -1;
+    if (DxLib_Init() == -1) return -1;// ‰æ‘œ“Ç‚İ‚İ
 
-    this->Input = input();
-    this->Map = map();
+    std::map<std::string, std::map<std::string, int>> Graph;
+    Graph["Map"]["Ground"] = DxLib::LoadGraph("data/stable/img/map/ground.png");
+    Graph["Map"]["Wall"] = DxLib::LoadGraph("data/stable/img/map/wall.png");
+    Graph["Map"]["Stone"] = DxLib::LoadGraph("data/stable/img/map/stone.png");
+    int PondGraph[3 * 3];
+    DxLib::LoadDivGraph("data/stable/img/map/pond.png", 3 * 3, 3, 3, 48 / 2, 48 / 2, PondGraph);
+    Graph["Map"]["Pond00"] = PondGraph[3 * 0 + 0];
+    Graph["Map"]["Pond01"] = PondGraph[3 * 0 + 1];
+    Graph["Map"]["Pond02"] = PondGraph[3 * 0 + 2];
+    Graph["Map"]["Pond10"] = PondGraph[3 * 1 + 0];
+    Graph["Map"]["Pond11"] = PondGraph[3 * 1 + 1];
+    Graph["Map"]["Pond12"] = PondGraph[3 * 1 + 2];
+    Graph["Map"]["Pond20"] = PondGraph[3 * 2 + 0];
+    Graph["Map"]["Pond21"] = PondGraph[3 * 2 + 1];
+    Graph["Map"]["Pond22"] = PondGraph[3 * 2 + 2];
+    Graph["Map"]["Shutter"] = DxLib::LoadGraph("data/stable/img/map/shutter.png");
+    Graph["Map"]["ShutterGate"] = DxLib::LoadGraph("data/stable/img/map/shutter_gate.png");
+
+    // ‰Šú‰»
+
+    this->Input = input(false);
+    this->Map = map(Graph["Map"]);
     this->Player = player(&this->Input, &this->Map, &this->Arrow, &this->Death, &this->Monster, this->Config["Player"]);
 
     for (int i = 0; i < 4; i++) {
@@ -72,18 +92,21 @@ int Game::Load() {
 
 bool Game::Update() {
     if (this->Input.GetKey(KEY_INPUT_ESCAPE)) return false;
+    bool Continue;
     switch (this->Seen) {
     case this->INTRO:
-        return this->Intro();
+        Continue = this->Intro();
     case this->STAGE:
-        return this->Stage();
+        Continue = this->Stage();
     case this->PAUSE:
-        return this->Pause();
+        Continue = this->Pause();
     case this->SKILL_SELECT:
-        return this->SkillSelect();
+        Continue = this->SkillSelect();
     case this->DIE:
-        return this->Die();
+        Continue = this->Die();
     }
+    //this->BeforeSeen = this->Seen;
+    return Continue;
 }
 
 void Game::Unload(bool Error) {
@@ -94,6 +117,42 @@ void Game::Unload(bool Error) {
 }
 
 bool Game::Intro() {
+
+    //if (this->BeforeSeen != this->INTRO) {
+
+        /*// ‰æ‘œ“Ç‚İ‚İ
+        std::map<std::string, std::map<std::string, int>> Graph;
+        Graph["Map"]["Ground"] = DxLib::LoadGraph("data/stable/map/ground.png");
+        Graph["Map"]["Wall"] = DxLib::LoadGraph("data/stable/map/wall.png");
+        Graph["Map"]["Stone"] = DxLib::LoadGraph("data/stable/map/stone.png");
+        int PondGraph[3 * 3];
+        DxLib::LoadDivGraph("data/stable/map/pond.png", 3 * 3, 3, 3, 48 / 2, 48 / 2, PondGraph);
+        Graph["Map"]["Pond00"] = PondGraph[3 * 0 + 0];
+        Graph["Map"]["Pond01"] = PondGraph[3 * 0 + 1];
+        Graph["Map"]["Pond02"] = PondGraph[3 * 0 + 2];
+        Graph["Map"]["Pond10"] = PondGraph[3 * 1 + 0];
+        Graph["Map"]["Pond11"] = PondGraph[3 * 1 + 1];
+        Graph["Map"]["Pond12"] = PondGraph[3 * 1 + 2];
+        Graph["Map"]["Pond20"] = PondGraph[3 * 2 + 0];
+        Graph["Map"]["Pond21"] = PondGraph[3 * 2 + 1];
+        Graph["Map"]["Pond22"] = PondGraph[3 * 2 + 2];
+        Graph["Map"]["Shutter"] = DxLib::LoadGraph("data/stable/map/shutter.png");
+        Graph["Map"]["ShutterGate"] = DxLib::LoadGraph("data/stable/map/shutter_gate.png");
+
+        // ‰Šú‰»
+
+        this->Input = input();
+        this->Map = map(Graph["Map"]);
+        this->Player = player(&this->Input, &this->Map, &this->Arrow, &this->Death, &this->Monster, this->Config["Player"]);
+
+        for (int i = 0; i < 4; i++) {
+            this->FlowerPlant.push_back(flower_plant(&this->Ball, pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)), 100, 100, &this->Player, this->Config));
+        }
+        for (int i = 0; i < 4; i++) {
+            this->Slime.push_back(slime(pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)), 100, 2, &this->Player, this->Config));
+        }*/
+
+    //}
 
     // ˆ— //
     if (this->Input.GetKey(KEY_INPUT_SPACE)) this->Seen = this->STAGE;
@@ -173,7 +232,6 @@ bool Game::Stage() {
     DxLib::ClearDrawScreen();
     int Scroll = this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX();
     // ”wŒi
-    DxLib::DrawBox(0, 0, 1280, 720, 0x00FF00, TRUE);
     this->Map.Draw(Scroll);
     // –î
     for (arrow a : this->Arrow) a.Draw(Scroll);

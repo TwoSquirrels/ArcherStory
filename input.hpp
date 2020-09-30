@@ -32,7 +32,7 @@ public:
     bool GetMouseDown(short MouseCode);
     bool GetMouseUp(short MouseCode);
 
-    input();
+    input(bool Init = true);
 
 };
 

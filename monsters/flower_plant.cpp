@@ -44,7 +44,7 @@ flower_plant::flower_plant() {};
 flower_plant::flower_plant(std::vector<ball> *Ball, pos Pos, int HP, int Attack, player *Player, json Config) {
 
     this->Ball = Ball;
-    this->Monster = monster(Pos, HP, Config["Monsters"]["FlowerPlant"]["AttackSpeed"].get<int>());
+    this->Monster = monster(Pos, HP, Config["Monsters"]["FlowerPlant"]["AttackSpeed"].get<int>(), Player);
     this->Attack = Attack;
     this->Player = Player;
     this->BallConfig = Config["Balls"];

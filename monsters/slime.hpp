@@ -11,7 +11,6 @@ class slime {
 private:
 
     player *Player;
-    std::vector<slime> *Slime;
     json Config;
     
     int Level;
@@ -22,11 +21,11 @@ public:
 
     monster Monster;
 
-    void Update(map Map);
+    std::vector<slime> Update(map Map);
 
     void Draw(int Scroll);
 
     slime();
-    slime(pos Pos, int HP, int Level, player *Player, std::vector<slime> *Slime, json Config);
+    slime(pos Pos, int HP, int Level, player *Player, json Config);
 
 };

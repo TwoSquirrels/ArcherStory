@@ -33,7 +33,7 @@ private:
     std::string ConfigFilePath;
     input Input;
 
-    seen Seen = INTRO;
+    seen Seen = INTRO, BeforeSeen = INTRO;
 
     map Map;
     player Player;

@@ -1,6 +1,8 @@
 #include "slime.hpp"
 
-void slime::Update(map Map) {
+std::vector<slime> slime::Update(map Map) {
+
+    std::vector<slime> SlimeToAdd;
 
     if (this->Monster.HP > 0) {
 
@@ -18,23 +20,23 @@ void slime::Update(map Map) {
 
     // •ª—ô
     if (this->Monster.GetDeath() && this->Level > 1) {
-        this->Slime->push_back(slime(
+        SlimeToAdd.push_back(slime(
             this->Monster.Sprite.Pos,
             this->Monster.MaxHP / 2,
             this->Level - 1,
             this->Player,
-            this->Slime,
             this->Config
         ));
-        this->Slime->push_back(slime(
+        SlimeToAdd.push_back(slime(
             this->Monster.Sprite.Pos,
             this->Monster.MaxHP / 2,
             this->Level - 1,
             this->Player,
-            this->Slime,
             this->Config
         ));
     }
+
+    return SlimeToAdd;
 
 }
 
@@ -58,12 +60,11 @@ void slime::Draw(int Scroll) {
 }
 
 slime::slime() {};
-slime::slime(pos Pos, int HP, int Level, player *Player, std::vector<slime> *Slime, json Config) {
+slime::slime(pos Pos, int HP, int Level, player *Player, json Config) {
 
-    this->Monster = monster(Pos, HP, Config["Monsters"]["Slime"]["MoveCooldown"].get<int>());
+    this->Monster = monster(Pos, HP, Config["Monsters"]["Slime"]["MoveCooldown"].get<int>(), Player);
     this->Level = Level;
     this->Player = Player;
-    this->Slime = Slime;
     this->Config = Config;
 
 }

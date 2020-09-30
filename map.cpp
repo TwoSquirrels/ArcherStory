@@ -189,41 +189,104 @@ void map::Draw(int Scroll) {
     // 720 - (48*11=528) = 192
     for (int i = 0; i < this->Map.size(); i++) {
         for (int j = 0; j < this->Map[i].size(); j++) {
+            if (j % 2) DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i, this->Graph["Ground"], TRUE);
             switch (this->Map[i][j]) {
-            case 0:
-                DxLib::DrawBox(
-                    -Scroll + 48 * j,      96 + 48 * i,
-                    -Scroll + 48 * j + 48, 96 + 48 * i + 48,
-                    0xFFFFFF, FALSE
-                );
-                break;
             case 1:
-                DxLib::DrawBox(
-                    -Scroll + 48 * j,      96 + 48 * i,
-                    -Scroll + 48 * j + 48, 96 + 48 * i + 48,
-                    0x808080, TRUE
-                );
+                DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i, this->Graph["Stone"], TRUE);
+                break;
+            case 2:
+                // 左上
+                if (i - 1 >= 0 && j - 1 >= 0 && this->Map[i - 1][j] == 2 && this->Map[i][j - 1] == 2) {
+                    DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i, this->Graph["Pond11"], TRUE);
+                } else if (i - 1 >= 0 && this->Map[i - 1][j] == 2) {
+                    DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i, this->Graph["Pond10"], TRUE);
+                } else if (j - 1 >= 0 && this->Map[i][j - 1] == 2) {
+                    DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i, this->Graph["Pond01"], TRUE);
+                } else {
+                    DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i, this->Graph["Pond00"], TRUE);
+                }
+                // 右上
+                if (i - 1 >= 0 && j + 1 <= this->Map[0].size() - 1 && this->Map[i - 1][j] == 2 && this->Map[i][j + 1] == 2) {
+                    DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i + 48 / 2, this->Graph["Pond11"], TRUE);
+                } else if (i - 1 >= 0 && this->Map[i - 1][j] == 2) {
+                    DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i + 48 / 2, this->Graph["Pond12"], TRUE);
+                } else if (j + 1 <= this->Map[0].size() - 1 && this->Map[i][j + 1] == 2) {
+                    DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i + 48 / 2, this->Graph["Pond01"], TRUE);
+                } else {
+                    DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i + 48 / 2, this->Graph["Pond02"], TRUE);
+                }
+                // 左下
+                if (i + 1 <= this->Map.size() - 1 && j - 1 >= 0 && this->Map[i + 1][j] == 2 && this->Map[i][j - 1] == 2) {
+                    DxLib::DrawGraph(-Scroll + 48 * j + 48 / 2, 96 + 48 * i, this->Graph["Pond11"], TRUE);
+                } else if (i + 1 <= this->Map.size() - 1 && this->Map[i + 1][j] == 2) {
+                    DxLib::DrawGraph(-Scroll + 48 * j + 48 / 2, 96 + 48 * i, this->Graph["Pond10"], TRUE);
+                } else if (j - 1 >= 0 && this->Map[i][j - 1] == 2) {
+                    DxLib::DrawGraph(-Scroll + 48 * j + 48 / 2, 96 + 48 * i, this->Graph["Pond21"], TRUE);
+                } else {
+                    DxLib::DrawGraph(-Scroll + 48 * j + 48 / 2, 96 + 48 * i, this->Graph["Pond20"], TRUE);
+                }
+                // 右下
+                if (i + 1 <= this->Map.size() - 1 && j + 1 <= this->Map[0].size() - 1 && this->Map[i + 1][j] == 2 && this->Map[i][j + 1] == 2) {
+                    DxLib::DrawGraph(-Scroll + 48 * j + 48 / 2, 96 + 48 * i + 48 / 2, this->Graph["Pond11"], TRUE);
+                } else if (i + 1 <= this->Map.size() - 1 && this->Map[i + 1][j] == 2) {
+                    DxLib::DrawGraph(-Scroll + 48 * j + 48 / 2, 96 + 48 * i + 48 / 2, this->Graph["Pond12"], TRUE);
+                } else if (j + 1 <= this->Map[0].size() - 1 && this->Map[i][j + 1] == 2) {
+                    DxLib::DrawGraph(-Scroll + 48 * j + 48 / 2, 96 + 48 * i + 48 / 2, this->Graph["Pond21"], TRUE);
+                } else {
+                    DxLib::DrawGraph(-Scroll + 48 * j + 48 / 2, 96 + 48 * i + 48 / 2, this->Graph["Pond22"], TRUE);
+                }
                 break;
             }
         }
     }
+    // wall
+    /*for (int i = 0; ; i--) {
+        // 左上
+        for (int j = 0; ; j--) {
+            DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i, this->Graph["Wall"], TRUE);
+            if (-Scroll + 48 * j + 48 < 0) break;
+        }
+        // 右上
+        for (int j = 0; ; j++) {
+            DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i, this->Graph["Wall"], TRUE);
+            if (-Scroll + 48 * j > 1280) break;
+        }
+        if (96 + 48 * i + 48 < 0) break;
+    }
+    for (int i = 0; ; i++) {
+        // 左下
+        for (int j = 0; ; j--) {
+            DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i, this->Graph["Wall"], TRUE);
+            if (-Scroll + 48 * j + 48 < 0) break;
+        }
+        // 右下
+        for (int j = 0; ; j++) {
+            if (!(j < this->Map.size() && i < this->Map[0].size())) {
+                DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i, this->Graph["Wall"], TRUE);
+            }
+            if (-Scroll + 48 * j > 1280) break;
+        }
+        if (96 + 48 * i + 48 < 0) break;
+    }*/
 }
 
-map::map() {
+map::map() {}
+map::map(std::map<std::string, int> Graph) {
     std::vector<std::vector<int>> Tmp = {
-        { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+        {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 },
+        {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1 },
+        {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1 },
+        {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0,-1 },
+        {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0,-1 },
+        {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1 },
+        {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1 },
+        {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1 },
+        {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0,-1 },
+        {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0,-1 },
+        {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1 },
+        {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1 },
+        {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 },
     };
     this->Map = Tmp;
+    this->Graph = Graph;
 }
