@@ -29,11 +29,11 @@ private:
     std::string FileToString(std::string FilePath);
 
     bool Debug;
-    unsigned int Frame;
+    int Frame;
     std::string ConfigFilePath;
     input Input;
 
-    seen Seen = INTRO, BeforeSeen = INTRO;
+    seen Seen = INTRO;
 
     map Map;
     player Player;
@@ -51,6 +51,7 @@ private:
     void Unload(bool Error);    // ç≈å„ Error:ÉGÉâÅ[Ç≈èIóπÇµÇΩÇ©
 
     bool Intro();
+    int BeforeIntroFrame = 0;
     bool Stage();
     bool Pause();
     bool SkillSelect();

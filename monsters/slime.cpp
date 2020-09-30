@@ -14,7 +14,7 @@ std::vector<slime> slime::Update(map Map) {
             this->Monster.Sprite.Motion = this->Monster.Sprite.GetPosFromDirection(16);
             this->MoveCount = 0;
         }
-        if (this->MoveCount++ >= 20) this->Monster.Sprite.Motion.SetPos(0, 0);
+        if (this->MoveCount++ >= 10) this->Monster.Sprite.Motion.SetPos(0, 0);
 
     }
 

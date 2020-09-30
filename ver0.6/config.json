@@ -1,0 +1,30 @@
+{
+    "WindowName": "アーチャー物語 ver0.5",
+    "WindowExtendRate": 0.8,
+    "Player": {
+        "JoystickSize": 64,
+        "Speed": 7.0,
+        "DefaultMaxHP": 500,
+        "GodTimeMax": 60,
+        "AttackCooldownMax": 40,
+        "DefaultAttack": 40,
+        "Arrow": {
+            "Speedについて": "この値は4倍されます",
+            "Speed": 8.0
+        }
+    },
+    "Monsters": {
+        "FlowerPlant": {
+            "AttackSpeed": 120
+        },
+        "Slime": {
+            "MoveCooldown": 60
+        }
+    },
+    "Balls": {
+        "Jump": {
+            "High": 64.0,
+            "Speed": 8.0
+        }
+    }
+}

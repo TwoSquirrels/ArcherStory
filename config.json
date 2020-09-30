@@ -1,12 +1,12 @@
 {
-    "WindowName": "アーチャー物語 ver0.5",
+    "WindowName": "アーチャー物語 ver0.6",
     "WindowExtendRate": 0.8,
     "Player": {
         "JoystickSize": 64,
         "Speed": 7.0,
         "DefaultMaxHP": 500,
         "GodTimeMax": 60,
-        "AttackCooldownMax": 40,
+        "AttackCooldownMax": 36,
         "DefaultAttack": 40,
         "Arrow": {
             "Speedについて": "この値は4倍されます",

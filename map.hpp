@@ -32,6 +32,8 @@ public:
 
     void Draw(int Scroll);
 
+    void Clear();
+
     map();
     map(std::map<std::string, int> Graph);
 
