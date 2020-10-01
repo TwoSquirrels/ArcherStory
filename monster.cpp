@@ -1,6 +1,6 @@
 #include "monster.hpp"
 
-void monster::Update(map Map) {
+void monster::Update() {
 
     // もしHPがカンストしてたら直す
     if (this->HP > this->MaxHP) this->HP = this->MaxHP;
@@ -10,19 +10,23 @@ void monster::Update(map Map) {
     // Motionの分だけ移動
     this->Sprite.Move();
     // ブロックとの当たり判定
-    Map.Collision(&(this->Sprite), BlockCol);
+    this->Map->Collision(&(this->Sprite), BlockCol);
+    // 外には出させない
+    if (!this->Map->GetInMap(this->Sprite)) this->Sprite.Pos = this->SpawnPoint;
     // 接触ダメージ
-    if (!this->Hide && this->Player->CheckHit(this->Sprite, player::CIRCLE)) this->Player->Damage(this->Player->GetMaxHP() / 16);
+    if (!this->Hide && this->Player->CheckHit(this->Sprite, player::CIRCLE)) this->Player->Damage(this->Player->GetMaxHP() / 32);
 
 }
 
 void monster::DrawRing(int Scroll) {
     if (!this->Hide) {
 
-        DxLib::DrawCircle(
-            -Scroll + this->Sprite.GetCenterPos().GetXInt(), 96 + this->Sprite.GetCenterPos().GetYInt(),
-            min(this->Sprite.Size.GetXInt(), this->Sprite.Size.GetYInt()) / 2,
-            0xFF0000, FALSE, 4
+        DxLib::DrawExtendGraph(
+            -Scroll + this->Sprite.GetCenterPos().GetXInt() - min(this->Sprite.Size.GetXInt(), this->Sprite.Size.GetYInt()) / 2,
+            96 + this->Sprite.GetCenterPos().GetYInt() - min(this->Sprite.Size.GetXInt(), this->Sprite.Size.GetYInt()) / 2,
+            -Scroll + this->Sprite.GetCenterPos().GetXInt() + min(this->Sprite.Size.GetXInt(), this->Sprite.Size.GetYInt()) / 2,
+            96 + this->Sprite.GetCenterPos().GetYInt() + min(this->Sprite.Size.GetXInt(), this->Sprite.Size.GetYInt()) / 2,
+            this->Graph["ring"], TRUE
         );
 
     }
@@ -111,16 +115,25 @@ bool monster::CheckHit(sprite Sprite, enum shape Shape) {
 monster::monster() {
     this->Use = false;
 }
-monster::monster(pos Pos, int HP, int StartAttackCount, player *Player, pos Size) {
+monster::monster(pos Pos, int HP, int StartAttackCount, map *Map, player *Player, std::map<std::string, int> Graph, pos Size) {
 
     this->Use = true;
 
     this->Sprite.Pos = Pos;
+    this->SpawnPoint = this->Sprite.Pos;
     this->MaxHP = HP;
     this->HP = HP;
     this->AttackCount = StartAttackCount;
     this->MaxAttackCount = StartAttackCount;
+    this->Map = Map;
     this->Player = Player;
+    this->Graph = Graph;
     this->Sprite.Size = Size;
+    
+    // 画像サイズ取得
+    int X, Y;
+
+    DxLib::GetGraphSize(this->Graph["ring"], &X, &Y);
+    this->GraphSize["ring"].SetPos(X, Y);
 
 }

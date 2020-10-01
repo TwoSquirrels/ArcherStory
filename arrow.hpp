@@ -6,6 +6,7 @@
 #include "player.hpp"
 #include "monster.hpp"
 
+class map;
 class monster;
 
 using json = nlohmann::json;
@@ -17,6 +18,8 @@ private:
     json Config;
 
     sprite Sprite;
+
+    map *Map;
     std::vector<monster *> *Monster;
     
     std::vector<bool> BlockCol = {
@@ -28,15 +31,18 @@ private:
 
     int Attack;
 
+    std::map<std::string, int> Graph;
+    std::map<std::string, pos> GraphSize;
+
 public:
 
     bool Use;
 
-    void Update(map Map);
+    void Update();
 
     void Draw(int Scroll);
 
     arrow();
-    arrow(pos Pos, double Direction, std::vector<monster *> *Monster, int Attack, json Config);
+    arrow(pos Pos, double Direction, map *Map, std::vector<monster *> *Monster, int Attack, std::map<std::string, int> Graph, json Config);
 
 };

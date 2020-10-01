@@ -5,13 +5,22 @@
 #include "monsters/ball.hpp"
 
 class player;
+class map;
 
 class monster {
 
 private:
 
+    player *Player;
+    map *Map;
+
     int MaxAttackCount;
     int BeforeHP = this->MaxHP;
+
+    pos SpawnPoint{};
+
+    std::map<std::string, int> Graph;
+    std::map<std::string, pos> GraphSize;
 
 public:
 
@@ -29,9 +38,7 @@ public:
 
     int AttackCount;
 
-    player *Player;
-
-    void Update(map Map);
+    void Update();
 
     void DrawRing(int Scroll);
     void DrawHP(int Scroll);
@@ -49,6 +56,6 @@ public:
     bool CheckHit(sprite Sprite, enum shape Shape = SQUARE);
 
     monster();
-    monster(pos Pos, int HP, int StartAttackCount, player *Player, pos Size = pos(32, 32));
+    monster(pos Pos, int HP, int StartAttackCount, map *Map, player *Player, std::map<std::string, int> Graph, pos Size = pos(32, 32));
 
 };

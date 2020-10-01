@@ -5,11 +5,11 @@
         "JoystickSize": 64,
         "Speed": 7.0,
         "DefaultMaxHP": 500,
-        "GodTimeMax": 60,
+        "GodTimeMax": 15,
         "AttackCooldownMax": 36,
         "DefaultAttack": 40,
         "Arrow": {
-            "Speedについて": "この値は4倍されます",
+            // この値は4倍されます
             "Speed": 8.0
         }
     },

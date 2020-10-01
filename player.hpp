@@ -12,6 +12,7 @@
 
 class arrow;
 class monster;
+class map;
 
 using json = nlohmann::json;
 
@@ -28,8 +29,8 @@ private:
 
     json Config;
 
-    std::map<std::string, int> Img;
-    std::map<std::string, pos> ImgSize;
+    std::map<std::string, int> Graph;
+    std::map<std::string, pos> GraphSize;
 
     input *Input;
     map *Map;
@@ -90,6 +91,6 @@ public:
     bool CheckHit(sprite Sprite, enum shape Shape = SQUARE);
 
     player();
-    player(input *Input, map *Map, std::vector<arrow> *Arrow, bool *Death, std::vector<monster *> *Monster, json Config);
+    player(input *Input, map *Map, std::vector<arrow> *Arrow, bool *Death, std::vector<monster *> *Monster, std::map<std::string, int> Graph, json Config);
 
 };

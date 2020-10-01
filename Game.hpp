@@ -21,7 +21,7 @@ class Game {
 
 private:
 
-    enum seen {
+    enum scene {
         INTRO, STAGE, PAUSE, SKILL_SELECT, DIE
     };
 
@@ -33,7 +33,7 @@ private:
     std::string ConfigFilePath;
     input Input;
 
-    seen Seen = INTRO;
+    scene Scene = INTRO;
 
     map Map;
     player Player;

@@ -4,15 +4,39 @@
 #include <string>
 #include <map>
 #include <cmath>
+#include "ExternalHeaderFiles/json.hpp"
 #include "sprite.hpp"
+#include "monsters/flower_plant.hpp"
+#include "monsters/slime.hpp"
+
+class flower_plant;
+class slime;
+class ball;
+
+using json = nlohmann::json;
 
 class map {
 
 private:
 
+    json Config;
+    std::vector<ball> *Ball;
+    player *Player;
+
+    json Maps;
     std::vector<std::vector<int>> Map{13};
 
-    std::map<std::string, int> Graph;
+    std::vector<flower_plant> *FlowerPlant;
+    std::vector<slime> *Slime;
+    enum monsters {
+        FLOWER_PLANT, SLIME,
+    MONSTERS_NUM };
+
+    int Stage = 0;
+
+    std::map<std::string, std::map<std::string, int>> Graph;
+
+    int ClearCount = 0;
 
 public:
 
@@ -32,9 +56,12 @@ public:
 
     void Draw(int Scroll);
 
+    int GetStage();
+
     void Clear();
+    void NextStage();
 
     map();
-    map(std::map<std::string, int> Graph);
+    map(json Maps, std::map<std::string, std::map<std::string, int>> Graph, std::vector<flower_plant> *FlowerPlant, std::vector<slime> *Slime, std::vector<ball> *Ball, player *Player, json Config);
 
 };

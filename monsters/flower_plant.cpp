@@ -1,24 +1,26 @@
 #include "flower_plant.hpp"
 
-void flower_plant::Update(map Map) {
+void flower_plant::Update() {
 
-    if (this->Monster.HP > 0) {
+    if (this->Monster->HP > 0) {
 
-        Monster.Update(Map);
+        Monster->Update();
 
         // UŒ‚
-        if (Monster.GetAttack()) {
-            this->Monster.Sprite.SetDrectionFromPos(pos(
-                this->Player->Sprite.GetCenterPos().GetX() - this->Monster.Sprite.GetCenterPos().GetX(),
-                this->Player->Sprite.GetCenterPos().GetY() - this->Monster.Sprite.GetCenterPos().GetY()
+        if (Monster->GetAttack()) {
+            this->Monster->Sprite.SetDrectionFromPos(pos(
+                this->Player->Sprite.GetCenterPos().GetX() - this->Monster->Sprite.GetCenterPos().GetX(),
+                this->Player->Sprite.GetCenterPos().GetY() - this->Monster->Sprite.GetCenterPos().GetY()
             ));
             this->Ball->push_back(ball(
                 ball().JUMP,
                 this->Attack,
+                this->Map,
                 this->Player,
-                this->Monster.Sprite.GetCenterPos(),
+                this->Monster->Sprite.GetCenterPos(),
                 this->Player->Sprite.GetCenterPos(),
-                this->BallConfig
+                this->Graph,
+                this->Config["Balls"]
             ));
         }
 
@@ -28,25 +30,45 @@ void flower_plant::Update(map Map) {
 
 void flower_plant::Draw(int Scroll) {
 
-    if (this->Monster.HP > 0) {
-        this->Monster.DrawRing(Scroll);
-        DxLib::DrawBox(
-            -Scroll + this->Monster.Sprite.GetSidePos(this->Monster.Sprite.LEFT), 96 + this->Monster.Sprite.GetSidePos(this->Monster.Sprite.UP),
-            -Scroll + this->Monster.Sprite.GetSidePos(this->Monster.Sprite.RIGHT), 96 + this->Monster.Sprite.GetSidePos(this->Monster.Sprite.DOWN),
-            0xff00ff, TRUE
-        );
-        this->Monster.DrawHP(Scroll);
+    if (this->Monster->HP > 0) {
+        this->Monster->DrawRing(Scroll);
+        if (this->Monster->AttackCount > this->Config["Monsters"]["FlowerPlant"]["AttackSpeed"].get<int>() - 15) {
+            DxLib::DrawRotaGraph(
+                -Scroll + this->Monster->Sprite.GetCenterPos().GetXInt(), 96 + this->Monster->Sprite.GetCenterPos().GetYInt(),
+                1.0, (this->Monster->Sprite.GetPosFromDirection().GetX() >= 0.0) ? this->Monster->Sprite.Direction + DX_PI / 2 : this->Monster->Sprite.Direction + DX_PI / 2,
+                this->Graph["flower_plant_attack"], TRUE, (this->Monster->Sprite.GetPosFromDirection().GetX() < 0.0)
+            );
+        } else {
+            DxLib::DrawRotaGraph(
+                -Scroll + this->Monster->Sprite.GetCenterPos().GetXInt(), 96 + this->Monster->Sprite.GetCenterPos().GetYInt(),
+                1.0, (this->Monster->Sprite.GetPosFromDirection().GetX() >= 0.0) ? this->Monster->Sprite.Direction + DX_PI / 2 : this->Monster->Sprite.Direction + DX_PI / 2,
+                this->Graph["flower_plant_normal"], TRUE, (this->Monster->Sprite.GetPosFromDirection().GetX() < 0.0)
+            );
+        }
+        this->Monster->DrawHP(Scroll);
     }
 
 }
 
 flower_plant::flower_plant() {};
-flower_plant::flower_plant(std::vector<ball> *Ball, pos Pos, int HP, int Attack, player *Player, json Config) {
+flower_plant::flower_plant(std::vector<ball> *Ball, pos Pos, int HP, int Attack, map *Map, player *Player, std::map<std::string, int> Graph, json Config) {
 
     this->Ball = Ball;
-    this->Monster = monster(Pos, HP, Config["Monsters"]["FlowerPlant"]["AttackSpeed"].get<int>(), Player);
+    this->Monster = new monster(Pos, HP, Config["Monsters"]["FlowerPlant"]["AttackSpeed"].get<int>(), Map, Player, Graph);
+    this->Monster->Sprite.Direction = DX_PI * 3 / 2;
     this->Attack = Attack;
+    this->Map = Map;
     this->Player = Player;
-    this->BallConfig = Config["Balls"];
+    this->Graph = Graph;
+    this->Config = Config;
+
+    // ‰æ‘œƒTƒCƒYŽæ“¾
+    int X, Y;
+
+    DxLib::GetGraphSize(this->Graph["flower_plant_normal"], &X, &Y);
+    this->GraphSize["flower_plant_normal"].SetPos(X, Y);
+
+    DxLib::GetGraphSize(this->Graph["flower_plant_attack"], &X, &Y);
+    this->GraphSize["flower_plant_attack"].SetPos(X, Y);
 
 }

@@ -1,6 +1,6 @@
 #include "ball.hpp"
 
-void ball::Update(map Map) {
+void ball::Update() {
     if (this->Use) {
 
         switch (this->Type) {
@@ -20,7 +20,7 @@ void ball::Update(map Map) {
         // マップとの当たり判定
         switch (this->Type) {
         case this->JUMP:
-            std::vector<bool> Col = Map.Collision(&this->Sprite, {
+            std::vector<bool> Col = this->Map->Collision(&this->Sprite, {
                 false,  // air
                 false,  // wall
                 false,  // stone
@@ -37,7 +37,7 @@ void ball::Update(map Map) {
             }
         }
         // 外に出てたら消す
-        if (!Map.GetInMap(this->Sprite)) this->Use = false;
+        if (!this->Map->GetInMap(this->Sprite)) this->Use = false;
 
     }
 }
@@ -53,13 +53,17 @@ void ball::Draw(int Scroll) {
             );
             break;
         case this->JUMP:
-            DxLib::DrawCircle(
-                -Scroll + this->Shadow.GetCenterPos().GetXInt(), 96 + this->Shadow.GetCenterPos().GetYInt(),
-                4, 0x000000, TRUE
+            DxLib::SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+            DxLib::DrawGraph(
+                -Scroll + this->Shadow.GetCenterPos().GetXInt() - this->GraphSize["ball_shadow"].GetXInt() / 2,
+                96 + this->Shadow.GetCenterPos().GetYInt() - this->GraphSize["ball_shadow"].GetYInt() / 2,
+                this->Graph["ball_shadow"], TRUE
             );
-            DxLib::DrawCircle(
-                -Scroll + this->Sprite.GetCenterPos().GetXInt(), 96 + this->Sprite.GetCenterPos().GetYInt(),
-                4, 0xff0000, TRUE
+            DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+            DxLib::DrawGraph(
+                -Scroll + this->Sprite.GetCenterPos().GetXInt() - this->GraphSize["ball_jumping"].GetXInt() / 2,
+                96 + this->Sprite.GetCenterPos().GetYInt() - this->GraphSize["ball_jumping"].GetYInt() / 2,
+                this->Graph["ball_jumping"], TRUE
             );
             break;
         }
@@ -71,14 +75,16 @@ ball::ball() {
     this->Use = false;
 }
 // TEST, JUMP
-ball::ball(enum type Type, int Attack, player *Player, pos Pos, pos PlayerCenterPos, json Config) {
+ball::ball(enum type Type, int Attack, map *Map, player *Player, pos Pos, pos PlayerCenterPos, std::map<std::string, int> Graph, json Config) {
 
     this->Use = true;
     this->Type = Type;
     this->Attack = Attack;
+    this->Map = Map;
     this->Player = Player;
     this->Sprite.Pos = Pos;
     this->PlayerCenterPos = PlayerCenterPos;
+    this->Graph = Graph;
     this->Config = Config;
     switch (Type) {
     case TEST:
@@ -100,5 +106,14 @@ ball::ball(enum type Type, int Attack, player *Player, pos Pos, pos PlayerCenter
         this->Jump_CenterX = (this->Sprite.Pos.GetX() + this->PlayerCenterPos.GetX()) / 2;
         break;
     }
+
+    // 画像サイズ取得
+    int X, Y;
+
+    DxLib::GetGraphSize(this->Graph["ball_jumping"], &X, &Y);
+    this->GraphSize["ball_jumping"].SetPos(X, Y);
+
+    DxLib::GetGraphSize(this->Graph["ball_shadow"], &X, &Y);
+    this->GraphSize["ball_shadow"].SetPos(X, Y);
 
 }

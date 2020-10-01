@@ -6,6 +6,14 @@ void player::Update() {
 
     // 移動
     this->Move();
+    // 外に出たら次のステージへ
+    if (!this->Map->GetInMap(this->Sprite)) {
+        this->Map->NextStage();
+        this->Sprite.Pos.SetPos(48.0, this->StartPos.GetY());
+        this->Sprite.Direction = 0.0;
+        this->GodTime = 0;
+        this->AttackCooldown = this->AttackCooldownMax * 3 / 4;
+    }
     // 無敵時間更新   
     if (this->GodTime > 0) this->GodTime--;
     // 攻撃
@@ -35,7 +43,7 @@ void player::Update() {
                     (*this->Monster)[Nearest]->Sprite.GetCenterPos().GetX() - this->Sprite.GetCenterPos().GetX(),
                     (*this->Monster)[Nearest]->Sprite.GetCenterPos().GetY() - this->Sprite.GetCenterPos().GetY()
                 ));
-                this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction, this->Monster, this->Attack, this->Config["Arrow"]));
+                this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction, this->Map, this->Monster, this->Attack, this->Graph, this->Config["Arrow"]));
             }
         }
     }
@@ -71,11 +79,11 @@ void player::Move() {
 
 void player::Draw() {
 
-    DxLib::DrawGraph(this->StartPos.GetXInt(), 96 + this->Sprite.Pos.GetYInt(), this->Img["ring"], TRUE);
+    DxLib::DrawGraph(this->StartPos.GetXInt(), 96 + this->Sprite.Pos.GetYInt(), this->Graph["ring"], TRUE);
     DxLib::DrawRotaGraph(
-        this->StartPos.GetXInt() + this->ImgSize["right"].GetX() / 2, 96 + this->Sprite.Pos.GetYInt() + this->ImgSize["right"].GetY() / 2,
+        this->StartPos.GetXInt() + this->GraphSize["right"].GetX() / 2, 96 + this->Sprite.Pos.GetYInt() + this->GraphSize["right"].GetY() / 2,
         1.0, (this->Sprite.GetPosFromDirection().GetX() >= 0.0) ? this->Sprite.Direction : this->Sprite.Direction + DX_PI,
-        this->Img["right"], TRUE, (this->Sprite.GetPosFromDirection().GetX() < 0.0)
+        this->Graph["right"], TRUE, (this->Sprite.GetPosFromDirection().GetX() < 0.0)
     );
     // HPバー
     DxLib::DrawBox(
@@ -106,12 +114,12 @@ void player::JoystickDraw() {
         DxLib::DrawExtendGraph(
             this->Joystick.Pos.GetXInt() - this->Joystick.Size, this->Joystick.Pos.GetYInt() - this->Joystick.Size,
             this->Joystick.Pos.GetXInt() + this->Joystick.Size, this->Joystick.Pos.GetYInt() + this->Joystick.Size,
-            this->Img["joystick_base"], TRUE
+            this->Graph["joystick_base"], TRUE
         );
         DxLib::DrawExtendGraph(
             this->Joystick.Stick.GetXInt() - this->Joystick.Size / 2, this->Joystick.Stick.GetYInt() - this->Joystick.Size / 2,
             this->Joystick.Stick.GetXInt() + this->Joystick.Size / 2, this->Joystick.Stick.GetYInt() + this->Joystick.Size / 2,
-            this->Img["joystick_stick"], TRUE
+            this->Graph["joystick_stick"], TRUE
         );
     }
 
@@ -241,13 +249,14 @@ bool player::CheckHit(sprite Sprite, enum shape Shape) {
 }
 
 player::player() {}
-player::player(input *Input, map *Map, std::vector<arrow> *Arrow, bool *Death, std::vector<monster *> *Monster, json Config) {
+player::player(input *Input, map *Map, std::vector<arrow> *Arrow, bool *Death, std::vector<monster *> *Monster, std::map<std::string, int> Graph, json Config) {
 
     this->Input = Input;
     this->Map = Map;
     this->Arrow = Arrow;
     this->Death = Death;
     this->Monster = Monster;
+    this->Graph = Graph;
     this->Config = Config;
 
     this->Joystick.Size = Config["JoystickSize"].get<int>();
@@ -263,23 +272,19 @@ player::player(input *Input, map *Map, std::vector<arrow> *Arrow, bool *Death, s
 
     this->SkillLeft = this->SkillMax;
 
-    // 画像
+    // 画像サイズ取得
     int X, Y;
 
-    this->Img["ring"]   = DxLib::LoadGraph("data/stable/img/player/ring.png");
-    DxLib::GetGraphSize(this->Img["ring"], &X, &Y);
-    this->ImgSize["ring"].SetPos(X, Y);
+    DxLib::GetGraphSize(this->Graph["ring"], &X, &Y);
+    this->GraphSize["ring"].SetPos(X, Y);
 
-    this->Img["right"]  = DxLib::LoadGraph("data/stable/img/player/right.png");
-    DxLib::GetGraphSize(this->Img["right"], &X, &Y);
-    this->ImgSize["right"].SetPos(X, Y);
+    DxLib::GetGraphSize(this->Graph["right"], &X, &Y);
+    this->GraphSize["right"].SetPos(X, Y);
 
-    this->Img["joystick_base"] = DxLib::LoadGraph("data/stable/img/player/joystick_base.png");
-    DxLib::GetGraphSize(this->Img["joystick_base"], &X, &Y);
-    this->ImgSize["joystick_base"].SetPos(X, Y);
+    DxLib::GetGraphSize(this->Graph["joystick_base"], &X, &Y);
+    this->GraphSize["joystick_base"].SetPos(X, Y);
 
-    this->Img["joystick_stick"] = DxLib::LoadGraph("data/stable/img/player/joystick_stick.png");
-    DxLib::GetGraphSize(this->Img["joystick_stick"], &X, &Y);
-    this->ImgSize["joystick_stick"].SetPos(X, Y);
+    DxLib::GetGraphSize(this->Graph["joystick_stick"], &X, &Y);
+    this->GraphSize["joystick_stick"].SetPos(X, Y);
 
 }

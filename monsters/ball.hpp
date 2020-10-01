@@ -5,6 +5,7 @@
 #include "../map.hpp"
 #include "../player.hpp"
 
+class map;
 class player;
 
 using json = nlohmann::json;
@@ -23,6 +24,7 @@ private:
 
     enum type Type;
     int Attack;
+    map *Map;
     player *Player;
     sprite Sprite;
     pos PlayerCenterPos{};
@@ -31,16 +33,19 @@ private:
     double Jump_CenterX = 0;
     sprite Shadow;
 
+    std::map<std::string, int> Graph;
+    std::map<std::string, pos> GraphSize;
+
 public:
 
     bool Use;
 
-    void Update(map Map);
+    void Update();
 
     void Draw(int Scroll);
 
     ball();
     // TEST, JUMP
-    ball(enum type Type, int Attack, player *Player, pos Pos, pos PlayerCenterPos, json Config);
+    ball(enum type Type, int Attack, map *Map, player *Player, pos Pos, pos PlayerCenterPos, std::map<std::string, int> Graph, json Config);
 
 };
