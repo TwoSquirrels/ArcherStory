@@ -241,7 +241,7 @@ bool player::CheckHit(sprite Sprite, enum shape Shape) {
         if (Distance2d(
             this->Sprite.GetCenterPos(), Sprite.GetCenterPos()
         ) < (
-            min(this->Sprite.Size.GetX(), this->Sprite.Size.GetY()) + min(Sprite.Size.GetX(), Sprite.Size.GetY())
+            min(this->Sprite.Size.GetX(), this->Sprite.Size.GetY()) / 2 + min(Sprite.Size.GetX(), Sprite.Size.GetY()) / 2
         )) return true;
         return false;
     }

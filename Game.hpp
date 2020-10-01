@@ -40,6 +40,7 @@ private:
     bool Death = false;
     std::vector<arrow> Arrow;
 
+    int ClearCount = 0;
     std::vector<monster *> Monster;
     std::vector<ball> Ball;
 
