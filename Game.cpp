@@ -139,12 +139,12 @@ bool Game::Intro() {
         this->Map = map(Maps, Graph, &this->FlowerPlant, &this->Slime, &this->Ball, &this->Player, this->Config);
         this->Player = player(&this->Input, &this->Map, &this->Arrow, &this->Death, &this->Monster, Graph["player"], this->Config["Player"]);
 
-        for (int i = 0; i < 2; i++) {
-            this->FlowerPlant.push_back(flower_plant(&this->Ball, pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)), 100, 100, &this->Map, &this->Player, Graph["monsters"], this->Config));
-        }
-        for (int i = 0; i < 2; i++) {
-            this->Slime.push_back(slime(pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)), 100, 2, &this->Map, &this->Player, Graph["monsters"], this->Config));
-        }
+        //for (int i = 0; i < 2; i++) {
+        //    this->FlowerPlant.push_back(flower_plant(&this->Ball, pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)), 100, 100, &this->Map, &this->Player, Graph["monsters"], this->Config));
+        //}
+        //for (int i = 0; i < 2; i++) {
+        //    this->Slime.push_back(slime(pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)), 100, 2, &this->Map, &this->Player, Graph["monsters"], this->Config));
+        //}
 
     }
 
@@ -226,7 +226,7 @@ bool Game::Stage() {
     // ‘Sˆõ“|‚µ‚½I
     this->ClearCount++;
     for (monster *m : this->Monster) if (m->Use) this->ClearCount = 0;
-    if (this->ClearCount >= 2) {
+    if (this->ClearCount >= 3) {
         this->Map.Clear();
         this->ClearCount = 0;
     }

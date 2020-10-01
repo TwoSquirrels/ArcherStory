@@ -4,10 +4,10 @@
     "Player": {
         "JoystickSize": 64,
         "Speed": 7.0,
-        "DefaultMaxHP": 10500,
+        "DefaultMaxHP": 500,
         "GodTimeMax": 15,
         "AttackCooldownMax": 36,
-        "DefaultAttack": 140,
+        "DefaultAttack": 40,
         "Arrow": {
             // この値は4倍されます
             "Speed": 8.0

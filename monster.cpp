@@ -14,7 +14,7 @@ void monster::Update() {
     // 外には出させない
     if (!this->Map->GetInMap(this->Sprite)) this->Sprite.Pos = this->SpawnPoint;
     // 接触ダメージ
-    if (!this->Hide && this->Player->CheckHit(this->Sprite, player::CIRCLE)) this->Player->Damage(this->Player->GetMaxHP() / 32);
+    if (!this->Hide && this->Player->CheckHit(this->Sprite, player::CIRCLE)) this->Player->Damage(this->Player->GetMaxHP() / 64);
 
 }
 

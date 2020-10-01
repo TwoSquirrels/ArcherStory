@@ -278,6 +278,11 @@ void map::Draw(int Scroll) {
     for (int i = 0; i < 3; i++) DxLib::DrawGraph(-Scroll + 48 * this->Map[0].size() - 48 + this->ClearCount, 96 + 48 * (5 + i), this->Graph["map"]["shutter"], TRUE);
     DxLib::DrawGraph(-Scroll + 48 * this->Map[0].size() - 48, 96 + 48 * 4, this->Graph["map"]["shutter_gate"], TRUE);
     if (this->ClearCount > 0 && this->ClearCount < 48) this->ClearCount++;
+    if (this->ClearCount == 48) {
+        this->Map[5][this->Map[0].size() - 1] = this->AIR;
+        this->Map[6][this->Map[0].size() - 1] = this->AIR;
+        this->Map[7][this->Map[0].size() - 1] = this->AIR;
+    }
 
 }
 
@@ -290,9 +295,6 @@ int map::GetStage() {
 void map::Clear() {
     if (this->ClearCount == 0) {
 
-        this->Map[5][this->Map[0].size() - 1] = this->AIR;
-        this->Map[6][this->Map[0].size() - 1] = this->AIR;
-        this->Map[7][this->Map[0].size() - 1] = this->AIR;
         this->ClearCount = 1;
 
     }
@@ -356,7 +358,7 @@ void map::NextStage() {
         case this->FLOWER_PLANT:
             FlowerPlant->push_back(flower_plant(
                 this->Ball,
-                pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)),
+                pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
                 100,
                 100,
                 this,
@@ -367,9 +369,9 @@ void map::NextStage() {
             break;
         case this->SLIME:
             Slime->push_back(slime(
-                pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)),
+                pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
                 100,
-                2,
+                (this->Stage <= 5 ? 1 : 2),
                 this,
                 this->Player,
                 this->Graph["monsters"],
