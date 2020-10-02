@@ -11,7 +11,7 @@ void arrow::Update() {
         // UŒ‚Hit
         for (int i = 0; i < this->Monster->size(); i++) {
             if ((*this->Monster)[i]->Use && (*this->Monster)[i]->CheckHit(this->Sprite, monster().CIRCLE)) {
-                (*this->Monster)[i]->Damage(this->Attack);
+                (*this->Monster)[i]->Damage(this->Attack, this->Sprite.Motion);
                 this->Use = false;
                 break;
             }

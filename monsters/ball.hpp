@@ -15,7 +15,11 @@ class ball {
 public:
 
     enum type {
-        TEST, JUMP
+        STONE, JUMP, BEAM
+    };
+
+    enum error {
+        WRONG_CONSTRUCTOR
     };
 
 private:
@@ -28,6 +32,8 @@ private:
     player *Player;
     sprite Sprite;
     pos PlayerCenterPos{};
+
+    int Count = 0;
     // ƒWƒƒƒ“ƒvŒn
     double Jump_a = 0;   // y=ax+h ‚Ì a
     double Jump_CenterX = 0;
@@ -45,7 +51,9 @@ public:
     void Draw(int Scroll);
 
     ball();
-    // TEST, JUMP
+    // STONE, BEAM
+    ball(enum type Type, int Attack, map *Map, player *Player, pos Pos, double Direction, std::map<std::string, int> Graph, json Config);
+    // JUMP
     ball(enum type Type, int Attack, map *Map, player *Player, pos Pos, pos PlayerCenterPos, std::map<std::string, int> Graph, json Config);
 
 };

@@ -1,5 +1,5 @@
 {
-    "WindowName": "アーチャー物語 ver0.6",
+    "WindowName": "アーチャー物語 ver0.7",
     "WindowExtendRate": 0.8,
     "Player": {
         "JoystickSize": 64,
@@ -19,11 +19,27 @@
         },
         "Slime": {
             "MoveCooldown": 60
-        }
+        },
+        "Golem": {
+            "AttackSpeed": 120
+        },
+        "Bat": {
+            "AttackSpeed": 90
+        },
+        "Tree": {
+            "AttackSpeed": 180
+        },
+        "Virus": {}
     },
     "Balls": {
+        "Stone": {
+            "Speed": 8.0
+        },
         "Jump": {
             "High": 64.0,
+            "Speed": 8.0
+        },
+        "Beam": {
             "Speed": 8.0
         }
     }

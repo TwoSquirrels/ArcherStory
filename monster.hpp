@@ -17,6 +17,9 @@ private:
     int MaxAttackCount;
     int BeforeHP = this->MaxHP;
 
+    int KnockBackCount = 0;
+    pos KnockBack{};
+
     pos SpawnPoint{};
 
     std::map<std::string, int> Graph;
@@ -48,7 +51,7 @@ public:
 
     int GetHP();
     void Heal(int AddHP);
-    void Damage(int Damage);
+    void Damage(int Damage, pos Motion);
 
     enum shape {
         SQUARE, CIRCLE

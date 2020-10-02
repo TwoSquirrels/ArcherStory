@@ -7,10 +7,21 @@ void monster::Update() {
     // AttackCountを更新
     if (this->AttackCount > 0) this->AttackCount--;
 
-    // Motionの分だけ移動
-    this->Sprite.Move();
-    // ブロックとの当たり判定
-    this->Map->Collision(&(this->Sprite), BlockCol);
+    if (this->KnockBackCount > 0) {
+        // ノックバック
+        this->KnockBackCount--;
+        this->Sprite.Pos.AddPos(this->KnockBack.GetX(), this->KnockBack.GetY());
+        // ブロックとの当たり判定
+        pos Motion = this->Sprite.Motion;
+        this->Sprite.Motion = this->KnockBack;
+        this->Map->Collision(&(this->Sprite), BlockCol);
+        this->Sprite.Motion = Motion;
+    } else {
+        // Motionの分だけ移動
+        this->Sprite.Move();
+        // ブロックとの当たり判定
+        this->Map->Collision(&(this->Sprite), BlockCol);
+    }
     // 外には出させない
     if (!this->Map->GetInMap(this->Sprite)) this->Sprite.Pos = this->SpawnPoint;
     // 接触ダメージ
@@ -82,9 +93,11 @@ void monster::Heal(int AddHP) {
     if (this->HP > this->MaxHP) this->HP = this->MaxHP;
 }
 
-void monster::Damage(int Damage) {
+void monster::Damage(int Damage, pos Motion) {
     this->HP -= Damage;
     this->AttackCount += 10;
+    this->KnockBack = pos(Motion.GetX() / 4, Motion.GetY() / 4);
+    this->KnockBackCount = 8;
     if (this->HP <= 0) {
         // 死んじゃった！
         this->HP = 0;

@@ -10,10 +10,14 @@
 #include "player.hpp"
 #include "arrow.hpp"
 #include "map.hpp"
-// monster
+// monsters
 #include "monsters/ball.hpp"
 #include "monsters/flower_plant.hpp"
 #include "monsters/slime.hpp"
+#include "monsters/golem.hpp"
+#include "monsters/bat.hpp"
+#include "monsters/tree.hpp"
+#include "monsters/virus.hpp"
 
 using json = nlohmann::json;
 
@@ -46,6 +50,10 @@ private:
 
     std::vector<flower_plant> FlowerPlant;
     std::vector<slime> Slime;
+    std::vector<golem> Golem;
+    std::vector<bat> Bat;
+    std::vector<tree> Tree;
+    std::vector<virus> Virus;
 
     int Load();                 // 一番最初
     bool Update();              // マイフレーム return false:終了

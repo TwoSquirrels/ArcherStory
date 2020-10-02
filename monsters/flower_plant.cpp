@@ -12,16 +12,24 @@ void flower_plant::Update() {
                 this->Player->Sprite.GetCenterPos().GetX() - this->Monster->Sprite.GetCenterPos().GetX(),
                 this->Player->Sprite.GetCenterPos().GetY() - this->Monster->Sprite.GetCenterPos().GetY()
             ));
-            this->Ball->push_back(ball(
-                ball().JUMP,
-                this->Attack,
-                this->Map,
-                this->Player,
-                this->Monster->Sprite.GetCenterPos(),
-                this->Player->Sprite.GetCenterPos(),
-                this->Graph,
-                this->Config["Balls"]
-            ));
+            try {
+                this->Ball->push_back(ball(
+                    ball().JUMP,
+                    this->Attack,
+                    this->Map,
+                    this->Player,
+                    this->Monster->Sprite.GetCenterPos(),
+                    this->Player->Sprite.GetCenterPos(),
+                    this->Graph,
+                    this->Config["Balls"]
+                ));
+            } catch (ball::error e) {
+                switch (e) {
+                case ball::WRONG_CONSTRUCTOR:
+                    MessageBox(NULL, "間違ったballのコンストラクタを使用しています。", "プログラム内エラー", MB_OK | MB_ICONERROR);
+                    break;
+                }
+            }
         }
 
     }

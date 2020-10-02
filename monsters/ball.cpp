@@ -18,19 +18,38 @@ void ball::Update() {
         // 移動
         this->Sprite.Move();
         // マップとの当たり判定
+        std::vector<bool> Col;
         switch (this->Type) {
+        case this->STONE:
+            Col = this->Map->Collision(&this->Sprite, {
+                    false,  // air
+                    true,   // wall
+                    true,   // stone
+                    false,  // pond
+                });
+            for (bool b : Col) if (b == true) this->Use = false;
+            break;
         case this->JUMP:
-            std::vector<bool> Col = this->Map->Collision(&this->Sprite, {
-                false,  // air
-                false,  // wall
-                false,  // stone
-                false,  // pond
-            });
+            Col = this->Map->Collision(&this->Sprite, {
+                    false,  // air
+                    false,  // wall
+                    false,  // stone
+                    false,  // pond
+                });
+            for (bool b : Col) if (b == true) this->Use = false;
+            break;
+        case this->BEAM:
+            Col = this->Map->Collision(&this->Sprite, {
+                    false,  // air
+                    true,   // wall
+                    false,  // stone
+                    false,  // pond
+                });
             for (bool b : Col) if (b == true) this->Use = false;
             break;
         }
         // ダメージ
-        if (this->Type == this->TEST || this->Type == this->JUMP) {
+        if (this->Type == this->STONE || this->Type == this->JUMP || this->Type == this->BEAM) {
             if (this->Player->CheckHit(this->Sprite, player().CIRCLE)) {
                 this->Player->Damage(this->Attack);
                 this->Use = false;
@@ -38,6 +57,7 @@ void ball::Update() {
         }
         // 外に出てたら消す
         if (!this->Map->GetInMap(this->Sprite)) this->Use = false;
+        this->Count++;
 
     }
 }
@@ -46,10 +66,11 @@ void ball::Draw(int Scroll) {
     if (this->Use) {
 
         switch (this->Type) {
-        case this->TEST:
-            DxLib::DrawCircle(
-                -Scroll + this->Sprite.GetCenterPos().GetXInt(), 96 + this->Sprite.GetCenterPos().GetYInt(),
-                4, 0xff0000, TRUE
+        case this->STONE:
+            DxLib::DrawRotaGraph(
+                -Scroll + this->Sprite.GetCenterPos().GetXInt(),
+                96 + this->Sprite.GetCenterPos().GetYInt(),
+                2.0, this->Count / 4.0, this->Graph["ball_stone"], TRUE
             );
             break;
         case this->JUMP:
@@ -66,6 +87,13 @@ void ball::Draw(int Scroll) {
                 this->Graph["ball_jumping"], TRUE
             );
             break;
+        case this->BEAM:
+            DxLib::DrawRotaGraph(
+                -Scroll + this->Sprite.GetCenterPos().GetXInt(),
+                96 + this->Sprite.GetCenterPos().GetYInt(),
+                2.0, 0.0, this->Graph["ball_beam"], TRUE
+            );
+            break;
         }
 
     }
@@ -74,7 +102,46 @@ void ball::Draw(int Scroll) {
 ball::ball() {
     this->Use = false;
 }
-// TEST, JUMP
+// STONE, BEAM
+ball::ball(enum type Type, int Attack, map *Map, player *Player, pos Pos, double Direction, std::map<std::string, int> Graph, json Config) {
+
+    this->Use = true;
+    this->Type = Type;
+    this->Attack = Attack;
+    this->Map = Map;
+    this->Player = Player;
+    this->Sprite.Pos = Pos;
+    this->Sprite.Direction = Direction;
+    this->Graph = Graph;
+    this->Config = Config;
+
+    // 画像サイズ取得用
+    int X, Y;
+
+    switch (Type) {
+        case this->STONE:
+
+            this->Sprite.Motion = this->Sprite.GetPosFromDirection(Config["Stone"]["Speed"].get<double>());
+
+            // 画像サイズ取得
+            DxLib::GetGraphSize(this->Graph["ball_stone"], &X, &Y);
+            this->GraphSize["ball_stone"].SetPos(X, Y);
+
+            break;
+        case this->BEAM:
+
+            this->Sprite.Motion = this->Sprite.GetPosFromDirection(Config["Beam"]["Speed"].get<double>());
+
+            // 画像サイズ取得
+            DxLib::GetGraphSize(this->Graph["ball_beam"], &X, &Y);
+            this->GraphSize["ball_beam"].SetPos(X, Y);
+
+            break;
+        default: throw this->WRONG_CONSTRUCTOR;
+    }
+
+}
+// JUMP
 ball::ball(enum type Type, int Attack, map *Map, player *Player, pos Pos, pos PlayerCenterPos, std::map<std::string, int> Graph, json Config) {
 
     this->Use = true;
@@ -86,15 +153,13 @@ ball::ball(enum type Type, int Attack, map *Map, player *Player, pos Pos, pos Pl
     this->PlayerCenterPos = PlayerCenterPos;
     this->Graph = Graph;
     this->Config = Config;
+
+    // 画像サイズ取得用
+    int X, Y;
+
     switch (Type) {
-    case TEST:
-        this->Sprite.SetDrectionFromPos(pos(
-            this->PlayerCenterPos.GetX() - this->Sprite.Pos.GetX(),
-            this->PlayerCenterPos.GetY() - this->Sprite.Pos.GetY()
-        ));
-        this->Sprite.Motion = this->Sprite.GetPosFromDirection(4.0);
-        break;
-    case JUMP:
+    case this->JUMP:
+
         this->Jump_a = -4 * this->Config["Jump"]["High"].get<double>() / std::pow(this->PlayerCenterPos.GetX() - this->Sprite.Pos.GetX(), 2);
         this->Shadow.Pos = this->Sprite.Pos;
         this->Shadow.SetDrectionFromPos(pos(
@@ -104,16 +169,15 @@ ball::ball(enum type Type, int Attack, map *Map, player *Player, pos Pos, pos Pl
         this->Shadow.Motion = this->Shadow.GetPosFromDirection(Config["Jump"]["Speed"].get<double>());
         this->Sprite.Motion.SetX(Shadow.Motion.GetX());
         this->Jump_CenterX = (this->Sprite.Pos.GetX() + this->PlayerCenterPos.GetX()) / 2;
+
+        // 画像サイズ取得
+        DxLib::GetGraphSize(this->Graph["ball_jumping"], &X, &Y);
+        this->GraphSize["ball_jumping"].SetPos(X, Y);
+        DxLib::GetGraphSize(this->Graph["ball_shadow"], &X, &Y);
+        this->GraphSize["ball_shadow"].SetPos(X, Y);
+
         break;
+    default: throw this->WRONG_CONSTRUCTOR;
     }
-
-    // 画像サイズ取得
-    int X, Y;
-
-    DxLib::GetGraphSize(this->Graph["ball_jumping"], &X, &Y);
-    this->GraphSize["ball_jumping"].SetPos(X, Y);
-
-    DxLib::GetGraphSize(this->Graph["ball_shadow"], &X, &Y);
-    this->GraphSize["ball_shadow"].SetPos(X, Y);
 
 }

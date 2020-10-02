@@ -1,12 +1,17 @@
 #include "map.hpp"
 
-void map::LoadFromFile(std::string FilePath) {
-
-}
-
 std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
+    // return用
+    std::vector<bool> Where(4);
+    Where[this->UP] = false;
+    Where[this->DOWN] = false;
+    Where[this->LEFT] = false;
+    Where[this->RIGHT] = false;
+
     // 処理軽減のため、範囲指定
+
+    if (this->Map.size() == 0) return Where;
 
     int Start_i = std::floor((Sprite->Pos.GetY() - 1) / 48);
     if (Start_i < 0) Start_i = 0;
@@ -23,13 +28,6 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
     int End_j = std::ceil((Sprite->Pos.GetX() + Sprite->Size.GetX() + 1) / 48);
     if (End_j < 0) End_j = 0;
     if (End_j >= this->Map[0].size()) End_j = this->Map[0].size() - 1;
-
-    // return用
-    std::vector<bool> Where(4);
-    Where[this->UP   ] = false;
-    Where[this->DOWN ] = false;
-    Where[this->LEFT ] = false;
-    Where[this->RIGHT] = false;
 
     // メイン
 
@@ -56,8 +54,7 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
                             //Sprite->Motion.SetY(0);
                             Where[this->UP] = true;
 
-                        }
-                        else {                            // 真下から
+                        } else {                            // 真下から
 
                             Sprite->Pos.SetY(48.0 * i + 48);
                             //Sprite->Motion.SetY(0);
@@ -65,8 +62,7 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                         }
 
-                    }
-                    else if (Sprite->Motion.GetX() > 0) { // 左(上下)から
+                    } else if (Sprite->Motion.GetX() > 0) { // 左(上下)から
 
                         // y=ax+b と置いて、a(傾き)を求める
                         double a = Sprite->Motion.GetY() / Sprite->Motion.GetX();
@@ -86,8 +82,7 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                             }
 
-                        }
-                        else if (y > 48.0 * i + 48 + 1) {                // 下から
+                        } else if (y > 48.0 * i + 48 + 1) {                // 下から
 
                             if (i + 1 == this->Map.size() || !Block[this->Map[i + 1][j]]) { // 下にブロックがないときのみ
 
@@ -97,8 +92,7 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                             }
 
-                        }
-                        else {                                      // 左から
+                        } else {                                      // 左から
 
                             if (j == 0 || !Block[this->Map[i][j - 1]]) {    // 左にブロックがないときのみ
 
@@ -110,8 +104,7 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                         }
 
-                    }
-                    else {                                // 右(上下)から
+                    } else {                                // 右(上下)から
 
                         // y=ax+b と置いて、a(傾き)を求める
                         double a = Sprite->Motion.GetY() / Sprite->Motion.GetX();
@@ -131,8 +124,7 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                             }
 
-                        }
-                        else if (y >= 48.0 * i + 48) {                // 下から
+                        } else if (y >= 48.0 * i + 48) {                // 下から
 
                             if (i + 1 == this->Map.size() || !Block[this->Map[i + 1][j]]) { // 下にブロックがないときのみ
 
@@ -142,8 +134,7 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                             }
 
-                        }
-                        else {                                      // 右から
+                        } else {                                      // 右から
 
                             if (j + 1 == this->Map[0].size() || !Block[this->Map[i][j + 1]]) {  // 右にブロックがないときのみ
 
@@ -161,6 +152,7 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
             }
 
+
         }
     }
 
@@ -171,7 +163,12 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 std::vector<int> map::GetSidePos() {
     std::vector<int> SidePos(4);
     SidePos[this->LEFT] = 0;
-    SidePos[this->RIGHT] = 48 * this->Map[0].size();
+    if (this->Map.size() == 0) SidePos[this->RIGHT] = 0;
+    else try {
+        SidePos[this->RIGHT] = 48 * this->Map[0].size();
+    } catch (std::exception &e) {
+        SidePos[this->RIGHT] = 0;
+    }
     SidePos[this->UP] = 0;
     SidePos[this->DOWN] = 48 * this->Map.size();
     return SidePos;
@@ -283,6 +280,14 @@ void map::Draw(int Scroll) {
         this->Map[6][this->Map[0].size() - 1] = this->AIR;
         this->Map[7][this->Map[0].size() - 1] = this->AIR;
     }
+    // チュートリアルメッセージ
+    if (this->Text != "") {
+        DxLib::SetDrawBlendMode(DX_BLENDMODE_ALPHA, 191);
+        DxLib::DrawStringToHandle(-Scroll + 48 + 12, 96 + 48 * 12 - 12 - 24 * (std::count(this->Text.cbegin(), this->Text.cend(), '\n') + 1), this->Text.c_str(), 0x000000, this->Font["Parameters"]);
+        DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+    }
+    // ステージ
+    DxLib::DrawFormatStringToHandle(12, 12, 0x000000, this->Font["Parameters"], "ステージ：%2d", this->Stage);
 
 }
 
@@ -298,6 +303,12 @@ void map::Clear() {
         this->ClearCount = 1;
 
     }
+}
+
+void map::ClearCancel() {
+
+    this->ClearCount = 0;
+
 }
 
 void map::NextStage() {
@@ -354,13 +365,17 @@ void map::NextStage() {
         std::string MonsterName = this->Maps["Maps"][FixedStage]["Monsters"][i]["Type"].get<std::string>();
         if (MonsterName == "FlowerPlant") Monster = this->FLOWER_PLANT;
         if (MonsterName == "Slime") Monster = this->SLIME;
+        if (MonsterName == "Golem") Monster = this->GOLEM;
+        if (MonsterName == "Bat") Monster = this->BAT;
+        if (MonsterName == "Tree") Monster = this->TREE;
+        if (MonsterName == "Virus") Monster = this->VIRUS;
         switch (Monster) {
         case this->FLOWER_PLANT:
             FlowerPlant->push_back(flower_plant(
                 this->Ball,
                 pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
-                100,
-                100,
+                100 + 5 * this->Stage,
+                50 + 3 * this->Stage,
                 this,
                 this->Player,
                 this->Graph["monsters"],
@@ -370,7 +385,7 @@ void map::NextStage() {
         case this->SLIME:
             Slime->push_back(slime(
                 pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
-                100,
+                100 + 5 * this->Stage,
                 (this->Stage <= 5 ? 1 : 2),
                 this,
                 this->Player,
@@ -378,22 +393,74 @@ void map::NextStage() {
                 this->Config
             ));
             break;
+        case this->GOLEM:
+            Golem->push_back(golem(
+                this->Ball,
+                pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
+                150 + 7.5 * this->Stage,
+                50 + 3 * this->Stage,
+                this,
+                this->Player,
+                this->Graph["monsters"],
+                this->Config
+            ));
+            break;
+        case this->BAT:
+            Bat->push_back(bat(
+                this->Ball,
+                pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
+                50 + 2.5 * this->Stage,
+                100 + 6 * this->Stage,
+                this,
+                this->Player,
+                this->Graph["monsters"],
+                this->Config
+            ));
+            break;
+        case this->TREE:
+            Tree->push_back(tree(
+                this->Ball,
+                pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
+                100 + 5 * this->Stage,
+                100 + 6 * this->Stage,
+                this,
+                this->Player,
+                this->Graph["monsters"],
+                this->Config
+            ));
+            break;
+        case this->VIRUS:
+            Virus->push_back(virus(
+                pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
+                150 + 7.5 * this->Stage,
+                (this->Stage <= 10 ? 1 : 2),
+                this,
+                this->Player,
+                this->Graph["monsters"]
+            ));
+            break;
         }
     }
 
     // テキスト
-
+    if (this->Maps["Maps"][FixedStage]["Text"].empty()) this->Text = "";
+    else this->Text = utf8_to_sjis(this->Maps["Maps"][FixedStage]["Text"].get<std::string>());
 
 }
 
 map::map() {}
-map::map(json Maps, std::map<std::string, std::map<std::string, int>> Graph, std::vector<flower_plant> *FlowerPlant, std::vector<slime> *Slime, std::vector<ball> *Ball, player *Player, json Config) {
+map::map(json Maps, std::map<std::string, std::map<std::string, int>> Graph, std::map<std::string, int> Font, std::vector<flower_plant> *FlowerPlant, std::vector<slime> *Slime, std::vector<golem> *Golem, std::vector<bat> *Bat, std::vector<tree> *Tree, std::vector<virus> *Virus, std::vector<ball> *Ball, player *Player, json Config) {
 
     this->Maps = Maps;
     this->Graph = Graph;
+    this->Font = Font;
 
     this->FlowerPlant = FlowerPlant;
     this->Slime = Slime;
+    this->Golem = Golem;
+    this->Bat = Bat;
+    this->Tree = Tree;
+    this->Virus = Virus;
 
     this->Ball = Ball;
     this->Player = Player;
@@ -401,22 +468,6 @@ map::map(json Maps, std::map<std::string, std::map<std::string, int>> Graph, std
 
     for (int i = 0; i < this->Maps["Maps"].size(); i++) this->Maps["Maps"][i]["Done"] = false;
 
-    //std::vector<std::vector<int>> Tmp = {
-    //    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-    //    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-    //    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-    //    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-    //    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 1 },
-    //    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 1 },
-    //    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-    //    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 1 },
-    //    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 1 },
-    //    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-    //    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-    //    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-    //    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-    //};
-    //this->Map = Tmp;
     this->NextStage();
 
 }

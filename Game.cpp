@@ -43,8 +43,13 @@ int Game::Load() {
     if (this->Config["Player"]["Arrow"]["Speed"].empty())       this->Config["Player"]["Arrow"]["Speed"] = 8.0;
     if (this->Config["Monsters"]["FlowerPlant"]["AttackSpeed"].empty()) this->Config["Monsters"]["FlowerPlant"]["AttackSpeed"] = 120;
     if (this->Config["Monsters"]["Slime"]["MoveCooldown"].empty())      this->Config["Monsters"]["Slime"]["MoveCooldown"] = 60;
+    if (this->Config["Monsters"]["Golem"]["AttackSpeed"].empty())       this->Config["Monsters"]["Golem"]["AttackSpeed"] = 120;
+    if (this->Config["Monsters"]["Bat"]["AttackSpeed"].empty())         this->Config["Monsters"]["Bat"]["AttackSpeed"] = 90;
+    if (this->Config["Monsters"]["Tree"]["AttackSpeed"].empty())        this->Config["Monsters"]["Tree"]["AttackSpeed"] = 180;
+    if (this->Config["Balls"]["Stone"]["Speed"].empty())    this->Config["Balls"]["Stone"]["Speed"] = 8.0;
     if (this->Config["Balls"]["Jump"]["High"].empty())      this->Config["Balls"]["Jump"]["High"] = 64.0;
     if (this->Config["Balls"]["Jump"]["Speed"].empty())     this->Config["Balls"]["Jump"]["Speed"] = 8.0;
+    if (this->Config["Balls"]["Beam"]["Speed"].empty())     this->Config["Balls"]["Beam"]["Speed"] = 8.0;
 
     // 初期設定
     SetGraphMode(1280, 720, 16);
@@ -124,8 +129,20 @@ bool Game::Intro() {
         Graph["monsters"]["flower_plant_attack"] = DxLib::LoadGraph("data/stable/img/monsters/flower_plant_attack.png");
         Graph["monsters"]["slime"] = DxLib::LoadGraph("data/stable/img/monsters/slime.png");
         Graph["monsters"]["slime_lvlup"] = DxLib::LoadGraph("data/stable/img/monsters/slime_lvlup.png");
+        Graph["monsters"]["golem"] = DxLib::LoadGraph("data/stable/img/monsters/golem.png");
+        Graph["monsters"]["bat"] = DxLib::LoadGraph("data/stable/img/monsters/bat.png");
+        Graph["monsters"]["tree"] = DxLib::LoadGraph("data/stable/img/monsters/tree.png");
+        Graph["monsters"]["virus"] = DxLib::LoadGraph("data/stable/img/monsters/virus.png");
+        Graph["monsters"]["virus_lvlup"] = DxLib::LoadGraph("data/stable/img/monsters/virus_lvlup.png");
+        Graph["monsters"]["ball_stone"] = DxLib::LoadGraph("data/stable/img/monsters/ball/stone.png");
         Graph["monsters"]["ball_jumping"] = DxLib::LoadGraph("data/stable/img/monsters/ball/jumping.png");
         Graph["monsters"]["ball_shadow"] = DxLib::LoadGraph("data/stable/img/monsters/ball/shadow.png");
+        Graph["monsters"]["ball_beam"] = DxLib::LoadGraph("data/stable/img/monsters/ball/beam.png");
+
+        // フォント作成
+        std::map<std::string, int> Font;
+        Font["Parameters"] = CreateFontToHandle("ParametersFont", 24, 1, DX_FONTTYPE_NORMAL);
+        Font["NewSkill"] = CreateFontToHandle("ParametersFont", 48, 1, DX_FONTTYPE_NORMAL);
 
         // マップ読み込み
         json Maps;
@@ -136,14 +153,12 @@ bool Game::Intro() {
         // 初期化
 
         this->Input = input(false);
-        this->Map = map(Maps, Graph, &this->FlowerPlant, &this->Slime, &this->Ball, &this->Player, this->Config);
+        this->Map = map(Maps, Graph, Font, &this->FlowerPlant, &this->Slime, &this->Golem, &this->Bat, &this->Tree, &this->Virus, &this->Ball, &this->Player, this->Config);
         this->Player = player(&this->Input, &this->Map, &this->Arrow, &this->Death, &this->Monster, Graph["player"], this->Config["Player"]);
 
-        //for (int i = 0; i < 2; i++) {
-        //    this->FlowerPlant.push_back(flower_plant(&this->Ball, pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)), 100, 100, &this->Map, &this->Player, Graph["monsters"], this->Config));
-        //}
-        //for (int i = 0; i < 2; i++) {
-        //    this->Slime.push_back(slime(pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)), 100, 2, &this->Map, &this->Player, Graph["monsters"], this->Config));
+        // 実験用
+        //for (int i = 0; i < 8; i++) {
+        //    this->Virus.push_back(virus(pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)), 100, 2, &this->Map, &this->Player, Graph["monsters"]));
         //}
 
     }
@@ -169,6 +184,22 @@ bool Game::Stage() {
     this->Monster.resize(0);
     for (int i = 0; i < this->FlowerPlant.size(); i++) this->Monster.push_back(this->FlowerPlant[i].Monster);
     for (int i = 0; i < this->Slime.size(); i++) this->Monster.push_back(this->Slime[i].Monster);
+    for (int i = 0; i < this->Golem.size(); i++) this->Monster.push_back(this->Golem[i].Monster);
+    for (int i = 0; i < this->Bat.size(); i++) this->Monster.push_back(this->Bat[i].Monster);
+    for (int i = 0; i < this->Tree.size(); i++) this->Monster.push_back(this->Tree[i].Monster);
+    for (int i = 0; i < this->Virus.size(); i++) this->Monster.push_back(this->Virus[i].Monster);
+    // デバッグ機能
+    if (this->Debug) {
+        // kill
+        if (this->Input.GetKey(KEY_INPUT_K)) for (int i = 0; i < this->Monster.size(); i++) {
+            this->Monster[i]->HP = 0;
+            this->Monster[i]->Use = false;
+        }
+        // speed
+        if (this->Input.GetKey(KEY_INPUT_S)) {
+            this->Player.Update();
+        }
+    }
     // Update
     this->Player.Update();
     for (int j = 0; j < 4; j++) {   // スピードを上げるため二重
@@ -178,12 +209,17 @@ bool Game::Stage() {
     std::vector<slime> SlimeToAdd;
     for (int i = 0; i < this->Slime.size(); i++) {
         SlimeToAdd = this->Slime[i].Update();
-        //for (int j = 0; j < SlimeToAdd.size(); j++) {
-        //    this->Slime.push_back(SlimeToAdd[j]);
-        //}
         this->Slime.insert(this->Slime.end(), SlimeToAdd.begin(), SlimeToAdd.end());
     }
+    for (int i = 0; i < this->Golem.size(); i++) this->Golem[i].Update();
+    for (int i = 0; i < this->Bat.size(); i++) this->Bat[i].Update();
+    for (int i = 0; i < this->Tree.size(); i++) this->Tree[i].Update();
     for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Update();
+    std::vector<virus> VirusToAdd;
+    for (int i = 0; i < this->Virus.size(); i++) {
+        VirusToAdd = this->Virus[i].Update();
+        this->Virus.insert(this->Virus.end(), VirusToAdd.begin(), VirusToAdd.end());
+    }
     // 使われてないものを削除(1秒ごと)
     if (this->Frame % 60 == 0) {
         int Size;
@@ -226,7 +262,8 @@ bool Game::Stage() {
     // 全員倒した！
     this->ClearCount++;
     for (monster *m : this->Monster) if (m->Use) this->ClearCount = 0;
-    if (this->ClearCount >= 3) {
+    if (this->ClearCount == 0) this->Map.ClearCancel();
+    if (this->ClearCount >= 2) {
         this->Map.Clear();
         this->ClearCount = 0;
     }
@@ -239,12 +276,16 @@ bool Game::Stage() {
     // 矢
     for (arrow a : this->Arrow) a.Draw(Scroll);
     // 敵
-    for (flower_plant f : this->FlowerPlant) f.Draw(Scroll);
-    for (slime s : this->Slime) s.Draw(Scroll);
+    for (int i = 0; i < this->FlowerPlant.size(); i++) this->FlowerPlant[i].Draw(Scroll);
+    for (int i = 0; i < this->Slime.size(); i++) this->Slime[i].Draw(Scroll);
+    for (int i = 0; i < this->Golem.size(); i++) this->Golem[i].Draw(Scroll);
+    for (int i = 0; i < this->Bat.size(); i++) this->Bat[i].Draw(Scroll);
+    for (int i = 0; i < this->Tree.size(); i++) this->Tree[i].Draw(Scroll);
+    for (int i = 0; i < this->Virus.size(); i++) this->Virus[i].Draw(Scroll);
     // プレイヤー
     this->Player.Draw();
     // 敵の弾
-    for (ball b : this->Ball) b.Draw(Scroll);
+    for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Draw(Scroll);
     // GUI
     this->Player.JoystickDraw();
     DxLib::ScreenFlip();
