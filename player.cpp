@@ -4,13 +4,20 @@ std::vector<bool> Where;
 
 void player::Update() {
 
+    //if (this->Input->GetKey(KEY_INPUT_D)) this->GiveSkill(this->DIAGONAL_ARROW);
+    //if (this->Input->GetKey(KEY_INPUT_F)) this->GiveSkill(this->FRONT_ARROW);
+    //if (this->Input->GetKey(KEY_INPUT_S)) this->GiveSkill(this->SIDE_ARROW);
+    //if (this->Input->GetKey(KEY_INPUT_B)) this->GiveSkill(this->BACK_ARROW);
+    //if (this->Input->GetKey(KEY_INPUT_M)) this->GiveSkill(this->MULTI_SHOT);
+    //if (this->Input->GetKey(KEY_INPUT_P)) this->GiveSkill(this->PENETRATION);
+    //if (this->Input->GetKey(KEY_INPUT_B)) this->GiveSkill(this->BOUND);
+    //if (this->Input->GetKey(KEY_INPUT_P)) this->GiveSkill(this->POISON);
+    //if (this->Input->GetKey(KEY_INPUT_H)) this->GiveSkill(this->HEADSHOT);
     // 移動
     this->Move();
     // 外に出たら次のステージへ
     if (!this->Map->GetInMap(this->Sprite)) {
-        this->Map->NextStage();
-        this->Sprite.Pos.SetPos(48.0, this->StartPos.GetY());
-        this->Sprite.Direction = 0.0;
+        *this->Next = true;
         this->GodTime = 0;
         this->AttackCooldown = this->AttackCooldownMax * 3 / 4;
     }
@@ -43,10 +50,61 @@ void player::Update() {
                     (*this->Monster)[Nearest]->Sprite.GetCenterPos().GetX() - this->Sprite.GetCenterPos().GetX(),
                     (*this->Monster)[Nearest]->Sprite.GetCenterPos().GetY() - this->Sprite.GetCenterPos().GetY()
                 ));
-                this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction, this->Map, this->Monster, this->Attack, this->Graph, this->Config["Arrow"]));
+                // 斜め
+                int DiagonalNum = this->GetSkill()[this->DIAGONAL_ARROW];
+                for (int i = 0; i < DiagonalNum; i++) {
+                    this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction + 0.5 + (-(DiagonalNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 2, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
+                    this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction - 0.5 + (-(DiagonalNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 2, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
+                }
+                // 前
+                int FrontNum = this->GetSkill()[this->FRONT_ARROW] + 1;
+                for (int i = 0; i < FrontNum; i++) {
+                    this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction + (-(FrontNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, (DxLib::GetRand(20 - 1) > 0) ? this->Attack : (this->Attack * 4096), this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
+                }
+                // 横
+                int SideNum = this->GetSkill()[this->SIDE_ARROW];
+                for (int i = 0; i < SideNum; i++) {
+                    this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction + DX_PI * 0.5 + (-(SideNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 2, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
+                    this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction - DX_PI * 0.5 + (-(SideNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 2, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
+                }
+                // 後ろ
+                int BackNum = this->GetSkill()[this->BACK_ARROW];
+                for (int i = 0; i < BackNum; i++) {
+                    this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction + DX_PI + (-(BackNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 2, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
+                }
+                this->MultiShotCount = 0;
+            }
+
+        }
+    }
+    // マルチショット
+    for (int i = 0; i < this->GetSkill()[this->MULTI_SHOT]; i++) {
+        if (this->MultiShotCount == 4 + 4 * i) {
+            // 斜め
+            int DiagonalNum = this->GetSkill()[this->DIAGONAL_ARROW];
+            for (int i = 0; i < DiagonalNum; i++) {
+                this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction + 0.5 + (-(DiagonalNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 4, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
+                this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction - 0.5 + (-(DiagonalNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 4, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
+            }
+            // 前
+            int FrontNum = this->GetSkill()[this->FRONT_ARROW] + 1;
+            for (int i = 0; i < FrontNum; i++) {
+                this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction + (-(FrontNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 2, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
+            }
+            // 横
+            int SideNum = this->GetSkill()[this->SIDE_ARROW];
+            for (int i = 0; i < SideNum; i++) {
+                this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction + DX_PI * 0.5 + (-(SideNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 4, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
+                this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction - DX_PI * 0.5 + (-(SideNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 4, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
+            }
+            // 後ろ
+            int BackNum = this->GetSkill()[this->BACK_ARROW];
+            for (int i = 0; i < BackNum; i++) {
+                this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction + DX_PI + (-(BackNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 4, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
             }
         }
     }
+    this->MultiShotCount++;
 
 }
 
@@ -105,6 +163,20 @@ void player::Draw() {
         this->StartPos.GetXInt() - 16, 96 + this->Sprite.Pos.GetYInt() - 32,
         0x000000, "%d", this->HP
     );
+    // ステータス
+    DxLib::DrawFormatStringToHandle(16, 16 + 32 * 1, 0x000000, this->Font["Parameters"], "HP: %3d / %3d", this->HP, this->MaxHP);
+    DxLib::DrawFormatStringToHandle(16, 16 + 32 * 2, 0x000000, this->Font["Parameters"], "攻撃力: %3d", this->Attack);
+    DxLib::DrawFormatStringToHandle(16, 16 + 32 * 3, 0x000000, this->Font["Parameters"], "防御力: %3d", this->Defense);
+    DxLib::DrawFormatStringToHandle(200, 16 + 32 * 1, 0x000000, this->Font["Parameters"], "移動速度: %2d", (int)(this->Speed * 4));
+    DxLib::DrawFormatStringToHandle(200, 16 + 32 * 2, 0x000000, this->Font["Parameters"], "攻撃速度: %2d", this->AttackCooldownMax);
+    DxLib::DrawFormatStringToHandle(200, 16 + 32 * 3, 0x000000, this->Font["Parameters"], "無敵時間: %2d", this->GodTimeMax);
+    // スキルメッセージ
+    if (this->SkillMessageCount > 0) {
+        DxLib::SetDrawBlendMode(DX_BLENDMODE_ALPHA, (this->SkillMessageCount > 60) ? 191 : (this->SkillMessageCount * 191 / 60));
+        DxLib::DrawStringToHandle(640 - 1.5 * DxLib::GetDrawFormatStringWidth(this->SkillMessage.c_str(), 0), 360 - 144, this->SkillMessage.c_str(), 0x0000ff, this->Font["NewSkill"]);
+        DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+        this->SkillMessageCount--;
+    }
 
 }
 
@@ -191,7 +263,7 @@ void player::Heal(int AddHP) {
 
 void player::Damage(int Damage) {
     if (this->GodTime <= 0) {
-        this->HP -= Damage;
+        this->HP -= Damage - this->Defense;
         this->GodTime = this->GodTimeMax;
         if (this->HP <= 0) {
             // 死んじゃった！
@@ -199,6 +271,12 @@ void player::Damage(int Damage) {
             *this->Death = true;
         }
     }
+}
+
+std::map<player::skill, int> player::GetSkill() {
+    std::map<skill, int> ForReturn;
+    for (auto s : this->SkillLeft) ForReturn[s.first] = this->SkillMax[s.first] - s.second;
+    return ForReturn;
 }
 
 std::map<player::skill, int> player::GetSkillLeft() {
@@ -212,18 +290,62 @@ bool player::GiveSkill(skill Skill) {
     switch (Skill) {
     case this->HEAL:
         this->Heal(this->MaxHP * 0.5);
+        this->SkillMessage = "HPが最大の半分回復した！";
         break;
     case this->HP_MAX_UP:
         this->MaxHP *= 1.3;
         this->HP *= 1.3;
+        this->SkillMessage = "スキル「最大HP上昇」を習得した！";
         break;
     case this->ATTACK_SPEED_UP:
         this->AttackCooldownMax *= 0.8;
+        this->SkillMessage = "スキル「攻撃速度上昇」を習得した！";
         break;
     case this->ATTACK_UP:
         this->Attack *= 1.3;
+        this->SkillMessage = "スキル「攻撃力上昇」を習得した！";
+        break;
+    case this->DEFENSE_UP:
+        this->Defense += 20;
+        this->SkillMessage = "スキル「防御力上昇」を習得した！";
+        break;
+    case this->GOD_TIME_EXTENSION:
+        this->GodTimeMax *= 1.5;
+        this->SkillMessage = "スキル「無敵時間延長」を習得した！";
+        break;
+    case this->WALK_SPEED_UP:
+        this->Speed *= 1.3;
+        this->SkillMessage = "スキル「移動速度上昇」を習得した！";
+        break;
+    case this->DIAGONAL_ARROW:
+        this->SkillMessage = "スキル「斜め矢+1」を習得した！";
+        break;
+    case this->FRONT_ARROW:
+        this->SkillMessage = "スキル「前矢+1」を習得した！";
+        break;
+    case this->SIDE_ARROW:
+        this->SkillMessage = "スキル「横矢+1」を習得した！";
+        break;
+    case this->BACK_ARROW:
+        this->SkillMessage = "スキル「後ろ矢+1」を習得した！";
+        break;
+    case this->MULTI_SHOT:
+        this->SkillMessage = "スキル「マルチショット」を習得した！";
+        break;
+    case this->PENETRATION:
+        this->SkillMessage = "スキル「貫通ショット」を習得した！";
+        break;
+    case this->BOUND:
+        this->SkillMessage = "スキル「バウンド壁」を習得した！";
+        break;
+    case this->POISON:
+        this->SkillMessage = "スキル「毒タッチ」を習得した！";
+        break;
+    case this->HEADSHOT:
+        this->SkillMessage = "スキル「ヘッドショット」を習得した！";
         break;
     }
+    this->SkillMessageCount = 120;
     return true;
 
 }
@@ -249,14 +371,16 @@ bool player::CheckHit(sprite Sprite, enum shape Shape) {
 }
 
 player::player() {}
-player::player(input *Input, map *Map, std::vector<arrow> *Arrow, bool *Death, std::vector<monster *> *Monster, std::map<std::string, int> Graph, json Config) {
+player::player(input *Input, map *Map, std::vector<arrow> *Arrow, bool *Death, bool *Next, std::vector<monster *> *Monster, std::map<std::string, int> Graph, std::map<std::string, int> Font, json Config) {
 
     this->Input = Input;
     this->Map = Map;
     this->Arrow = Arrow;
     this->Death = Death;
+    this->Next = Next;
     this->Monster = Monster;
     this->Graph = Graph;
+    this->Font = Font;
     this->Config = Config;
 
     this->Joystick.Size = Config["JoystickSize"].get<int>();

@@ -33,6 +33,7 @@ int Game::Load() {
     // ない項目は補足 文字列はあれば文字コード変換
     if (this->Config["WindowName"].empty())         this->Config["WindowName"] = "アーチャー物語";
     else this->Config["WindowName"] = utf8_to_sjis(this->Config["WindowName"].get<std::string>());
+    if (this->Config["FullScreen"].empty())         this->Config["FullScreen"] = false;
     if (this->Config["WindowExtendRate"].empty())   this->Config["WindowExtendRate"] = 1.0;
     if (this->Config["Player"]["JoystickSize"].empty())         this->Config["Player"]["JoystickSize"] = 64;
     if (this->Config["Player"]["Speed"].empty())                this->Config["Player"]["Speed"] = 7.0;
@@ -52,15 +53,16 @@ int Game::Load() {
     if (this->Config["Balls"]["Beam"]["Speed"].empty())     this->Config["Balls"]["Beam"]["Speed"] = 8.0;
 
     // 初期設定
-    SetGraphMode(1280, 720, 16);
-    SetDrawScreen(DX_SCREEN_BACK);
-    ChangeWindowMode(TRUE);
-    SetMainWindowText(this->Config["WindowName"].get<std::string>().c_str());
-    //SetWindowIconID(IDI_ICON1);
-    SetWindowSizeChangeEnableFlag(TRUE);
-    SetWindowSizeExtendRate(this->Config["WindowExtendRate"].get<double>());
-    SetUseTransColor(FALSE);
+    DxLib::SetGraphMode(1280, 720, 16);
+    DxLib::SetDrawScreen(DX_SCREEN_BACK);
+    DxLib::ChangeWindowMode(!this->Config["FullScreen"].get<bool>());
+    DxLib::SetMainWindowText(this->Config["WindowName"].get<std::string>().c_str());
+    //DxLib::SetWindowIconID(IDI_ICON1);
+    DxLib::SetWindowSizeChangeEnableFlag(TRUE);
+    DxLib::SetWindowSizeExtendRate(this->Config["WindowExtendRate"].get<double>());
+    DxLib::SetUseTransColor(FALSE);
     if (DxLib_Init() == -1) return -1;
+    DxLib::SetMouseDispFlag(TRUE);
 
     return 0;
 
@@ -101,6 +103,10 @@ bool Game::Intro() {
     if (BeforeIntroFrame + 1 != Frame) {
 
         // 画像読み込み
+
+        this->StartGraph = DxLib::LoadGraph("data/stable/img/start.png");
+        DxLib::DrawGraph(0, 0, this->StartGraph, FALSE);
+        this->EndGraph = DxLib::LoadGraph("data/stable/img/end.png");
 
         std::map<std::string, std::map<std::string, int>> Graph;
         Graph["map"]["ground"] = DxLib::LoadGraph("data/stable/img/map/ground.png");
@@ -154,7 +160,7 @@ bool Game::Intro() {
 
         this->Input = input(false);
         this->Map = map(Maps, Graph, Font, &this->FlowerPlant, &this->Slime, &this->Golem, &this->Bat, &this->Tree, &this->Virus, &this->Ball, &this->Player, this->Config);
-        this->Player = player(&this->Input, &this->Map, &this->Arrow, &this->Death, &this->Monster, Graph["player"], this->Config["Player"]);
+        this->Player = player(&this->Input, &this->Map, &this->Arrow, &this->Death, &this->Next, &this->Monster, Graph["player"], Font, this->Config["Player"]);
 
         // 実験用
         //for (int i = 0; i < 8; i++) {
@@ -164,11 +170,11 @@ bool Game::Intro() {
     }
 
     // 処理 //
-    if (this->Input.GetKey(KEY_INPUT_SPACE)) this->Scene = this->STAGE;
+    if (this->Input.GetKey(KEY_INPUT_SPACE) || this->Input.GetMouseDown(MOUSE_INPUT_LEFT)) this->Scene = this->STAGE;
 
     // 描画
     DxLib::ClearDrawScreen();
-    DxLib::DrawBox(64, 64, 256, 256, 0x00ffff, TRUE);
+    DxLib::DrawGraph(0, 0, this->StartGraph, FALSE);
     DxLib::ScreenFlip();
 
     this->BeforeIntroFrame = this->Frame;
@@ -203,7 +209,11 @@ bool Game::Stage() {
     // Update
     this->Player.Update();
     for (int j = 0; j < 4; j++) {   // スピードを上げるため二重
-        for (int i = 0; i < this->Arrow.size(); i++) this->Arrow[i].Update();
+        std::vector<arrow> ArrowToAdd;
+        for (int i = 0; i < this->Arrow.size(); i++) {
+            ArrowToAdd = this->Arrow[i].Update();
+            this->Arrow.insert(this->Arrow.end(), ArrowToAdd.begin(), ArrowToAdd.end());
+        }
     }
     for (int i = 0; i < this->FlowerPlant.size(); i++) this->FlowerPlant[i].Update();
     std::vector<slime> SlimeToAdd;
@@ -214,12 +224,12 @@ bool Game::Stage() {
     for (int i = 0; i < this->Golem.size(); i++) this->Golem[i].Update();
     for (int i = 0; i < this->Bat.size(); i++) this->Bat[i].Update();
     for (int i = 0; i < this->Tree.size(); i++) this->Tree[i].Update();
-    for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Update();
     std::vector<virus> VirusToAdd;
     for (int i = 0; i < this->Virus.size(); i++) {
         VirusToAdd = this->Virus[i].Update();
         this->Virus.insert(this->Virus.end(), VirusToAdd.begin(), VirusToAdd.end());
     }
+    for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Update();
     // 使われてないものを削除(1秒ごと)
     if (this->Frame % 60 == 0) {
         int Size;
@@ -258,6 +268,7 @@ bool Game::Stage() {
     if (this->Death) {
         this->Death = false;
         this->Scene = this->DIE;
+        this->FadeOutCount = 0;
     }
     // 全員倒した！
     this->ClearCount++;
@@ -266,6 +277,11 @@ bool Game::Stage() {
     if (this->ClearCount >= 2) {
         this->Map.Clear();
         this->ClearCount = 0;
+    }
+    // ゲートをくぐった！
+    if (this->Next) {
+        this->Next = false;
+        this->Scene = this->SKILL_SELECT;
     }
 
     // 描画 //
@@ -311,10 +327,46 @@ bool Game::Pause() {
 bool Game::SkillSelect() {
 
     // 処理 //
-
+    if (this->FadeOutCount++ >= 15) {
+        this->FadeOutCount = 0;
+        this->Scene = this->STAGE;
+        //プレイヤー
+        this->Player.Sprite.Pos.SetPos(48.0, this->Player.StartPos.GetY());
+        this->Player.Sprite.Direction = 0.0;
+        // スキル
+        std::vector<player::skill> SkillLeft;
+        for (auto s : this->Player.GetSkillLeft()) SkillLeft.push_back(s.first);
+        int Rand = DxLib::GetRand(99);
+        if (Rand < (this->Map.GetStage() < 20) ? 60 : 70) this->Player.GiveSkill(SkillLeft[DxLib::GetRand(SkillLeft.size() - 1)]);
+        else if (Rand < (this->Map.GetStage() < 20) ? 60 : 70 + 20) this->Player.GiveSkill(player::HP_MAX_UP);
+        else this->Player.GiveSkill(player::HEAL);
+        // マップ
+        this->Map.NextStage();
+    }
+    // Update
+    pos *InputDirection = new pos;
+    this->Player.JoystickInput(InputDirection);
+    delete InputDirection;
+    for (int j = 0; j < 4; j++) {   // スピードを上げるため二重
+        for (int i = 0; i < this->Arrow.size(); i++) this->Arrow[i].Update();
+    }
+    for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Update();
 
     // 描画
     DxLib::ClearDrawScreen();
+    int Scroll = this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX();
+    // 背景
+    this->Map.Draw(Scroll);
+    // 矢
+    for (arrow a : this->Arrow) a.Draw(Scroll);
+    // プレイヤー
+    this->Player.Draw();
+    // 敵の弾
+    for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Draw(Scroll);
+    // フェード
+    DxLib::SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 * FadeOutCount / 15);
+    DxLib::DrawBox(0, 0, 1280, 720, 0x000000, TRUE);
+    DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
     DxLib::ScreenFlip();
 
@@ -325,10 +377,44 @@ bool Game::SkillSelect() {
 bool Game::Die() {
 
     // 処理 //
-
+    this->FadeOutCount++;
+    // Update
+    if (this->FadeOutCount < 240) {
+        pos *InputDirection = new pos;
+        delete InputDirection;
+        for (int j = 0; j < 4; j++) {   // スピードを上げるため二重
+            for (int i = 0; i < this->Arrow.size(); i++) this->Arrow[i].Update();
+        }
+        for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Update();
+    }
 
     // 描画
     DxLib::ClearDrawScreen();
+    if (this->FadeOutCount < 240) {
+        int Scroll = this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX();
+        // 背景
+        this->Map.Draw(Scroll);
+        // 矢
+        for (arrow a : this->Arrow) a.Draw(Scroll);
+        // 敵
+        for (int i = 0; i < this->FlowerPlant.size(); i++) this->FlowerPlant[i].Draw(Scroll);
+        for (int i = 0; i < this->Slime.size(); i++) this->Slime[i].Draw(Scroll);
+        for (int i = 0; i < this->Golem.size(); i++) this->Golem[i].Draw(Scroll);
+        for (int i = 0; i < this->Bat.size(); i++) this->Bat[i].Draw(Scroll);
+        for (int i = 0; i < this->Tree.size(); i++) this->Tree[i].Draw(Scroll);
+        for (int i = 0; i < this->Virus.size(); i++) this->Virus[i].Draw(Scroll);
+        // 敵の弾
+        for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Draw(Scroll);
+    }
+    // スコア画面
+    if (this->FadeOutCount > 180) {
+        DxLib::SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 * (this->FadeOutCount - 180) / 60);
+        DxLib::DrawGraph(0, 0, this->EndGraph, FALSE);
+        DxLib::SetFontSize(48 * 3.2);
+        DxLib::DrawFormatString(64 * 3.2, 128 * 3.2, 0xff0000, "ステージ%d", this->Map.GetStage());
+        DxLib::SetFontSize(16);
+        DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+    }
 
     DxLib::ScreenFlip();
 

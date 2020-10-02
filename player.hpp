@@ -22,7 +22,7 @@ public:
 
     enum skill {
         HEAL, HP_MAX_UP, ATTACK_SPEED_UP, ATTACK_UP, DEFENSE_UP, GOD_TIME_EXTENSION, WALK_SPEED_UP,
-        HEART_DROPRATE_UP, DIAGONAL_ARROW, FRONT_ARROW, SIDE_ARROW, BACK_ARROW, MULTI_SHOT, BOUNCE, BOUND_WALL, POISON, HEADSHOT,
+        DIAGONAL_ARROW, FRONT_ARROW, SIDE_ARROW, BACK_ARROW, MULTI_SHOT, PENETRATION, BOUND, POISON, HEADSHOT
     };
 
 private:
@@ -31,11 +31,12 @@ private:
 
     std::map<std::string, int> Graph;
     std::map<std::string, pos> GraphSize;
+    std::map<std::string, int> Font;
 
     input *Input;
     map *Map;
     std::vector<arrow> *Arrow;
-    bool *Death;
+    bool *Death, *Next;
     std::vector<monster *> *Monster;
 
     struct {
@@ -49,6 +50,7 @@ private:
     int GodTime = 0, GodTimeMax;
     int AttackCooldown, AttackCooldownMax;
     int Attack;
+    int Defense = 0;
     double Speed;
     std::vector<bool> BlockCol = {
         false,  // air
@@ -59,19 +61,24 @@ private:
 
     std::map<skill, int> SkillLeft;
     std::map<skill, int> SkillMax = {
-        { HEAL, -1 }, { HP_MAX_UP, 8 }, { ATTACK_SPEED_UP, 4 }, { ATTACK_UP, -1 }, { DEFENSE_UP, -1 }, { GOD_TIME_EXTENSION, 4 }, { WALK_SPEED_UP, 4 },
-
+        { HEAL, -1 }, { HP_MAX_UP, -1 }, { ATTACK_SPEED_UP, 4 }, { ATTACK_UP, -1 }, { DEFENSE_UP, -1 }, { GOD_TIME_EXTENSION, 4 }, { WALK_SPEED_UP, 4 },
+        { DIAGONAL_ARROW, 3 }, { FRONT_ARROW, 3 }, { SIDE_ARROW, 2 }, { BACK_ARROW, 2 }, { MULTI_SHOT, 3 }, { PENETRATION, 2 }, { BOUND, 2 }, { POISON, 1 }, { HEADSHOT, 2 }
     };
+    int MultiShotCount = 0;
 
     void Move();
     void KeyInput(pos *InputDirection);
-    void JoystickInput(pos *InputDirection);
+
+    std::map<skill, int> GetSkill();
+    std::string SkillMessage = "";
+    int SkillMessageCount = 0;
 
 public:
 
     pos StartPos{ 48.0 * 12 + 8.0, 48.0 * 6 + 8.0 };
     sprite Sprite;
 
+    void JoystickInput(pos *InputDirection);
     void Update();
 
     void Draw();
@@ -91,6 +98,6 @@ public:
     bool CheckHit(sprite Sprite, enum shape Shape = SQUARE);
 
     player();
-    player(input *Input, map *Map, std::vector<arrow> *Arrow, bool *Death, std::vector<monster *> *Monster, std::map<std::string, int> Graph, json Config);
+    player(input *Input, map *Map, std::vector<arrow> *Arrow, bool *Death, bool *Next, std::vector<monster *> *Monster, std::map<std::string, int> Graph, std::map<std::string, int> Font, json Config);
 
 };

@@ -30,6 +30,9 @@ private:
     };
 
     int Attack;
+    int Penetration;
+    int Bound;
+    bool Poison;
 
     std::map<std::string, int> Graph;
     std::map<std::string, pos> GraphSize;
@@ -38,11 +41,11 @@ public:
 
     bool Use;
 
-    void Update();
+    std::vector<arrow> Update();
 
     void Draw(int Scroll);
 
     arrow();
-    arrow(pos Pos, double Direction, map *Map, std::vector<monster *> *Monster, int Attack, std::map<std::string, int> Graph, json Config);
+    arrow(pos Pos, double Direction, map *Map, std::vector<monster *> *Monster, int Attack, int Penetration, int Bound, bool Poison, std::map<std::string, int> Graph, json Config);
 
 };

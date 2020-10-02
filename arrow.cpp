@@ -1,18 +1,47 @@
 #include "arrow.hpp"
 
-void arrow::Update() {
+std::vector<arrow> arrow::Update() {
+
+    std::vector<arrow> ArrowToAdd;
+
     if (this->Use) {
 
         // à⁄ìÆ
         this->Sprite.Move();
         // É}ÉbÉvÇ∆ÇÃìñÇΩÇËîªíË
         std::vector<bool> Col = this->Map->Collision(&this->Sprite, this->BlockCol);
-        for (bool b : Col) if (b == true) this->Use = false;
+        for (bool b : Col) if (b == true) {
+            if (this->Bound == 0) {
+                this->Use = false;
+            } else {
+                this->Bound--;
+                if (Col[map::UP] || Col[map::DOWN]) this->Sprite.Motion.SetY(this->Sprite.Motion.GetY() * -1);
+                if (Col[map::LEFT] || Col[map::RIGHT]) this->Sprite.Motion.SetX(this->Sprite.Motion.GetX() * -1);
+                this->Sprite.SetDrectionFromPos(this->Sprite.Motion);
+                this->Attack /= 2;
+                this->Poison = false;
+            }
+        }
         // çUåÇHit
         for (int i = 0; i < this->Monster->size(); i++) {
             if ((*this->Monster)[i]->Use && (*this->Monster)[i]->CheckHit(this->Sprite, monster().CIRCLE)) {
-                (*this->Monster)[i]->Damage(this->Attack, this->Sprite.Motion);
+                (*this->Monster)[i]->Damage(this->Attack, this->Sprite.Motion, this->Poison);
                 this->Use = false;
+                if (this->Penetration > 0) {
+                    for (int j = 0; j < 6; j++) this->Sprite.Move();
+                    ArrowToAdd.push_back(arrow(
+                        this->Sprite.GetCenterPos(),
+                        this->Sprite.Direction,
+                        this->Map,
+                        this->Monster,
+                        this->Attack / 2,
+                        this->Penetration - 1,
+                        this->Bound,
+                        this->Poison,
+                        this->Graph,
+                        this->Config
+                    ));
+                }
                 break;
             }
         }
@@ -20,6 +49,9 @@ void arrow::Update() {
         if (!this->Map->GetInMap(this->Sprite)) this->Use = false;
 
     }
+
+    return ArrowToAdd;
+
 }
 
 void arrow::Draw(int Scroll) {
@@ -37,7 +69,7 @@ void arrow::Draw(int Scroll) {
 arrow::arrow() {
     this->Use = false;
 }
-arrow::arrow(pos Pos, double Direction, map *Map, std::vector<monster *> *Monster, int Attack, std::map<std::string, int> Graph, json Config) {
+arrow::arrow(pos Pos, double Direction, map *Map, std::vector<monster *> *Monster, int Attack, int Penetration, int Bound, bool Poison, std::map<std::string, int> Graph, json Config) {
 
     this->Use = true;
     this->Sprite.Pos = Pos;
@@ -45,6 +77,9 @@ arrow::arrow(pos Pos, double Direction, map *Map, std::vector<monster *> *Monste
     this->Map = Map;
     this->Monster = Monster;
     this->Attack = Attack;
+    this->Penetration = Penetration;
+    this->Bound = Bound;
+    this->Poison = Poison;
     this->Graph = Graph;
     this->Config = Config;
 

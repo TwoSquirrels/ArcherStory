@@ -4,6 +4,11 @@ void monster::Update() {
 
     // もしHPがカンストしてたら直す
     if (this->HP > this->MaxHP) this->HP = this->MaxHP;
+    // 毒
+    if (PoisonCount > 0) {
+        PoisonCount--;
+        if (PoisonCount % 60 == 0) this->Damage(20, pos(0, 0));
+    }
     // AttackCountを更新
     if (this->AttackCount > 0) this->AttackCount--;
 
@@ -93,11 +98,12 @@ void monster::Heal(int AddHP) {
     if (this->HP > this->MaxHP) this->HP = this->MaxHP;
 }
 
-void monster::Damage(int Damage, pos Motion) {
+void monster::Damage(int Damage, pos Motion, bool Poison) {
     this->HP -= Damage;
     this->AttackCount += 10;
     this->KnockBack = pos(Motion.GetX() / 4, Motion.GetY() / 4);
     this->KnockBackCount = 8;
+    if (Poison) this->PoisonCount = 480;
     if (this->HP <= 0) {
         // 死んじゃった！
         this->HP = 0;

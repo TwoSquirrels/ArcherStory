@@ -1,6 +1,7 @@
 {
-    "WindowName": "アーチャー物語 ver0.7",
-    "WindowExtendRate": 0.8,
+    "WindowName": "アーチャー物語 ver1.0",
+    "FullScreen": true,
+    "WindowExtendRate": 1.0,
     "Player": {
         "JoystickSize": 64,
         "Speed": 7.0,

@@ -26,7 +26,7 @@ class Game {
 private:
 
     enum scene {
-        INTRO, STAGE, PAUSE, SKILL_SELECT, DIE
+        INTRO, STAGE, PAUSE, SKILL_SELECT, DIE  // ポーズは未使用
     };
 
     json Config;
@@ -42,6 +42,7 @@ private:
     map Map;
     player Player;
     bool Death = false;
+    bool Next = false;
     std::vector<arrow> Arrow;
 
     int ClearCount = 0;
@@ -59,11 +60,14 @@ private:
     bool Update();              // マイフレーム return false:終了
     void Unload(bool Error);    // 最後 Error:エラーで終了したか
 
+    int StartGraph;
     bool Intro();
     int BeforeIntroFrame = 0;
     bool Stage();
+    int FadeOutCount = 0;
     bool Pause();
     bool SkillSelect();
+    int EndGraph;
     bool Die();
     
 public:

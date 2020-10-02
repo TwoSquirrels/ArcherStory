@@ -374,7 +374,7 @@ void map::NextStage() {
             FlowerPlant->push_back(flower_plant(
                 this->Ball,
                 pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
-                100 + 5 * this->Stage,
+                100 + 10 * this->Stage,
                 50 + 3 * this->Stage,
                 this,
                 this->Player,
@@ -385,7 +385,7 @@ void map::NextStage() {
         case this->SLIME:
             Slime->push_back(slime(
                 pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
-                100 + 5 * this->Stage,
+                100 + 10 * this->Stage,
                 (this->Stage <= 5 ? 1 : 2),
                 this,
                 this->Player,
@@ -397,7 +397,7 @@ void map::NextStage() {
             Golem->push_back(golem(
                 this->Ball,
                 pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
-                150 + 7.5 * this->Stage,
+                150 + 15 * this->Stage,
                 50 + 3 * this->Stage,
                 this,
                 this->Player,
@@ -409,8 +409,8 @@ void map::NextStage() {
             Bat->push_back(bat(
                 this->Ball,
                 pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
-                50 + 2.5 * this->Stage,
-                100 + 6 * this->Stage,
+                50 + 5 * this->Stage,
+                25 + 1.5 * this->Stage,
                 this,
                 this->Player,
                 this->Graph["monsters"],
@@ -421,7 +421,7 @@ void map::NextStage() {
             Tree->push_back(tree(
                 this->Ball,
                 pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
-                100 + 5 * this->Stage,
+                100 + 10 * this->Stage,
                 100 + 6 * this->Stage,
                 this,
                 this->Player,
@@ -432,7 +432,7 @@ void map::NextStage() {
         case this->VIRUS:
             Virus->push_back(virus(
                 pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
-                150 + 7.5 * this->Stage,
+                150 + 15 * this->Stage,
                 (this->Stage <= 10 ? 1 : 2),
                 this,
                 this->Player,

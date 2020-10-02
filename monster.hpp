@@ -17,6 +17,8 @@ private:
     int MaxAttackCount;
     int BeforeHP = this->MaxHP;
 
+    int PoisonCount = 0;
+
     int KnockBackCount = 0;
     pos KnockBack{};
 
@@ -51,7 +53,7 @@ public:
 
     int GetHP();
     void Heal(int AddHP);
-    void Damage(int Damage, pos Motion);
+    void Damage(int Damage, pos Motion, bool Poison = false);
 
     enum shape {
         SQUARE, CIRCLE

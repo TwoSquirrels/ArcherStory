@@ -63,7 +63,7 @@ void tree::Update() {
         // ƒ‰ƒ“ƒ_ƒ€ˆÚ“®
         if (this->Monster->Sprite.Motion.GetX() == 0.0 && this->Monster->Sprite.Motion.GetY() == 0.0 && this->MoveCount >= Config["Monsters"]["Tree"]["AttackSpeed"].get<int>() * 2 / 3) {
             this->Monster->Sprite.Direction = DxLib::GetRand(360 - 1) * DX_PI / 180.0;
-            this->Monster->Sprite.Motion = this->Monster->Sprite.GetPosFromDirection(8);
+            this->Monster->Sprite.Motion = this->Monster->Sprite.GetPosFromDirection(4);
         }
         this->MoveCount++;
 
