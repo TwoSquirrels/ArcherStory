@@ -102,7 +102,7 @@ void monster::Damage(int Damage, pos Motion, bool Poison) {
     this->HP -= Damage;
     this->AttackCount += 10;
     this->KnockBack = pos(Motion.GetX() / 4, Motion.GetY() / 4);
-    this->KnockBackCount = 8;
+    this->KnockBackCount = 4;
     if (Poison) this->PoisonCount = 480;
     if (this->HP <= 0) {
         // Ž€‚ñ‚¶‚á‚Á‚½I

@@ -337,8 +337,7 @@ bool Game::SkillSelect() {
         std::vector<player::skill> SkillLeft;
         for (auto s : this->Player.GetSkillLeft()) SkillLeft.push_back(s.first);
         int Rand = DxLib::GetRand(99);
-        if (Rand < (this->Map.GetStage() < 20) ? 60 : 70) this->Player.GiveSkill(SkillLeft[DxLib::GetRand(SkillLeft.size() - 1)]);
-        else if (Rand < (this->Map.GetStage() < 20) ? 60 : 70 + 20) this->Player.GiveSkill(player::HP_MAX_UP);
+        if (Rand < 80) this->Player.GiveSkill(SkillLeft[DxLib::GetRand(SkillLeft.size() - 1)]);
         else this->Player.GiveSkill(player::HEAL);
         // ƒ}ƒbƒv
         this->Map.NextStage();

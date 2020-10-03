@@ -28,7 +28,7 @@ std::vector<arrow> arrow::Update() {
                 (*this->Monster)[i]->Damage(this->Attack, this->Sprite.Motion, this->Poison);
                 this->Use = false;
                 if (this->Penetration > 0) {
-                    for (int j = 0; j < 6; j++) this->Sprite.Move();
+                    for (int j = 0; j < 8; j++) this->Sprite.Move();
                     ArrowToAdd.push_back(arrow(
                         this->Sprite.GetCenterPos(),
                         this->Sprite.Direction,

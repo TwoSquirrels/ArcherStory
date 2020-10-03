@@ -168,7 +168,7 @@ void player::Draw() {
     DxLib::DrawFormatStringToHandle(16, 16 + 32 * 2, 0x000000, this->Font["Parameters"], "攻撃力: %3d", this->Attack);
     DxLib::DrawFormatStringToHandle(16, 16 + 32 * 3, 0x000000, this->Font["Parameters"], "防御力: %3d", this->Defense);
     DxLib::DrawFormatStringToHandle(200, 16 + 32 * 1, 0x000000, this->Font["Parameters"], "移動速度: %2d", (int)(this->Speed * 4));
-    DxLib::DrawFormatStringToHandle(200, 16 + 32 * 2, 0x000000, this->Font["Parameters"], "攻撃速度: %2d", this->AttackCooldownMax);
+    DxLib::DrawFormatStringToHandle(200, 16 + 32 * 2, 0x000000, this->Font["Parameters"], "攻撃クールダウン: %2d", this->AttackCooldownMax);
     DxLib::DrawFormatStringToHandle(200, 16 + 32 * 3, 0x000000, this->Font["Parameters"], "無敵時間: %2d", this->GodTimeMax);
     // スキルメッセージ
     if (this->SkillMessageCount > 0) {
@@ -263,7 +263,9 @@ void player::Heal(int AddHP) {
 
 void player::Damage(int Damage) {
     if (this->GodTime <= 0) {
-        this->HP -= Damage - this->Defense;
+        Damage -= this->Defense;
+        if (Damage < 0) Damage = 0;
+        this->HP -= Damage;
         this->GodTime = this->GodTimeMax;
         if (this->HP <= 0) {
             // 死んじゃった！

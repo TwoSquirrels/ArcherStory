@@ -61,8 +61,8 @@ private:
 
     std::map<skill, int> SkillLeft;
     std::map<skill, int> SkillMax = {
-        { HEAL, -1 }, { HP_MAX_UP, -1 }, { ATTACK_SPEED_UP, 4 }, { ATTACK_UP, -1 }, { DEFENSE_UP, -1 }, { GOD_TIME_EXTENSION, 4 }, { WALK_SPEED_UP, 4 },
-        { DIAGONAL_ARROW, 3 }, { FRONT_ARROW, 3 }, { SIDE_ARROW, 2 }, { BACK_ARROW, 2 }, { MULTI_SHOT, 3 }, { PENETRATION, 2 }, { BOUND, 2 }, { POISON, 1 }, { HEADSHOT, 2 }
+        { HEAL, -1 }, { HP_MAX_UP, -1 }, { ATTACK_SPEED_UP, 2 }, { ATTACK_UP, -1 }, { DEFENSE_UP, -1 }, { GOD_TIME_EXTENSION, 3 }, { WALK_SPEED_UP, 1 },
+        { DIAGONAL_ARROW, 3 }, { FRONT_ARROW, 3 }, { SIDE_ARROW, 2 }, { BACK_ARROW, 2 }, { MULTI_SHOT, 2 }, { PENETRATION, 2 }, { BOUND, 2 }, { POISON, 1 }, { HEADSHOT, 2 }
     };
     int MultiShotCount = 0;
 

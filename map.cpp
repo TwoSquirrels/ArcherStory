@@ -360,6 +360,10 @@ void map::NextStage() {
     // ƒ‚ƒ“ƒXƒ^[
     FlowerPlant->clear();
     Slime->clear();
+    Golem->clear();
+    Bat->clear();
+    Tree->clear();
+    Virus->clear();
     for (int i = 0; i < this->Maps["Maps"][FixedStage]["Monsters"].size(); i++) {
         int Monster = DxLib::GetRand(this->MONSTERS_NUM - 1);
         std::string MonsterName = this->Maps["Maps"][FixedStage]["Monsters"][i]["Type"].get<std::string>();
@@ -374,8 +378,8 @@ void map::NextStage() {
             FlowerPlant->push_back(flower_plant(
                 this->Ball,
                 pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
-                100 + 10 * this->Stage,
-                50 + 3 * this->Stage,
+                100 + 10 * (15.0 * std::pow(this->Stage / 15.0, 8)),
+                50 + 3 * (15.0 * std::pow(this->Stage / 15.0, 8)),
                 this,
                 this->Player,
                 this->Graph["monsters"],
@@ -385,7 +389,7 @@ void map::NextStage() {
         case this->SLIME:
             Slime->push_back(slime(
                 pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
-                100 + 10 * this->Stage,
+                100 + 10 * (15.0 * std::pow(this->Stage / 15.0, 8)),
                 (this->Stage <= 5 ? 1 : 2),
                 this,
                 this->Player,
@@ -397,8 +401,8 @@ void map::NextStage() {
             Golem->push_back(golem(
                 this->Ball,
                 pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
-                150 + 15 * this->Stage,
-                50 + 3 * this->Stage,
+                150 + 15 * (15.0 * std::pow(this->Stage / 15.0, 8)),
+                50 + 3 * (15.0 * std::pow(this->Stage / 15.0, 8)),
                 this,
                 this->Player,
                 this->Graph["monsters"],
@@ -409,8 +413,8 @@ void map::NextStage() {
             Bat->push_back(bat(
                 this->Ball,
                 pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
-                50 + 5 * this->Stage,
-                25 + 1.5 * this->Stage,
+                50 + 5 * (15.0 * std::pow(this->Stage / 15.0, 8)),
+                25 + 1.5 * (15.0 * std::pow(this->Stage / 15.0, 8)),
                 this,
                 this->Player,
                 this->Graph["monsters"],
@@ -421,8 +425,8 @@ void map::NextStage() {
             Tree->push_back(tree(
                 this->Ball,
                 pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
-                100 + 10 * this->Stage,
-                100 + 6 * this->Stage,
+                100 + 10 * (15.0 * std::pow(this->Stage / 15.0, 8)),
+                100 + 6 * (15.0 * std::pow(this->Stage / 15.0, 8)),
                 this,
                 this->Player,
                 this->Graph["monsters"],
@@ -432,7 +436,7 @@ void map::NextStage() {
         case this->VIRUS:
             Virus->push_back(virus(
                 pos(48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][0].get<int>() + 1.0) + 8, 48.0 * (this->Maps["Maps"][FixedStage]["Monsters"][i]["Pos"][1].get<int>() + 1.0) + 8),
-                150 + 15 * this->Stage,
+                150 + 15 * (15.0 * std::pow(this->Stage / 15.0, 8)),
                 (this->Stage <= 10 ? 1 : 2),
                 this,
                 this->Player,
