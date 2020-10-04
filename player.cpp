@@ -17,9 +17,16 @@ void player::Update() {
     this->Move();
     // 外に出たら次のステージへ
     if (!this->Map->GetInMap(this->Sprite)) {
-        *this->Next = true;
-        this->GodTime = 0;
-        this->AttackCooldown = this->AttackCooldownMax * 3 / 4;
+        if (this->Map->GetClear()) {
+            *this->Next = true;
+            this->GodTime = 0;
+            this->AttackCooldown = this->AttackCooldownMax * 3 / 4;
+        } else {
+            // バグってたら戻さなきゃ、ね？
+            this->Sprite.Pos.SetPos(48.0, this->StartPos.GetY());
+            this->ErrorMessage = "バグでステージの外に出てしまったので\nプレイヤーを初期位置に戻しました";
+            this->ErrorMessageCount = 120;
+        }
     }
     // 無敵時間更新   
     if (this->GodTime > 0) this->GodTime--;
@@ -59,7 +66,7 @@ void player::Update() {
                 // 前
                 int FrontNum = this->GetSkill()[this->FRONT_ARROW] + 1;
                 for (int i = 0; i < FrontNum; i++) {
-                    this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction + (-(FrontNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, (DxLib::GetRand(20 - 1) > 0) ? this->Attack : (this->Attack * 4096), this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
+                    this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction + (-(FrontNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, (this->GetSkill()[this->HEADSHOT] > 0 && DxLib::GetRand((20 / this->GetSkill()[this->HEADSHOT]) - 1) == 0) ? (this->Attack * 4096) : this->Attack, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
                 }
                 // 横
                 int SideNum = this->GetSkill()[this->SIDE_ARROW];
@@ -176,6 +183,13 @@ void player::Draw() {
         DxLib::DrawStringToHandle(640 - 1.5 * DxLib::GetDrawFormatStringWidth(this->SkillMessage.c_str(), 0), 360 - 144, this->SkillMessage.c_str(), 0x0000ff, this->Font["NewSkill"]);
         DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
         this->SkillMessageCount--;
+    }
+    // エラーメッセージ
+    if (this->ErrorMessageCount > 0) {
+        DxLib::SetDrawBlendMode(DX_BLENDMODE_ALPHA, (this->ErrorMessageCount > 60) ? 191 : (this->ErrorMessageCount * 191 / 60));
+        DxLib::DrawStringToHandle(640 - 1.5 * DxLib::GetDrawFormatStringWidth(this->ErrorMessage.c_str(), 0), 360 - 80, this->ErrorMessage.c_str(), 0xff0000, this->Font["NewSkill"]);
+        DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+        this->ErrorMessageCount--;
     }
 
 }
@@ -395,6 +409,7 @@ player::player(input *Input, map *Map, std::vector<arrow> *Arrow, bool *Death, b
     this->AttackCooldownMax = Config["AttackCooldownMax"].get<int>();
     this->AttackCooldown = this->AttackCooldownMax;
     this->Attack = Config["DefaultAttack"].get<int>();
+    this->Defense = Config["DefaultDefense"].get<int>();
 
     this->SkillLeft = this->SkillMax;
 

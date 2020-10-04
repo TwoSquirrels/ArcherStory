@@ -1,5 +1,5 @@
 {
-    "WindowName": "アーチャー物語 ver1.1",
+    "WindowName": "アーチャー物語 ver1.2",
     "FullScreen": true,
     "WindowExtendRate": 1.0,
     "Player": {
@@ -9,6 +9,7 @@
         "GodTimeMax": 15,
         "AttackCooldownMax": 36,
         "DefaultAttack": 40,
+        "DefaultDefense": 0,
         "Arrow": {
             // この値は4倍されます
             "Speed": 8.0

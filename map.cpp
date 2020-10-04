@@ -311,6 +311,12 @@ void map::ClearCancel() {
 
 }
 
+bool map::GetClear() {
+
+    return (this->ClearCount != 0);
+
+}
+
 void map::NextStage() {
 
     this->Stage++;

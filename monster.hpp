@@ -17,7 +17,9 @@ private:
     int MaxAttackCount;
     int BeforeHP = this->MaxHP;
 
+    int PoisonLeft = 0;
     int PoisonCount = 0;
+    int PoisonDamage;
 
     int KnockBackCount = 0;
     pos KnockBack{};

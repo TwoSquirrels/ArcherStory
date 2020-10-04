@@ -74,6 +74,7 @@ public:
 
     void Clear();
     void ClearCancel();
+    bool GetClear();
     void NextStage();
 
     map();

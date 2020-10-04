@@ -72,6 +72,8 @@ private:
     std::map<skill, int> GetSkill();
     std::string SkillMessage = "";
     int SkillMessageCount = 0;
+    std::string ErrorMessage = "";
+    int ErrorMessageCount = 0;
 
 public:
 
