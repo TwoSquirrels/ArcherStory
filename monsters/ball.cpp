@@ -162,7 +162,7 @@ ball::ball(enum type Type, int Attack, map *Map, player *Player, pos Pos, pos Pl
 
         this->Jump_a = -4 * this->Config["Jump"]["High"].get<double>() / std::pow(this->PlayerCenterPos.GetX() - this->Sprite.Pos.GetX(), 2);
         this->Shadow.Pos = this->Sprite.Pos;
-        this->Shadow.SetDrectionFromPos(pos(
+        this->Shadow.SetDirectionFromPos(pos(
             this->PlayerCenterPos.GetX() - this->Sprite.Pos.GetX(),
             this->PlayerCenterPos.GetY() - this->Sprite.Pos.GetY()
         ));

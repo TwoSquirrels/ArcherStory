@@ -28,7 +28,7 @@ public:
      * @param Pos Position vector to calculate direction from
      * @return Calculated direction in radians
      */
-    double SetDrectionFromPos(const pos& Pos) {
+    double SetDirectionFromPos(const pos& Pos) {
         this->Direction = std::atan2(Pos.GetY(), Pos.GetX());
         return this->Direction;
     }
