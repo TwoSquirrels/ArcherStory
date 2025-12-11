@@ -17,7 +17,7 @@ std::vector<arrow> arrow::Update() {
                 this->Bound--;
                 if (Col[map::UP] || Col[map::DOWN]) this->Sprite.Motion.SetY(this->Sprite.Motion.GetY() * -1);
                 if (Col[map::LEFT] || Col[map::RIGHT]) this->Sprite.Motion.SetX(this->Sprite.Motion.GetX() * -1);
-                this->Sprite.SetDrectionFromPos(this->Sprite.Motion);
+                this->Sprite.SetDirectionFromPos(this->Sprite.Motion);
                 this->Attack /= 2;
                 this->Poison = false;
             }

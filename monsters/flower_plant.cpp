@@ -8,7 +8,7 @@ void flower_plant::Update() {
 
         // UŒ‚
         if (Monster->GetAttack()) {
-            this->Monster->Sprite.SetDrectionFromPos(pos(
+            this->Monster->Sprite.SetDirectionFromPos(pos(
                 this->Player->Sprite.GetCenterPos().GetX() - this->Monster->Sprite.GetCenterPos().GetX(),
                 this->Player->Sprite.GetCenterPos().GetY() - this->Monster->Sprite.GetCenterPos().GetY()
             ));

@@ -53,7 +53,7 @@ void player::Update() {
 
             // Œ‚‚Â
             if (Nearest >= 0) {
-                this->Sprite.SetDrectionFromPos(pos(
+                this->Sprite.SetDirectionFromPos(pos(
                     (*this->Monster)[Nearest]->Sprite.GetCenterPos().GetX() - this->Sprite.GetCenterPos().GetX(),
                     (*this->Monster)[Nearest]->Sprite.GetCenterPos().GetY() - this->Sprite.GetCenterPos().GetY()
                 ));
@@ -125,7 +125,7 @@ void player::Move() {
     // Direction <- InputDirection
     bool NoDirection = false;
     if (InputDirection.GetX() == 0.0 && InputDirection.GetY() == 0.0) NoDirection = true;
-    else this->Sprite.SetDrectionFromPos(InputDirection);
+    else this->Sprite.SetDirectionFromPos(InputDirection);
     // Motion <- Direction
     this->Sprite.Motion.SetPos(0.0, 0.0);
     if (!NoDirection) {

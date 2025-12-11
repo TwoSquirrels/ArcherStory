@@ -9,7 +9,7 @@ std::vector<virus> virus::Update() {
         this->Monster->Update();
 
         // ’Ç”ö
-        this->Monster->Sprite.SetDrectionFromPos(pos(
+        this->Monster->Sprite.SetDirectionFromPos(pos(
             this->Player->Sprite.GetCenterPos().GetX() - this->Monster->Sprite.GetCenterPos().GetX(),
             this->Player->Sprite.GetCenterPos().GetY() - this->Monster->Sprite.GetCenterPos().GetY()
         ));
