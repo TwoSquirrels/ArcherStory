@@ -5,19 +5,19 @@ void ball::Update() {
 
         switch (this->Type) {
         case this->JUMP:
-            // ShadowˆÚ“®
+            // Shadowç§»å‹•
             this->Shadow.Move();
-            // BallˆÚ“®
+            // Ballç§»å‹•
             this->Sprite.Pos.SetY(
                 this->Shadow.Pos.GetY() - (this->Jump_a * pow(this->Jump_CenterX - this->Shadow.Pos.GetX(), 2) + this->Config["Jump"]["High"].get<double>())
             );
-            // ”¼Œa‚ªƒXƒs[ƒh/2ˆÈ“à‚È‚çÁ‚·
+            // åŠå¾„ãŒã‚¹ãƒ”ãƒ¼ãƒ‰/2ä»¥å†…ãªã‚‰æ¶ˆã™
             if (Distance2d(this->Shadow.Pos, this->PlayerCenterPos) <= Config["Jump"]["Speed"].get<double>() / 2) this->Use = false;
             break;
         }
-        // ˆÚ“®
+        // ç§»å‹•
         this->Sprite.Move();
-        // ƒ}ƒbƒv‚Æ‚Ì“–‚½‚è”»’è
+        // ãƒãƒƒãƒ—ã¨ã®å½“ãŸã‚Šåˆ¤å®š
         std::vector<bool> Col;
         switch (this->Type) {
         case this->STONE:
@@ -48,14 +48,14 @@ void ball::Update() {
             for (bool b : Col) if (b == true) this->Use = false;
             break;
         }
-        // ƒ_ƒ[ƒW
+        // ãƒ€ãƒ¡ãƒ¼ã‚¸
         if (this->Type == this->STONE || this->Type == this->JUMP || this->Type == this->BEAM) {
             if (this->Player->CheckHit(this->Sprite, player().CIRCLE)) {
                 this->Player->Damage(this->Attack);
                 this->Use = false;
             }
         }
-        // ŠO‚Éo‚Ä‚½‚çÁ‚·
+        // å¤–ã«å‡ºã¦ãŸã‚‰æ¶ˆã™
         if (!this->Map->GetInMap(this->Sprite)) this->Use = false;
         this->Count++;
 
@@ -115,7 +115,7 @@ ball::ball(enum type Type, int Attack, map *Map, player *Player, pos Pos, double
     this->Graph = Graph;
     this->Config = Config;
 
-    // ‰æ‘œƒTƒCƒYæ“¾—p
+    // ç”»åƒã‚µã‚¤ã‚ºå–å¾—ç”¨
     int X, Y;
 
     switch (Type) {
@@ -123,7 +123,7 @@ ball::ball(enum type Type, int Attack, map *Map, player *Player, pos Pos, double
 
             this->Sprite.Motion = this->Sprite.GetPosFromDirection(Config["Stone"]["Speed"].get<double>());
 
-            // ‰æ‘œƒTƒCƒYæ“¾
+            // ç”»åƒã‚µã‚¤ã‚ºå–å¾—
             DxLib::GetGraphSize(this->Graph["ball_stone"], &X, &Y);
             this->GraphSize["ball_stone"].SetPos(X, Y);
 
@@ -132,7 +132,7 @@ ball::ball(enum type Type, int Attack, map *Map, player *Player, pos Pos, double
 
             this->Sprite.Motion = this->Sprite.GetPosFromDirection(Config["Beam"]["Speed"].get<double>());
 
-            // ‰æ‘œƒTƒCƒYæ“¾
+            // ç”»åƒã‚µã‚¤ã‚ºå–å¾—
             DxLib::GetGraphSize(this->Graph["ball_beam"], &X, &Y);
             this->GraphSize["ball_beam"].SetPos(X, Y);
 
@@ -154,7 +154,7 @@ ball::ball(enum type Type, int Attack, map *Map, player *Player, pos Pos, pos Pl
     this->Graph = Graph;
     this->Config = Config;
 
-    // ‰æ‘œƒTƒCƒYæ“¾—p
+    // ç”»åƒã‚µã‚¤ã‚ºå–å¾—ç”¨
     int X, Y;
 
     switch (Type) {
@@ -170,7 +170,7 @@ ball::ball(enum type Type, int Attack, map *Map, player *Player, pos Pos, pos Pl
         this->Sprite.Motion.SetX(Shadow.Motion.GetX());
         this->Jump_CenterX = (this->Sprite.Pos.GetX() + this->PlayerCenterPos.GetX()) / 2;
 
-        // ‰æ‘œƒTƒCƒYæ“¾
+        // ç”»åƒã‚µã‚¤ã‚ºå–å¾—
         DxLib::GetGraphSize(this->Graph["ball_jumping"], &X, &Y);
         this->GraphSize["ball_jumping"].SetPos(X, Y);
         DxLib::GetGraphSize(this->Graph["ball_shadow"], &X, &Y);

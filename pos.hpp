@@ -44,30 +44,30 @@ public:
     }
 
     /*
-     * Mode 0:�l�̌ܓ� 1:�؂�̂� 2:�؂�グ
+     * Mode 0:四捨五入 1:切り捨て 2:切り上げ
      */
     long GetXInt(int Mode = 0) {
         switch (Mode) {
-        case 0: // �l�̌ܓ�
+        case 0: // 四捨五入
             return (long)std::round(this->X);
-        case 1: // �؂�̂�
+        case 1: // 切り捨て
             return (long)std::floor(this->X);
-        case 2: // �؂�グ
+        case 2: // 切り上げ
             return (long)std::ceil(this->X);
         }
         return (long)std::round(this->X);
     }
 
     /*
-     * Mode 0:�l�̌ܓ� 1:�؂�̂� 2:�؂�グ
+     * Mode 0:四捨五入 1:切り捨て 2:切り上げ
      */
     long GetYInt(int Mode = 0) {
         switch (Mode) {
-        case 0: // �l�̌ܓ�
+        case 0: // 四捨五入
             return (long)std::round(this->Y);
-        case 1: // �؂�̂�
+        case 1: // 切り捨て
             return (long)std::floor(this->Y);
-        case 2: // �؂�グ
+        case 2: // 切り上げ
             return (long)std::ceil(this->Y);
         }
         return (long)std::round(this->Y);
@@ -79,7 +79,7 @@ public:
     
 };
 
-// 2�_�Ԃ̋���
+// 2点間の距離
 static double Distance2d(pos Pos1, pos Pos2) {
     return std::sqrt(
         std::pow(Pos1.GetX() - Pos2.GetX(), 2) +

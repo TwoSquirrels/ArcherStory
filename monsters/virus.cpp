@@ -8,7 +8,7 @@ std::vector<virus> virus::Update() {
 
         this->Monster->Update();
 
-        // ’Ç”ö
+        // è¿½å°¾
         this->Monster->Sprite.SetDrectionFromPos(pos(
             this->Player->Sprite.GetCenterPos().GetX() - this->Monster->Sprite.GetCenterPos().GetX(),
             this->Player->Sprite.GetCenterPos().GetY() - this->Monster->Sprite.GetCenterPos().GetY()
@@ -17,7 +17,7 @@ std::vector<virus> virus::Update() {
 
     }
 
-    // •ª—ô
+    // åˆ†è£‚
     if (this->Monster->GetDeath() && this->Level > 1) {
         VirusToAdd.push_back(virus(
             this->Monster->Sprite.Pos,
@@ -72,7 +72,7 @@ virus::virus(pos Pos, int HP, int Level, map *Map, player *Player, std::map<std:
     this->Player = Player;
     this->Graph = Graph;
 
-    // ‰æ‘œƒTƒCƒYŽæ“¾
+    // ç”»åƒã‚µã‚¤ã‚ºå–å¾—
     int X, Y;
 
     DxLib::GetGraphSize(this->Graph["virus"], &X, &Y);

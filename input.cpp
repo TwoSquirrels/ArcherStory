@@ -1,9 +1,9 @@
 #include "input.hpp"
 
 void input::Update() {
-    // ƒL[ƒ{[ƒh //
+    // ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ //
     DxLib::GetHitKeyStateAll(this->Key);
-    // ƒ}ƒEƒX //
+    // ãƒžã‚¦ã‚¹ //
     int X = 0, Y = 0;
     DxLib::GetMousePoint(&X, &Y);
     this->MousePos.SetPos((double)X, (double)Y);

@@ -6,7 +6,7 @@ void tree::Update() {
 
         this->Monster->Update();
 
-        // UŒ‚
+        // æ”»æ’ƒ
         if (this->Monster->GetAttack()) {
             try {
                 this->Ball->push_back(ball(
@@ -52,7 +52,7 @@ void tree::Update() {
             } catch (ball::error e) {
                 switch (e) {
                 case ball::WRONG_CONSTRUCTOR:
-                    MessageBox(NULL, "ŠÔˆá‚Á‚½ball‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ðŽg—p‚µ‚Ä‚¢‚Ü‚·B", "ƒvƒƒOƒ‰ƒ€“àƒGƒ‰[", MB_OK | MB_ICONERROR);
+                    MessageBox(NULL, "é–“é•ã£ãŸballã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’ä½¿ç”¨ã—ã¦ã„ã¾ã™ã€‚", "ãƒ—ãƒ­ã‚°ãƒ©ãƒ å†…ã‚¨ãƒ©ãƒ¼", MB_OK | MB_ICONERROR);
                     break;
                 }
             }
@@ -60,7 +60,7 @@ void tree::Update() {
             this->Monster->Sprite.Motion.SetPos(0, 0);
         }
 
-        // ƒ‰ƒ“ƒ_ƒ€ˆÚ“®
+        // ãƒ©ãƒ³ãƒ€ãƒ ç§»å‹•
         if (this->Monster->Sprite.Motion.GetX() == 0.0 && this->Monster->Sprite.Motion.GetY() == 0.0 && this->MoveCount >= Config["Monsters"]["Tree"]["AttackSpeed"].get<int>() * 2 / 3) {
             this->Monster->Sprite.Direction = DxLib::GetRand(360 - 1) * DX_PI / 180.0;
             this->Monster->Sprite.Motion = this->Monster->Sprite.GetPosFromDirection(4);
@@ -96,7 +96,7 @@ tree::tree(std::vector<ball> *Ball, pos Pos, int HP, int Attack, map *Map, playe
     this->Graph = Graph;
     this->Config = Config;
 
-    // ‰æ‘œƒTƒCƒYŽæ“¾
+    // ç”»åƒã‚µã‚¤ã‚ºå–å¾—
     int X, Y;
 
     DxLib::GetGraphSize(this->Graph["tree"], &X, &Y);

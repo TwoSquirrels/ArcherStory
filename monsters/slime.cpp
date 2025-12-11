@@ -8,7 +8,7 @@ std::vector<slime> slime::Update() {
 
         this->Monster->Update();
 
-        // ƒ‰ƒ“ƒ_ƒ€ˆÚ“®
+        // ãƒ©ãƒ³ãƒ€ãƒ ç§»å‹•
         if (this->Monster->GetAttack()) {
             this->Monster->Sprite.Direction = DxLib::GetRand(360 - 1) * DX_PI / 180.0;
             this->Monster->Sprite.Motion = this->Monster->Sprite.GetPosFromDirection(16);
@@ -18,7 +18,7 @@ std::vector<slime> slime::Update() {
 
     }
 
-    // •ª—ô
+    // åˆ†è£‚
     if (this->Monster->GetDeath() && this->Level > 1) {
         SlimeToAdd.push_back(slime(
             this->Monster->Sprite.Pos,
@@ -76,7 +76,7 @@ slime::slime(pos Pos, int HP, int Level, map *Map, player *Player, std::map<std:
     this->Graph = Graph;
     this->Config = Config;
 
-    // ‰æ‘œƒTƒCƒYŽæ“¾
+    // ç”»åƒã‚µã‚¤ã‚ºå–å¾—
     int X, Y;
 
     DxLib::GetGraphSize(this->Graph["slime"], &X, &Y);

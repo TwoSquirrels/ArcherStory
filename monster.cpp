@@ -2,9 +2,9 @@
 
 void monster::Update() {
 
-    // ‚à‚µHP‚ªƒJƒ“ƒXƒg‚µ‚Ä‚½‚ç’¼‚·
+    // ã‚‚ã—HPãŒã‚«ãƒ³ã‚¹ãƒˆã—ã¦ãŸã‚‰ç›´ã™
     if (this->HP > this->MaxHP) this->HP = this->MaxHP;
-    // “Å
+    // æ¯’
     if (this->PoisonLeft > 0) {
         this->PoisonCount--;
         if (this->PoisonCount <= 0) {
@@ -13,27 +13,27 @@ void monster::Update() {
             this->Damage(this->PoisonDamage, pos(0, 0));
         }
     }
-    // AttackCount‚ðXV
+    // AttackCountã‚’æ›´æ–°
     if (this->AttackCount > 0) this->AttackCount--;
 
     if (this->KnockBackCount > 0) {
-        // ƒmƒbƒNƒoƒbƒN
+        // ãƒŽãƒƒã‚¯ãƒãƒƒã‚¯
         this->KnockBackCount--;
         this->Sprite.Pos.AddPos(this->KnockBack.GetX(), this->KnockBack.GetY());
-        // ƒuƒƒbƒN‚Æ‚Ì“–‚½‚è”»’è
+        // ãƒ–ãƒ­ãƒƒã‚¯ã¨ã®å½“ãŸã‚Šåˆ¤å®š
         pos Motion = this->Sprite.Motion;
         this->Sprite.Motion = this->KnockBack;
         this->Map->Collision(&(this->Sprite), BlockCol);
         this->Sprite.Motion = Motion;
     } else {
-        // Motion‚Ì•ª‚¾‚¯ˆÚ“®
+        // Motionã®åˆ†ã ã‘ç§»å‹•
         this->Sprite.Move();
-        // ƒuƒƒbƒN‚Æ‚Ì“–‚½‚è”»’è
+        // ãƒ–ãƒ­ãƒƒã‚¯ã¨ã®å½“ãŸã‚Šåˆ¤å®š
         this->Map->Collision(&(this->Sprite), BlockCol);
     }
-    // ŠO‚É‚Ío‚³‚¹‚È‚¢
+    // å¤–ã«ã¯å‡ºã•ã›ãªã„
     if (!this->Map->GetInMap(this->Sprite)) this->Sprite.Pos = this->SpawnPoint;
-    // ÚGƒ_ƒ[ƒW
+    // æŽ¥è§¦ãƒ€ãƒ¡ãƒ¼ã‚¸
     if (!this->Hide && this->Player->CheckHit(this->Sprite, player::CIRCLE)) this->Player->Damage(this->Player->GetMaxHP() / 64);
 
 }
@@ -113,7 +113,7 @@ void monster::Damage(int Damage, pos Motion, bool Poison) {
         this->PoisonDamage = Damage / 4;
     }
     if (this->HP <= 0) {
-        // Ž€‚ñ‚¶‚á‚Á‚½I
+        // æ­»ã‚“ã˜ã‚ƒã£ãŸï¼
         this->HP = 0;
         this->Use = false;
     }
@@ -157,7 +157,7 @@ monster::monster(pos Pos, int HP, int StartAttackCount, map *Map, player *Player
     this->Graph = Graph;
     this->Sprite.Size = Size;
     
-    // ‰æ‘œƒTƒCƒYŽæ“¾
+    // ç”»åƒã‚µã‚¤ã‚ºå–å¾—
     int X, Y;
 
     DxLib::GetGraphSize(this->Graph["ring"], &X, &Y);

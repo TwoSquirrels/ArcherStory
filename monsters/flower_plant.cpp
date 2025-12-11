@@ -6,7 +6,7 @@ void flower_plant::Update() {
 
         Monster->Update();
 
-        // UŒ‚
+        // æ”»æ’ƒ
         if (Monster->GetAttack()) {
             this->Monster->Sprite.SetDrectionFromPos(pos(
                 this->Player->Sprite.GetCenterPos().GetX() - this->Monster->Sprite.GetCenterPos().GetX(),
@@ -26,7 +26,7 @@ void flower_plant::Update() {
             } catch (ball::error e) {
                 switch (e) {
                 case ball::WRONG_CONSTRUCTOR:
-                    MessageBox(NULL, "ŠÔˆá‚Á‚½ball‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğg—p‚µ‚Ä‚¢‚Ü‚·B", "ƒvƒƒOƒ‰ƒ€“àƒGƒ‰[", MB_OK | MB_ICONERROR);
+                    MessageBox(NULL, "é–“é•ã£ãŸballã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’ä½¿ç”¨ã—ã¦ã„ã¾ã™ã€‚", "ãƒ—ãƒ­ã‚°ãƒ©ãƒ å†…ã‚¨ãƒ©ãƒ¼", MB_OK | MB_ICONERROR);
                     break;
                 }
             }
@@ -70,7 +70,7 @@ flower_plant::flower_plant(std::vector<ball> *Ball, pos Pos, int HP, int Attack,
     this->Graph = Graph;
     this->Config = Config;
 
-    // ‰æ‘œƒTƒCƒYæ“¾
+    // ç”»åƒã‚µã‚¤ã‚ºå–å¾—
     int X, Y;
 
     DxLib::GetGraphSize(this->Graph["flower_plant_normal"], &X, &Y);

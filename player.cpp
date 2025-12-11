@@ -13,24 +13,24 @@ void player::Update() {
     //if (this->Input->GetKey(KEY_INPUT_B)) this->GiveSkill(this->BOUND);
     //if (this->Input->GetKey(KEY_INPUT_P)) this->GiveSkill(this->POISON);
     //if (this->Input->GetKey(KEY_INPUT_H)) this->GiveSkill(this->HEADSHOT);
-    // ˆÚ“®
+    // ç§»å‹•
     this->Move();
-    // ŠO‚Éo‚½‚çŸ‚ÌƒXƒe[ƒW‚Ö
+    // å¤–ã«å‡ºãŸã‚‰æ¬¡ã®ã‚¹ãƒ†ãƒ¼ã‚¸ã¸
     if (!this->Map->GetInMap(this->Sprite)) {
         if (this->Map->GetClear()) {
             *this->Next = true;
             this->GodTime = 0;
             this->AttackCooldown = this->AttackCooldownMax * 3 / 4;
         } else {
-            // ƒoƒO‚Á‚Ä‚½‚ç–ß‚³‚È‚«‚áA‚ËH
+            // ãƒã‚°ã£ã¦ãŸã‚‰æˆ»ã•ãªãã‚ƒã€ã­ï¼Ÿ
             this->Sprite.Pos.SetPos(48.0, this->StartPos.GetY());
-            this->ErrorMessage = "ƒoƒO‚ÅƒXƒe[ƒW‚ÌŠO‚Éo‚Ä‚µ‚Ü‚Á‚½‚Ì‚Å\nƒvƒŒƒCƒ„[‚ğ‰ŠúˆÊ’u‚É–ß‚µ‚Ü‚µ‚½";
+            this->ErrorMessage = "ãƒã‚°ã§ã‚¹ãƒ†ãƒ¼ã‚¸ã®å¤–ã«å‡ºã¦ã—ã¾ã£ãŸã®ã§\nãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’åˆæœŸä½ç½®ã«æˆ»ã—ã¾ã—ãŸ";
             this->ErrorMessageCount = 120;
         }
     }
-    // –³“GŠÔXV   
+    // ç„¡æ•µæ™‚é–“æ›´æ–°   
     if (this->GodTime > 0) this->GodTime--;
-    // UŒ‚
+    // æ”»æ’ƒ
     if (this->Sprite.Motion.GetX() != 0.0 || this->Sprite.Motion.GetY() != 0.0) {
         this->AttackCooldown = this->AttackCooldownMax * 3 / 4;
     }
@@ -38,7 +38,7 @@ void player::Update() {
         if (!this->Monster->empty()) {
             this->AttackCooldown = this->AttackCooldownMax;
 
-            // ˆê”Ô‹ß‚­‚Ì“G‚ğ’²‚×‚é
+            // ä¸€ç•ªè¿‘ãã®æ•µã‚’èª¿ã¹ã‚‹
             int Nearest = -1;
             double NearestDistance = -1;
             for (int i = 0; i < this->Monster->size(); i++) {
@@ -51,30 +51,30 @@ void player::Update() {
                 }
             }
 
-            // Œ‚‚Â
+            // æ’ƒã¤
             if (Nearest >= 0) {
                 this->Sprite.SetDrectionFromPos(pos(
                     (*this->Monster)[Nearest]->Sprite.GetCenterPos().GetX() - this->Sprite.GetCenterPos().GetX(),
                     (*this->Monster)[Nearest]->Sprite.GetCenterPos().GetY() - this->Sprite.GetCenterPos().GetY()
                 ));
-                // Î‚ß
+                // æ–œã‚
                 int DiagonalNum = this->GetSkill()[this->DIAGONAL_ARROW];
                 for (int i = 0; i < DiagonalNum; i++) {
                     this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction + 0.5 + (-(DiagonalNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 2, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
                     this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction - 0.5 + (-(DiagonalNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 2, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
                 }
-                // ‘O
+                // å‰
                 int FrontNum = this->GetSkill()[this->FRONT_ARROW] + 1;
                 for (int i = 0; i < FrontNum; i++) {
                     this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction + (-(FrontNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, (this->GetSkill()[this->HEADSHOT] > 0 && DxLib::GetRand((20 / this->GetSkill()[this->HEADSHOT]) - 1) == 0) ? (this->Attack * 4096) : this->Attack, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
                 }
-                // ‰¡
+                // æ¨ª
                 int SideNum = this->GetSkill()[this->SIDE_ARROW];
                 for (int i = 0; i < SideNum; i++) {
                     this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction + DX_PI * 0.5 + (-(SideNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 2, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
                     this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction - DX_PI * 0.5 + (-(SideNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 2, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
                 }
-                // Œã‚ë
+                // å¾Œã‚
                 int BackNum = this->GetSkill()[this->BACK_ARROW];
                 for (int i = 0; i < BackNum; i++) {
                     this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction + DX_PI + (-(BackNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 2, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
@@ -84,27 +84,27 @@ void player::Update() {
 
         }
     }
-    // ƒ}ƒ‹ƒ`ƒVƒ‡ƒbƒg
+    // ãƒãƒ«ãƒã‚·ãƒ§ãƒƒãƒˆ
     for (int i = 0; i < this->GetSkill()[this->MULTI_SHOT]; i++) {
         if (this->MultiShotCount == 4 + 4 * i) {
-            // Î‚ß
+            // æ–œã‚
             int DiagonalNum = this->GetSkill()[this->DIAGONAL_ARROW];
             for (int i = 0; i < DiagonalNum; i++) {
                 this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction + 0.5 + (-(DiagonalNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 4, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
                 this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction - 0.5 + (-(DiagonalNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 4, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
             }
-            // ‘O
+            // å‰
             int FrontNum = this->GetSkill()[this->FRONT_ARROW] + 1;
             for (int i = 0; i < FrontNum; i++) {
                 this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction + (-(FrontNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 2, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
             }
-            // ‰¡
+            // æ¨ª
             int SideNum = this->GetSkill()[this->SIDE_ARROW];
             for (int i = 0; i < SideNum; i++) {
                 this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction + DX_PI * 0.5 + (-(SideNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 4, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
                 this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction - DX_PI * 0.5 + (-(SideNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 4, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
             }
-            // Œã‚ë
+            // å¾Œã‚
             int BackNum = this->GetSkill()[this->BACK_ARROW];
             for (int i = 0; i < BackNum; i++) {
                 this->Arrow->push_back(arrow(this->Sprite.GetCenterPos(), this->Sprite.Direction + DX_PI + (-(BackNum - 1) / 2.0 + i) * 0.05, this->Map, this->Monster, this->Attack / 4, this->GetSkill()[this->PENETRATION], this->GetSkill()[this->BOUND], this->GetSkill()[this->POISON] > 0, this->Graph, this->Config["Arrow"]));
@@ -117,7 +117,7 @@ void player::Update() {
 
 void player::Move() {
 
-    // ‘€ì
+    // æ“ä½œ
     pos InputDirection{};
     this->KeyInput(&InputDirection);
     this->JoystickInput(&InputDirection);
@@ -137,7 +137,7 @@ void player::Move() {
     // Pos += Motion
     this->Sprite.Move();
 
-    // “–‚½‚è”»’è
+    // å½“ãŸã‚Šåˆ¤å®š
     Where = this->Map->Collision(&(this->Sprite), this->BlockCol);
 
 }
@@ -150,7 +150,7 @@ void player::Draw() {
         1.0, (this->Sprite.GetPosFromDirection().GetX() >= 0.0) ? this->Sprite.Direction : this->Sprite.Direction + DX_PI,
         this->Graph["right"], TRUE, (this->Sprite.GetPosFromDirection().GetX() < 0.0)
     );
-    // HPƒo[
+    // HPãƒãƒ¼
     DxLib::DrawBox(
         this->StartPos.GetXInt() - 16, 96 + this->Sprite.Pos.GetYInt() - 16,
         this->StartPos.GetXInt() + 48, 96 + this->Sprite.Pos.GetYInt() - 8,
@@ -170,21 +170,21 @@ void player::Draw() {
         this->StartPos.GetXInt() - 16, 96 + this->Sprite.Pos.GetYInt() - 32,
         0x000000, "%d", this->HP
     );
-    // ƒXƒe[ƒ^ƒX
+    // ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
     DxLib::DrawFormatStringToHandle(16, 16 + 32 * 1, 0x000000, this->Font["Parameters"], "HP: %3d / %3d", this->HP, this->MaxHP);
-    DxLib::DrawFormatStringToHandle(16, 16 + 32 * 2, 0x000000, this->Font["Parameters"], "UŒ‚—Í: %3d", this->Attack);
-    DxLib::DrawFormatStringToHandle(16, 16 + 32 * 3, 0x000000, this->Font["Parameters"], "–hŒä—Í: %3d", this->Defense);
-    DxLib::DrawFormatStringToHandle(200, 16 + 32 * 1, 0x000000, this->Font["Parameters"], "ˆÚ“®‘¬“x: %2d", (int)(this->Speed * 4));
-    DxLib::DrawFormatStringToHandle(200, 16 + 32 * 2, 0x000000, this->Font["Parameters"], "UŒ‚ƒN[ƒ‹ƒ_ƒEƒ“: %2d", this->AttackCooldownMax);
-    DxLib::DrawFormatStringToHandle(200, 16 + 32 * 3, 0x000000, this->Font["Parameters"], "–³“GŠÔ: %2d", this->GodTimeMax);
-    // ƒXƒLƒ‹ƒƒbƒZ[ƒW
+    DxLib::DrawFormatStringToHandle(16, 16 + 32 * 2, 0x000000, this->Font["Parameters"], "æ”»æ’ƒåŠ›: %3d", this->Attack);
+    DxLib::DrawFormatStringToHandle(16, 16 + 32 * 3, 0x000000, this->Font["Parameters"], "é˜²å¾¡åŠ›: %3d", this->Defense);
+    DxLib::DrawFormatStringToHandle(200, 16 + 32 * 1, 0x000000, this->Font["Parameters"], "ç§»å‹•é€Ÿåº¦: %2d", (int)(this->Speed * 4));
+    DxLib::DrawFormatStringToHandle(200, 16 + 32 * 2, 0x000000, this->Font["Parameters"], "æ”»æ’ƒã‚¯ãƒ¼ãƒ«ãƒ€ã‚¦ãƒ³: %2d", this->AttackCooldownMax);
+    DxLib::DrawFormatStringToHandle(200, 16 + 32 * 3, 0x000000, this->Font["Parameters"], "ç„¡æ•µæ™‚é–“: %2d", this->GodTimeMax);
+    // ã‚¹ã‚­ãƒ«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
     if (this->SkillMessageCount > 0) {
         DxLib::SetDrawBlendMode(DX_BLENDMODE_ALPHA, (this->SkillMessageCount > 60) ? 191 : (this->SkillMessageCount * 191 / 60));
         DxLib::DrawStringToHandle(640 - 1.5 * DxLib::GetDrawFormatStringWidth(this->SkillMessage.c_str(), 0), 360 - 144, this->SkillMessage.c_str(), 0x0000ff, this->Font["NewSkill"]);
         DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
         this->SkillMessageCount--;
     }
-    // ƒGƒ‰[ƒƒbƒZ[ƒW
+    // ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
     if (this->ErrorMessageCount > 0) {
         DxLib::SetDrawBlendMode(DX_BLENDMODE_ALPHA, (this->ErrorMessageCount > 60) ? 191 : (this->ErrorMessageCount * 191 / 60));
         DxLib::DrawStringToHandle(640 - 1.5 * DxLib::GetDrawFormatStringWidth(this->ErrorMessage.c_str(), 0), 360 - 80, this->ErrorMessage.c_str(), 0xff0000, this->Font["NewSkill"]);
@@ -222,18 +222,18 @@ void player::KeyInput(pos *InputDirection) {
 
 void player::JoystickInput(pos *InputDirection) {
 
-    // ƒWƒ‡ƒCƒXƒeƒBƒbƒN¶¬
+    // ã‚¸ãƒ§ã‚¤ã‚¹ãƒ†ã‚£ãƒƒã‚¯ç”Ÿæˆ
     if (this->Input->GetMouseDown(MOUSE_INPUT_LEFT)) {
         this->Joystick.UseFlag = true;
         this->Joystick.Pos = this->Input->GetMousePos();
     }
 
-    // ƒWƒ‡ƒCƒXƒeƒBƒbƒNíœ
+    // ã‚¸ãƒ§ã‚¤ã‚¹ãƒ†ã‚£ãƒƒã‚¯å‰Šé™¤
     if (this->Input->GetMouseUp(MOUSE_INPUT_LEFT)) {
         this->Joystick.UseFlag = false;
     }
 
-    // ”½‰f
+    // åæ˜ 
     this->Joystick.Stick.SetPos(0, 0);
     if (this->Joystick.UseFlag) {
 
@@ -282,7 +282,7 @@ void player::Damage(int Damage) {
         this->HP -= Damage;
         this->GodTime = this->GodTimeMax;
         if (this->HP <= 0) {
-            // €‚ñ‚¶‚á‚Á‚½I
+            // æ­»ã‚“ã˜ã‚ƒã£ãŸï¼
             this->HP = 0;
             *this->Death = true;
         }
@@ -306,59 +306,59 @@ bool player::GiveSkill(skill Skill) {
     switch (Skill) {
     case this->HEAL:
         this->Heal(this->MaxHP * 0.5);
-        this->SkillMessage = "HP‚ªÅ‘å‚Ì”¼•ª‰ñ•œ‚µ‚½I";
+        this->SkillMessage = "HPãŒæœ€å¤§ã®åŠåˆ†å›å¾©ã—ãŸï¼";
         break;
     case this->HP_MAX_UP:
         this->MaxHP *= 1.3;
         this->HP *= 1.3;
-        this->SkillMessage = "ƒXƒLƒ‹uÅ‘åHPã¸v‚ğK“¾‚µ‚½I";
+        this->SkillMessage = "ã‚¹ã‚­ãƒ«ã€Œæœ€å¤§HPä¸Šæ˜‡ã€ã‚’ç¿’å¾—ã—ãŸï¼";
         break;
     case this->ATTACK_SPEED_UP:
         this->AttackCooldownMax *= 0.8;
-        this->SkillMessage = "ƒXƒLƒ‹uUŒ‚‘¬“xã¸v‚ğK“¾‚µ‚½I";
+        this->SkillMessage = "ã‚¹ã‚­ãƒ«ã€Œæ”»æ’ƒé€Ÿåº¦ä¸Šæ˜‡ã€ã‚’ç¿’å¾—ã—ãŸï¼";
         break;
     case this->ATTACK_UP:
         this->Attack *= 1.3;
-        this->SkillMessage = "ƒXƒLƒ‹uUŒ‚—Íã¸v‚ğK“¾‚µ‚½I";
+        this->SkillMessage = "ã‚¹ã‚­ãƒ«ã€Œæ”»æ’ƒåŠ›ä¸Šæ˜‡ã€ã‚’ç¿’å¾—ã—ãŸï¼";
         break;
     case this->DEFENSE_UP:
         this->Defense += 20;
-        this->SkillMessage = "ƒXƒLƒ‹u–hŒä—Íã¸v‚ğK“¾‚µ‚½I";
+        this->SkillMessage = "ã‚¹ã‚­ãƒ«ã€Œé˜²å¾¡åŠ›ä¸Šæ˜‡ã€ã‚’ç¿’å¾—ã—ãŸï¼";
         break;
     case this->GOD_TIME_EXTENSION:
         this->GodTimeMax *= 1.5;
-        this->SkillMessage = "ƒXƒLƒ‹u–³“GŠÔ‰„’·v‚ğK“¾‚µ‚½I";
+        this->SkillMessage = "ã‚¹ã‚­ãƒ«ã€Œç„¡æ•µæ™‚é–“å»¶é•·ã€ã‚’ç¿’å¾—ã—ãŸï¼";
         break;
     case this->WALK_SPEED_UP:
         this->Speed *= 1.3;
-        this->SkillMessage = "ƒXƒLƒ‹uˆÚ“®‘¬“xã¸v‚ğK“¾‚µ‚½I";
+        this->SkillMessage = "ã‚¹ã‚­ãƒ«ã€Œç§»å‹•é€Ÿåº¦ä¸Šæ˜‡ã€ã‚’ç¿’å¾—ã—ãŸï¼";
         break;
     case this->DIAGONAL_ARROW:
-        this->SkillMessage = "ƒXƒLƒ‹uÎ‚ß–î+1v‚ğK“¾‚µ‚½I";
+        this->SkillMessage = "ã‚¹ã‚­ãƒ«ã€Œæ–œã‚çŸ¢+1ã€ã‚’ç¿’å¾—ã—ãŸï¼";
         break;
     case this->FRONT_ARROW:
-        this->SkillMessage = "ƒXƒLƒ‹u‘O–î+1v‚ğK“¾‚µ‚½I";
+        this->SkillMessage = "ã‚¹ã‚­ãƒ«ã€Œå‰çŸ¢+1ã€ã‚’ç¿’å¾—ã—ãŸï¼";
         break;
     case this->SIDE_ARROW:
-        this->SkillMessage = "ƒXƒLƒ‹u‰¡–î+1v‚ğK“¾‚µ‚½I";
+        this->SkillMessage = "ã‚¹ã‚­ãƒ«ã€Œæ¨ªçŸ¢+1ã€ã‚’ç¿’å¾—ã—ãŸï¼";
         break;
     case this->BACK_ARROW:
-        this->SkillMessage = "ƒXƒLƒ‹uŒã‚ë–î+1v‚ğK“¾‚µ‚½I";
+        this->SkillMessage = "ã‚¹ã‚­ãƒ«ã€Œå¾Œã‚çŸ¢+1ã€ã‚’ç¿’å¾—ã—ãŸï¼";
         break;
     case this->MULTI_SHOT:
-        this->SkillMessage = "ƒXƒLƒ‹uƒ}ƒ‹ƒ`ƒVƒ‡ƒbƒgv‚ğK“¾‚µ‚½I";
+        this->SkillMessage = "ã‚¹ã‚­ãƒ«ã€Œãƒãƒ«ãƒã‚·ãƒ§ãƒƒãƒˆã€ã‚’ç¿’å¾—ã—ãŸï¼";
         break;
     case this->PENETRATION:
-        this->SkillMessage = "ƒXƒLƒ‹uŠÑ’ÊƒVƒ‡ƒbƒgv‚ğK“¾‚µ‚½I";
+        this->SkillMessage = "ã‚¹ã‚­ãƒ«ã€Œè²«é€šã‚·ãƒ§ãƒƒãƒˆã€ã‚’ç¿’å¾—ã—ãŸï¼";
         break;
     case this->BOUND:
-        this->SkillMessage = "ƒXƒLƒ‹uƒoƒEƒ“ƒh•Çv‚ğK“¾‚µ‚½I";
+        this->SkillMessage = "ã‚¹ã‚­ãƒ«ã€Œãƒã‚¦ãƒ³ãƒ‰å£ã€ã‚’ç¿’å¾—ã—ãŸï¼";
         break;
     case this->POISON:
-        this->SkillMessage = "ƒXƒLƒ‹u“Åƒ^ƒbƒ`v‚ğK“¾‚µ‚½I";
+        this->SkillMessage = "ã‚¹ã‚­ãƒ«ã€Œæ¯’ã‚¿ãƒƒãƒã€ã‚’ç¿’å¾—ã—ãŸï¼";
         break;
     case this->HEADSHOT:
-        this->SkillMessage = "ƒXƒLƒ‹uƒwƒbƒhƒVƒ‡ƒbƒgv‚ğK“¾‚µ‚½I";
+        this->SkillMessage = "ã‚¹ã‚­ãƒ«ã€Œãƒ˜ãƒƒãƒ‰ã‚·ãƒ§ãƒƒãƒˆã€ã‚’ç¿’å¾—ã—ãŸï¼";
         break;
     }
     this->SkillMessageCount = 120;
@@ -413,7 +413,7 @@ player::player(input *Input, map *Map, std::vector<arrow> *Arrow, bool *Death, b
 
     this->SkillLeft = this->SkillMax;
 
-    // ‰æ‘œƒTƒCƒYæ“¾
+    // ç”»åƒã‚µã‚¤ã‚ºå–å¾—
     int X, Y;
 
     DxLib::GetGraphSize(this->Graph["ring"], &X, &Y);

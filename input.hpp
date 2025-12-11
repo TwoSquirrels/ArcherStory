@@ -7,19 +7,19 @@ class input {
 
 private:
 
-    // ƒL[ƒ{[ƒh //
+    // ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ //
     char Key[256];
 
-    // ƒ}ƒEƒX //
+    // ãƒã‚¦ã‚¹ //
     pos MousePos{};
     int MouseInput;
     int BeforeMouseInput;
     // int MouseScroll
 
-    // ƒ^ƒbƒ`ƒpƒlƒ‹//
+    // ã‚¿ãƒƒãƒãƒ‘ãƒãƒ«//
 
 
-    // ƒWƒ‡ƒCƒpƒbƒh //
+    // ã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ //
 
 
 public:

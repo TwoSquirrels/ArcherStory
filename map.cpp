@@ -2,14 +2,14 @@
 
 std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
-    // returnóp
+    // returnÁî®
     std::vector<bool> Where(4);
     Where[this->UP] = false;
     Where[this->DOWN] = false;
     Where[this->LEFT] = false;
     Where[this->RIGHT] = false;
 
-    // èàóùåyå∏ÇÃÇΩÇﬂÅAîÕàÕéwíË
+    // Âá¶ÁêÜËªΩÊ∏õ„ÅÆ„Åü„ÇÅ„ÄÅÁØÑÂõ≤ÊåáÂÆö
 
     if (this->Map.size() == 0) return Where;
 
@@ -29,32 +29,32 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
     if (End_j < 0) End_j = 0;
     if (End_j >= this->Map[0].size()) End_j = this->Map[0].size() - 1;
 
-    // ÉÅÉCÉì
+    // „É°„Ç§„É≥
 
     for (int i = Start_i; i <= End_i; i++) {
         for (int j = Start_j; j <= End_j; j++) {
 
-            // Ç±ÇÍÇ™äYìñÇ∑ÇÈÉuÉçÉbÉNÇ©
+            // „Åì„Çå„ÅåË©≤ÂΩì„Åô„Çã„Éñ„É≠„ÉÉ„ÇØ„Åã
             if (Block[this->Map[i][j]]) {
 
-                if (    // ìñÇΩÇ¡ÇƒÇÈÇ©
+                if (    // ÂΩì„Åü„Å£„Å¶„Çã„Åã
                     Sprite->Pos.GetY() + Sprite->Size.GetY() > 48.0 * i &&
                     Sprite->Pos.GetY() < 48.0 * i + 48 &&
                     Sprite->Pos.GetX() + Sprite->Size.GetX() > 48.0 * j &&
                     Sprite->Pos.GetX() < 48.0 * j + 48
                     ) {
 
-                    // Ç«Ç±Ç©ÇÁÇ†ÇΩÇ¡ÇΩÇ©
+                    // „Å©„Åì„Åã„Çâ„ÅÇ„Åü„Å£„Åü„Åã
 
-                    if (Sprite->Motion.GetX() == 0) {       // ê^è„â∫Ç©ÇÁ
+                    if (Sprite->Motion.GetX() == 0) {       // Áúü‰∏ä‰∏ã„Åã„Çâ
 
-                        if (Sprite->Motion.GetY() >= 0) {   // ê^è„Ç©ÇÁ
+                        if (Sprite->Motion.GetY() >= 0) {   // Áúü‰∏ä„Åã„Çâ
 
                             Sprite->Pos.SetY(48.0 * i - Sprite->Size.GetY());
                             //Sprite->Motion.SetY(0);
                             Where[this->UP] = true;
 
-                        } else {                            // ê^â∫Ç©ÇÁ
+                        } else {                            // Áúü‰∏ã„Åã„Çâ
 
                             Sprite->Pos.SetY(48.0 * i + 48);
                             //Sprite->Motion.SetY(0);
@@ -62,19 +62,19 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                         }
 
-                    } else if (Sprite->Motion.GetX() > 0) { // ç∂(è„â∫)Ç©ÇÁ
+                    } else if (Sprite->Motion.GetX() > 0) { // Â∑¶(‰∏ä‰∏ã)„Åã„Çâ
 
-                        // y=ax+b Ç∆íuÇ¢ÇƒÅAa(åXÇ´)ÇãÅÇﬂÇÈ
+                        // y=ax+b „Å®ÁΩÆ„ÅÑ„Å¶„ÄÅa(ÂÇæ„Åç)„ÇíÊ±Ç„ÇÅ„Çã
                         double a = Sprite->Motion.GetY() / Sprite->Motion.GetX();
-                        // (x,y)Ç…PosÇë„ì¸ÇµÇƒbÇãÅÇﬂÇÈ (b=y-ax)
+                        // (x,y)„Å´Pos„Çí‰ª£ÂÖ•„Åó„Å¶b„ÇíÊ±Ç„ÇÅ„Çã (b=y-ax)
                         double b = Sprite->Pos.GetY() - a * Sprite->Pos.GetX();
 
-                        // y=ax+b Ç… x=(BlockÇÃç∂ÇÃxç¿ïW)-(SpriteÇÃxÇÃÉTÉCÉY) Çë„ì¸
+                        // y=ax+b „Å´ x=(Block„ÅÆÂ∑¶„ÅÆxÂ∫ßÊ®ô)-(Sprite„ÅÆx„ÅÆ„Çµ„Ç§„Ç∫) „Çí‰ª£ÂÖ•
                         double y = a * (48.0 * j - Sprite->Size.GetX()) + b;
 
-                        if (y <= 48.0 * i - Sprite->Size.GetY()) {    // è„Ç©ÇÁ
+                        if (y <= 48.0 * i - Sprite->Size.GetY()) {    // ‰∏ä„Åã„Çâ
 
-                            if (i == 0 || !Block[this->Map[i - 1][j]]) {    // è„Ç…ÉuÉçÉbÉNÇ™Ç»Ç¢Ç∆Ç´ÇÃÇ›
+                            if (i == 0 || !Block[this->Map[i - 1][j]]) {    // ‰∏ä„Å´„Éñ„É≠„ÉÉ„ÇØ„Åå„Å™„ÅÑ„Å®„Åç„ÅÆ„Åø
 
                                 Sprite->Pos.SetY(48.0 * i - Sprite->Size.GetY());
                                 //Sprite->Motion.SetY(0);
@@ -82,9 +82,9 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                             }
 
-                        } else if (y > 48.0 * i + 48 + 1) {                // â∫Ç©ÇÁ
+                        } else if (y > 48.0 * i + 48 + 1) {                // ‰∏ã„Åã„Çâ
 
-                            if (i + 1 == this->Map.size() || !Block[this->Map[i + 1][j]]) { // â∫Ç…ÉuÉçÉbÉNÇ™Ç»Ç¢Ç∆Ç´ÇÃÇ›
+                            if (i + 1 == this->Map.size() || !Block[this->Map[i + 1][j]]) { // ‰∏ã„Å´„Éñ„É≠„ÉÉ„ÇØ„Åå„Å™„ÅÑ„Å®„Åç„ÅÆ„Åø
 
                                 Sprite->Pos.SetY(48.0 * i + 48);
                                 //Sprite->Motion.SetY(0);
@@ -92,9 +92,9 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                             }
 
-                        } else {                                      // ç∂Ç©ÇÁ
+                        } else {                                      // Â∑¶„Åã„Çâ
 
-                            if (j == 0 || !Block[this->Map[i][j - 1]]) {    // ç∂Ç…ÉuÉçÉbÉNÇ™Ç»Ç¢Ç∆Ç´ÇÃÇ›
+                            if (j == 0 || !Block[this->Map[i][j - 1]]) {    // Â∑¶„Å´„Éñ„É≠„ÉÉ„ÇØ„Åå„Å™„ÅÑ„Å®„Åç„ÅÆ„Åø
 
                                 Sprite->Pos.SetX(48.0 * j - Sprite->Size.GetX());
                                 //Sprite->Motion.SetX(0);
@@ -104,19 +104,19 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                         }
 
-                    } else {                                // âE(è„â∫)Ç©ÇÁ
+                    } else {                                // Âè≥(‰∏ä‰∏ã)„Åã„Çâ
 
-                        // y=ax+b Ç∆íuÇ¢ÇƒÅAa(åXÇ´)ÇãÅÇﬂÇÈ
+                        // y=ax+b „Å®ÁΩÆ„ÅÑ„Å¶„ÄÅa(ÂÇæ„Åç)„ÇíÊ±Ç„ÇÅ„Çã
                         double a = Sprite->Motion.GetY() / Sprite->Motion.GetX();
-                        // (x,y)Ç…PosÇë„ì¸ÇµÇƒbÇãÅÇﬂÇÈ (b=y-ax)
+                        // (x,y)„Å´Pos„Çí‰ª£ÂÖ•„Åó„Å¶b„ÇíÊ±Ç„ÇÅ„Çã (b=y-ax)
                         double b = Sprite->Pos.GetY() - a * Sprite->Pos.GetX();
 
-                        // y=ax+b Ç… x=(BlockÇÃâEÇÃxç¿ïW) Çë„ì¸
+                        // y=ax+b „Å´ x=(Block„ÅÆÂè≥„ÅÆxÂ∫ßÊ®ô) „Çí‰ª£ÂÖ•
                         double y = a * (48.0 * j + 48) + b;
 
-                        if (y <= 48.0 * i - Sprite->Size.GetY()) {    // è„Ç©ÇÁ
+                        if (y <= 48.0 * i - Sprite->Size.GetY()) {    // ‰∏ä„Åã„Çâ
 
-                            if (i == 0 || !Block[this->Map[i - 1][j]]) {    // è„Ç…ÉuÉçÉbÉNÇ™Ç»Ç¢Ç∆Ç´ÇÃÇ›
+                            if (i == 0 || !Block[this->Map[i - 1][j]]) {    // ‰∏ä„Å´„Éñ„É≠„ÉÉ„ÇØ„Åå„Å™„ÅÑ„Å®„Åç„ÅÆ„Åø
 
                                 Sprite->Pos.SetY(48.0 * i - Sprite->Size.GetY());
                                 //Sprite->Motion.SetY(0);
@@ -124,9 +124,9 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                             }
 
-                        } else if (y >= 48.0 * i + 48) {                // â∫Ç©ÇÁ
+                        } else if (y >= 48.0 * i + 48) {                // ‰∏ã„Åã„Çâ
 
-                            if (i + 1 == this->Map.size() || !Block[this->Map[i + 1][j]]) { // â∫Ç…ÉuÉçÉbÉNÇ™Ç»Ç¢Ç∆Ç´ÇÃÇ›
+                            if (i + 1 == this->Map.size() || !Block[this->Map[i + 1][j]]) { // ‰∏ã„Å´„Éñ„É≠„ÉÉ„ÇØ„Åå„Å™„ÅÑ„Å®„Åç„ÅÆ„Åø
 
                                 Sprite->Pos.SetY(48.0 * i + 48);
                                 //Sprite->Motion.SetY(0);
@@ -134,9 +134,9 @@ std::vector<bool> map::Collision(sprite *Sprite, std::vector<bool> Block) {
 
                             }
 
-                        } else {                                      // âEÇ©ÇÁ
+                        } else {                                      // Âè≥„Åã„Çâ
 
-                            if (j + 1 == this->Map[0].size() || !Block[this->Map[i][j + 1]]) {  // âEÇ…ÉuÉçÉbÉNÇ™Ç»Ç¢Ç∆Ç´ÇÃÇ›
+                            if (j + 1 == this->Map[0].size() || !Block[this->Map[i][j + 1]]) {  // Âè≥„Å´„Éñ„É≠„ÉÉ„ÇØ„Åå„Å™„ÅÑ„Å®„Åç„ÅÆ„Åø
 
                                 Sprite->Pos.SetX(48.0 * j + 48);
                                 //Sprite->Motion.SetX(0);
@@ -193,7 +193,7 @@ void map::Draw(int Scroll) {
                 DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i, this->Graph["map"]["stone"], TRUE);
                 break;
             case this->POND:
-                // ç∂è„
+                // Â∑¶‰∏ä
                 if (i - 1 >= 0 && j - 1 >= 0 && this->Map[i - 1][j] == 3 && this->Map[i][j - 1] == 3) {
                     DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i, this->Graph["map"]["pond11"], TRUE);
                 } else if (i - 1 >= 0 && this->Map[i - 1][j] == 3) {
@@ -203,7 +203,7 @@ void map::Draw(int Scroll) {
                 } else {
                     DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i, this->Graph["map"]["pond00"], TRUE);
                 }
-                // âEè„
+                // Âè≥‰∏ä
                 if (i - 1 >= 0 && j + 1 <= this->Map[0].size() - 1 && this->Map[i - 1][j] == 3 && this->Map[i][j + 1] == 3) {
                     DxLib::DrawGraph(-Scroll + 48 * j + 48 / 2, 96 + 48 * i, this->Graph["map"]["pond11"], TRUE);
                 } else if (i - 1 >= 0 && this->Map[i - 1][j] == 3) {
@@ -213,7 +213,7 @@ void map::Draw(int Scroll) {
                 } else {
                     DxLib::DrawGraph(-Scroll + 48 * j + 48 / 2, 96 + 48 * i, this->Graph["map"]["pond02"], TRUE);
                 }
-                // ç∂â∫
+                // Â∑¶‰∏ã
                 if (i + 1 <= this->Map.size() - 1 && j - 1 >= 0 && this->Map[i + 1][j] == 3 && this->Map[i][j - 1] == 3) {
                     DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i + 48 / 2, this->Graph["map"]["pond11"], TRUE);
                 } else if (i + 1 <= this->Map.size() - 1 && this->Map[i + 1][j] == 3) {
@@ -223,7 +223,7 @@ void map::Draw(int Scroll) {
                 } else {
                     DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i + 48 / 2, this->Graph["map"]["pond20"], TRUE);
                 }
-                // âEâ∫
+                // Âè≥‰∏ã
                 if (i + 1 <= this->Map.size() - 1 && j + 1 <= this->Map[0].size() - 1 && this->Map[i + 1][j] == 3 && this->Map[i][j + 1] == 3) {
                     DxLib::DrawGraph(-Scroll + 48 * j + 48 / 2, 96 + 48 * i + 48 / 2, this->Graph["map"]["pond11"], TRUE);
                 } else if (i + 1 <= this->Map.size() - 1 && this->Map[i + 1][j] == 3) {
@@ -240,28 +240,28 @@ void map::Draw(int Scroll) {
 
     // wall
     for (int i = 0; 96 + 48 * i + 48 > 0; i--) {
-        // ç∂è„
+        // Â∑¶‰∏ä
         for (int j = 0; -Scroll + 48 * j + 48 > 0; j--) {
             DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i, this->Graph["map"]["wall"], TRUE);
         }
-        // âEè„
+        // Âè≥‰∏ä
         for (int j = 0; -Scroll + 48 * j < 1280; j++) {
             DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i, this->Graph["map"]["wall"], TRUE);
         }
     }
     for (int i = 0; 96 + 48 * i < 720; i++) {
-        // ç∂â∫
+        // Â∑¶‰∏ã
         for (int j = 0; -Scroll + 48 * j + 48 > 0; j--) {
             DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i, this->Graph["map"]["wall"], TRUE);
         }
-        // âEâ∫
+        // Âè≥‰∏ã
         for (int j = 0; -Scroll + 48 * j < 1280; j++) {
             if (!(j < this->Map[0].size() - 1 && i < this->Map.size() - 1) && !(j == this->Map[0].size() - 1 && i >= 5 && i <= 7)) {
                 DxLib::DrawGraph(-Scroll + 48 * j, 96 + 48 * i, this->Graph["map"]["wall"], TRUE);
             }
         }
     }
-    // òg
+    // Êû†
     for (int i = 1; i <= 4; i++) {
         //DxLib::DrawBox(-Scroll + 48 - i, 96 + 48 - i, -Scroll + 48 * this->Map[0].size() - 48 + i, 96 + 48 * this->Map.size() - 48 + i, 0x000000, FALSE);
         int Up = 96 + 48 - i, Down = 96 + 48 * this->Map.size() - 48 + i, Left = -Scroll + 48 - i, Right = -Scroll + 48 * this->Map[0].size() - 48 + i;
@@ -271,7 +271,7 @@ void map::Draw(int Scroll) {
         DxLib::DrawLine(Right, Up, Right, Up + 48 * 4, 0x000000);
         DxLib::DrawLine(Right, Down - 48 * 4, Right, Down, 0x000000);
     }
-    // ÉVÉÉÉbÉ^Å[
+    // „Ç∑„É£„ÉÉ„Çø„Éº
     for (int i = 0; i < 3; i++) DxLib::DrawGraph(-Scroll + 48 * this->Map[0].size() - 48 + this->ClearCount, 96 + 48 * (5 + i), this->Graph["map"]["shutter"], TRUE);
     DxLib::DrawGraph(-Scroll + 48 * this->Map[0].size() - 48, 96 + 48 * 4, this->Graph["map"]["shutter_gate"], TRUE);
     if (this->ClearCount > 0 && this->ClearCount < 48) this->ClearCount++;
@@ -280,14 +280,14 @@ void map::Draw(int Scroll) {
         this->Map[6][this->Map[0].size() - 1] = this->AIR;
         this->Map[7][this->Map[0].size() - 1] = this->AIR;
     }
-    // É`ÉÖÅ[ÉgÉäÉAÉãÉÅÉbÉZÅ[ÉW
+    // „ÉÅ„É•„Éº„Éà„É™„Ç¢„É´„É°„ÉÉ„Çª„Éº„Ç∏
     if (this->Text != "") {
         DxLib::SetDrawBlendMode(DX_BLENDMODE_ALPHA, 191);
         DxLib::DrawStringToHandle(-Scroll + 48 + 12, 96 + 48 * 12 - 12 - 24 * (std::count(this->Text.cbegin(), this->Text.cend(), '\n') + 1), this->Text.c_str(), 0x000000, this->Font["Parameters"]);
         DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
     }
-    // ÉXÉeÅ[ÉW
-    DxLib::DrawFormatStringToHandle(12, 12, 0x000000, this->Font["Parameters"], "ÉXÉeÅ[ÉWÅF%2d", this->Stage);
+    // „Çπ„ÉÜ„Éº„Ç∏
+    DxLib::DrawFormatStringToHandle(12, 12, 0x000000, this->Font["Parameters"], "„Çπ„ÉÜ„Éº„Ç∏Ôºö%2d", this->Stage);
 
 }
 
@@ -322,7 +322,7 @@ void map::NextStage() {
     this->Stage++;
     this->ClearCount = 0;
 
-    // É}ÉbÉvëIë
+    // „Éû„ÉÉ„ÉóÈÅ∏Êäû
     std::vector<int> CanStage;
     for (int i = 0; i < this->Maps["Maps"].size(); i++) {
         int Min = this->Maps["Maps"][i]["StageMin"].get<int>();
@@ -341,7 +341,7 @@ void map::NextStage() {
     int FixedStage = CanStage[DxLib::GetRand(CanStage.size() - 1)];
     this->Maps["Maps"][FixedStage]["Done"] = true;
 
-    // É}ÉbÉvïœä∑
+    // „Éû„ÉÉ„ÉóÂ§âÊèõ
     int YSize = this->Maps["Maps"][FixedStage]["Blocks"].size();
     int XSize = this->Maps["Maps"][FixedStage]["Blocks"][0].size();
     this->Map.resize(YSize + 2);
@@ -363,7 +363,7 @@ void map::NextStage() {
         }
     }
 
-    // ÉÇÉìÉXÉ^Å[
+    // „É¢„É≥„Çπ„Çø„Éº
     FlowerPlant->clear();
     Slime->clear();
     Golem->clear();
@@ -452,7 +452,7 @@ void map::NextStage() {
         }
     }
 
-    // ÉeÉLÉXÉg
+    // „ÉÜ„Ç≠„Çπ„Éà
     if (this->Maps["Maps"][FixedStage]["Text"].empty()) this->Text = "";
     else this->Text = utf8_to_sjis(this->Maps["Maps"][FixedStage]["Text"].get<std::string>());
 

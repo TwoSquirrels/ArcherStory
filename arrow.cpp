@@ -6,9 +6,9 @@ std::vector<arrow> arrow::Update() {
 
     if (this->Use) {
 
-        // ˆÚ“®
+        // ç§»å‹•
         this->Sprite.Move();
-        // ƒ}ƒbƒv‚Æ‚Ì“–‚½‚è”»’è
+        // ãƒãƒƒãƒ—ã¨ã®å½“ãŸã‚Šåˆ¤å®š
         std::vector<bool> Col = this->Map->Collision(&this->Sprite, this->BlockCol);
         for (bool b : Col) if (b == true) {
             if (this->Bound == 0) {
@@ -22,7 +22,7 @@ std::vector<arrow> arrow::Update() {
                 this->Poison = false;
             }
         }
-        // UŒ‚Hit
+        // æ”»æ’ƒHit
         for (int i = 0; i < this->Monster->size(); i++) {
             if ((*this->Monster)[i]->Use && (*this->Monster)[i]->CheckHit(this->Sprite, monster().CIRCLE)) {
                 (*this->Monster)[i]->Damage(this->Attack, this->Sprite.Motion, this->Poison);
@@ -45,7 +45,7 @@ std::vector<arrow> arrow::Update() {
                 break;
             }
         }
-        // ŠO‚Éo‚Ä‚½‚çÁ‚·
+        // å¤–ã«å‡ºã¦ãŸã‚‰æ¶ˆã™
         if (!this->Map->GetInMap(this->Sprite)) this->Use = false;
 
     }
@@ -85,7 +85,7 @@ arrow::arrow(pos Pos, double Direction, map *Map, std::vector<monster *> *Monste
 
     this->Sprite.Motion = this->Sprite.GetPosFromDirection(this->Config["Speed"]);
 
-    // ‰æ‘œƒTƒCƒYæ“¾
+    // ç”»åƒã‚µã‚¤ã‚ºå–å¾—
     int X, Y;
 
     DxLib::GetGraphSize(this->Graph["arrow_arrow"], &X, &Y);

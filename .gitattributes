@@ -1,0 +1,26 @@
+* text=auto
+
+*.cpp text working-tree-encoding=CP932 eol=crlf
+*.hpp text working-tree-encoding=CP932 eol=crlf
+*.rc  text working-tree-encoding=CP932 eol=crlf
+
+*.sln     text eol=crlf
+*.vcxproj text eol=crlf
+*.filters text eol=crlf
+
+*.png  binary
+*.jpg  binary
+*.bmp  binary
+*.wav  binary
+*.mp3  binary
+*.mv1  binary
+*.mqo  binary
+*.x    binary
+*.dft  binary
+*.dva  binary
+*.dxa  binary
+*.exe  binary
+*.lib  binary
+*.dll  binary
+
+ExternalHeaderFiles/** linguist-vendored

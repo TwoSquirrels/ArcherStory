@@ -26,7 +26,7 @@ class Game {
 private:
 
     enum scene {
-        INTRO, STAGE, PAUSE, SKILL_SELECT, DIE  // ƒ|[ƒY‚Í–¢g—p
+        INTRO, STAGE, PAUSE, SKILL_SELECT, DIE  // ãƒãƒ¼ã‚ºã¯æœªä½¿ç”¨
     };
 
     json Config;
@@ -56,9 +56,9 @@ private:
     std::vector<tree> Tree;
     std::vector<virus> Virus;
 
-    int Load();                 // ˆê”ÔÅ‰
-    bool Update();              // ƒ}ƒCƒtƒŒ[ƒ€ return false:I—¹
-    void Unload(bool Error);    // ÅŒã Error:ƒGƒ‰[‚ÅI—¹‚µ‚½‚©
+    int Load();                 // ä¸€ç•ªæœ€åˆ
+    bool Update();              // ãƒã‚¤ãƒ•ãƒ¬ãƒ¼ãƒ  return false:çµ‚äº†
+    void Unload(bool Error);    // æœ€å¾Œ Error:ã‚¨ãƒ©ãƒ¼ã§çµ‚äº†ã—ãŸã‹
 
     int StartGraph;
     bool Intro();

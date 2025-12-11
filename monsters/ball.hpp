@@ -34,8 +34,8 @@ private:
     pos PlayerCenterPos{};
 
     int Count = 0;
-    // ƒWƒƒƒ“ƒvŒn
-    double Jump_a = 0;   // y=ax+h ‚Ì a
+    // ã‚¸ãƒ£ãƒ³ãƒ—ç³»
+    double Jump_a = 0;   // y=ax+h ã® a
     double Jump_CenterX = 0;
     sprite Shadow;
 

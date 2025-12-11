@@ -25,13 +25,13 @@ Game::Game(bool Debug, std::string ConfigFilePath) {
 
 int Game::Load() {
 
-    // jsonì«Ç›çûÇ›
+    // jsonË™≠„ÅøËæº„Åø
     std::string JsonString = this->FileToString(this->ConfigFilePath);
     if (JsonString == "") JsonString = "{}";
     this->Config = json::parse(JsonString, nullptr, false, true);
 
-    // Ç»Ç¢çÄñ⁄ÇÕï‚ë´ ï∂éöóÒÇÕÇ†ÇÍÇŒï∂éöÉRÅ[Éhïœä∑
-    if (this->Config["WindowName"].empty())         this->Config["WindowName"] = "ÉAÅ[É`ÉÉÅ[ï®åÍ";
+    // „Å™„ÅÑÈ†ÖÁõÆ„ÅØË£úË∂≥ ÊñáÂ≠óÂàó„ÅØ„ÅÇ„Çå„Å∞ÊñáÂ≠ó„Ç≥„Éº„ÉâÂ§âÊèõ
+    if (this->Config["WindowName"].empty())         this->Config["WindowName"] = "„Ç¢„Éº„ÉÅ„É£„ÉºÁâ©Ë™û";
     else this->Config["WindowName"] = utf8_to_sjis(this->Config["WindowName"].get<std::string>());
     if (this->Config["FullScreen"].empty())         this->Config["FullScreen"] = false;
     if (this->Config["WindowExtendRate"].empty())   this->Config["WindowExtendRate"] = 1.0;
@@ -53,7 +53,7 @@ int Game::Load() {
     if (this->Config["Balls"]["Jump"]["Speed"].empty())     this->Config["Balls"]["Jump"]["Speed"] = 8.0;
     if (this->Config["Balls"]["Beam"]["Speed"].empty())     this->Config["Balls"]["Beam"]["Speed"] = 8.0;
 
-    // èâä˙ê›íË
+    // ÂàùÊúüË®≠ÂÆö
     DxLib::SetGraphMode(1280, 720, 16);
     DxLib::SetDrawScreen(DX_SCREEN_BACK);
     DxLib::ChangeWindowMode(!this->Config["FullScreen"].get<bool>());
@@ -103,7 +103,7 @@ bool Game::Intro() {
 
     if (BeforeIntroFrame + 1 != Frame) {
 
-        // âÊëúì«Ç›çûÇ›
+        // ÁîªÂÉèË™≠„ÅøËæº„Åø
 
         this->StartGraph = DxLib::LoadGraph("data/stable/img/start.png");
         DxLib::DrawGraph(0, 0, this->StartGraph, FALSE);
@@ -146,34 +146,34 @@ bool Game::Intro() {
         Graph["monsters"]["ball_shadow"] = DxLib::LoadGraph("data/stable/img/monsters/ball/shadow.png");
         Graph["monsters"]["ball_beam"] = DxLib::LoadGraph("data/stable/img/monsters/ball/beam.png");
 
-        // ÉtÉHÉìÉgçÏê¨
+        // „Éï„Ç©„É≥„Éà‰ΩúÊàê
         std::map<std::string, int> Font;
         Font["Parameters"] = CreateFontToHandle("ParametersFont", 24, 1, DX_FONTTYPE_NORMAL);
         Font["NewSkill"] = CreateFontToHandle("ParametersFont", 48, 1, DX_FONTTYPE_NORMAL);
 
-        // É}ÉbÉvì«Ç›çûÇ›
+        // „Éû„ÉÉ„ÉóË™≠„ÅøËæº„Åø
         json Maps;
         std::string JsonString = this->FileToString("data/stable/map.json");
         if (JsonString == "") JsonString = "{}";
         Maps = json::parse(JsonString, nullptr, false, true);
 
-        // èâä˙âª
+        // ÂàùÊúüÂåñ
 
         this->Input = input(false);
         this->Map = map(Maps, Graph, Font, &this->FlowerPlant, &this->Slime, &this->Golem, &this->Bat, &this->Tree, &this->Virus, &this->Ball, &this->Player, this->Config);
         this->Player = player(&this->Input, &this->Map, &this->Arrow, &this->Death, &this->Next, &this->Monster, Graph["player"], Font, this->Config["Player"]);
 
-        // é¿å±óp
+        // ÂÆüÈ®ìÁî®
         //for (int i = 0; i < 8; i++) {
         //    this->Virus.push_back(virus(pos(48.0 + DxLib::GetRand(1072), 48.0 + DxLib::GetRand(496)), 100, 2, &this->Map, &this->Player, Graph["monsters"]));
         //}
 
     }
 
-    // èàóù //
+    // Âá¶ÁêÜ //
     if (this->Input.GetKey(KEY_INPUT_SPACE) || this->Input.GetMouseDown(MOUSE_INPUT_LEFT)) this->Scene = this->STAGE;
 
-    // ï`âÊ
+    // ÊèèÁîª
     DxLib::ClearDrawScreen();
     DxLib::DrawGraph(0, 0, this->StartGraph, FALSE);
     DxLib::ScreenFlip();
@@ -186,8 +186,8 @@ bool Game::Intro() {
 
 bool Game::Stage() {
 
-    // èàóù //
-    // MonsterçXêV
+    // Âá¶ÁêÜ //
+    // MonsterÊõ¥Êñ∞
     this->Monster.resize(0);
     for (int i = 0; i < this->FlowerPlant.size(); i++) this->Monster.push_back(this->FlowerPlant[i].Monster);
     for (int i = 0; i < this->Slime.size(); i++) this->Monster.push_back(this->Slime[i].Monster);
@@ -195,7 +195,7 @@ bool Game::Stage() {
     for (int i = 0; i < this->Bat.size(); i++) this->Monster.push_back(this->Bat[i].Monster);
     for (int i = 0; i < this->Tree.size(); i++) this->Monster.push_back(this->Tree[i].Monster);
     for (int i = 0; i < this->Virus.size(); i++) this->Monster.push_back(this->Virus[i].Monster);
-    // ÉfÉoÉbÉOã@î\
+    // „Éá„Éê„ÉÉ„Ç∞Ê©üËÉΩ
     if (this->Debug) {
         // kill
         if (this->Input.GetKey(KEY_INPUT_K)) for (int i = 0; i < this->Monster.size(); i++) {
@@ -209,7 +209,7 @@ bool Game::Stage() {
     }
     // Update
     this->Player.Update();
-    for (int j = 0; j < 4; j++) {   // ÉXÉsÅ[ÉhÇè„Ç∞ÇÈÇΩÇﬂìÒèd
+    for (int j = 0; j < 4; j++) {   // „Çπ„Éî„Éº„Éâ„Çí‰∏ä„Åí„Çã„Åü„ÇÅ‰∫åÈáç
         std::vector<arrow> ArrowToAdd;
         for (int i = 0; i < this->Arrow.size(); i++) {
             ArrowToAdd = this->Arrow[i].Update();
@@ -231,14 +231,14 @@ bool Game::Stage() {
         this->Virus.insert(this->Virus.end(), VirusToAdd.begin(), VirusToAdd.end());
     }
     for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Update();
-    // égÇÌÇÍÇƒÇ»Ç¢Ç‡ÇÃÇçÌèú(1ïbÇ≤Ç∆)
+    // ‰Ωø„Çè„Çå„Å¶„Å™„ÅÑ„ÇÇ„ÅÆ„ÇíÂâäÈô§(1Áßí„Åî„Å®)
     if (this->Frame % 60 == 0) {
         int Size;
-        // É{Å[Éã
+        // „Éú„Éº„É´
         Size = this->Ball.size();
         for (int i = 0; i < Size; i++) {
             if (!this->Ball[i].Use) {
-                // èIÇÌÇËÇæÇ¡ÇΩÇÁè¡Ç∑ÇæÇØ/ìríÜÇ»ÇÁç≈å„Çë„ì¸ÇµÇƒç≈å„Çè¡Ç∑
+                // ÁµÇ„Çè„Çä„Å†„Å£„Åü„ÇâÊ∂à„Åô„Å†„Åë/ÈÄî‰∏≠„Å™„ÇâÊúÄÂæå„Çí‰ª£ÂÖ•„Åó„Å¶ÊúÄÂæå„ÇíÊ∂à„Åô
                 if (i == Size - 1) {
                     Ball.pop_back();
                     break;
@@ -249,11 +249,11 @@ bool Game::Stage() {
                 i--;
             }
         }
-        // ñÓ
+        // Áü¢
         Size = this->Arrow.size();
         for (int i = 0; i < Size; i++) {
             if (!this->Arrow[i].Use) {
-                // èIÇÌÇËÇæÇ¡ÇΩÇÁè¡Ç∑ÇæÇØ/ìríÜÇ»ÇÁç≈å„Çë„ì¸ÇµÇƒç≈å„Çè¡Ç∑
+                // ÁµÇ„Çè„Çä„Å†„Å£„Åü„ÇâÊ∂à„Åô„Å†„Åë/ÈÄî‰∏≠„Å™„ÇâÊúÄÂæå„Çí‰ª£ÂÖ•„Åó„Å¶ÊúÄÂæå„ÇíÊ∂à„Åô
                 if (i == Size - 1) {
                     Arrow.pop_back();
                     break;
@@ -265,13 +265,13 @@ bool Game::Stage() {
             }
         }
     }
-    // éÄÇÒÇ∂Ç·Ç¡ÇΩÅI
+    // Ê≠ª„Çì„Åò„ÇÉ„Å£„ÅüÔºÅ
     if (this->Death) {
         this->Death = false;
         this->Scene = this->DIE;
         this->FadeOutCount = 0;
     }
-    // ëSàıì|ÇµÇΩÅI
+    // ÂÖ®Âì°ÂÄí„Åó„ÅüÔºÅ
     this->ClearCount++;
     for (monster *m : this->Monster) if (m->Use) this->ClearCount = 0;
     if (this->ClearCount == 0) this->Map.ClearCancel();
@@ -279,29 +279,29 @@ bool Game::Stage() {
         this->Map.Clear();
         this->ClearCount = 0;
     }
-    // ÉQÅ[ÉgÇÇ≠ÇÆÇ¡ÇΩÅI
+    // „Ç≤„Éº„Éà„Çí„Åè„Åê„Å£„ÅüÔºÅ
     if (this->Next) {
         this->Next = false;
         this->Scene = this->SKILL_SELECT;
     }
 
-    // ï`âÊ //
+    // ÊèèÁîª //
     DxLib::ClearDrawScreen();
     int Scroll = this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX();
-    // îwåi
+    // ËÉåÊôØ
     this->Map.Draw(Scroll);
-    // ñÓ
+    // Áü¢
     for (arrow a : this->Arrow) a.Draw(Scroll);
-    // ìG
+    // Êïµ
     for (int i = 0; i < this->FlowerPlant.size(); i++) this->FlowerPlant[i].Draw(Scroll);
     for (int i = 0; i < this->Slime.size(); i++) this->Slime[i].Draw(Scroll);
     for (int i = 0; i < this->Golem.size(); i++) this->Golem[i].Draw(Scroll);
     for (int i = 0; i < this->Bat.size(); i++) this->Bat[i].Draw(Scroll);
     for (int i = 0; i < this->Tree.size(); i++) this->Tree[i].Draw(Scroll);
     for (int i = 0; i < this->Virus.size(); i++) this->Virus[i].Draw(Scroll);
-    // ÉvÉåÉCÉÑÅ[
+    // „Éó„É¨„Ç§„É§„Éº
     this->Player.Draw();
-    // ìGÇÃíe
+    // Êïµ„ÅÆÂºæ
     for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Draw(Scroll);
     // GUI
     this->Player.JoystickDraw();
@@ -313,10 +313,10 @@ bool Game::Stage() {
 
 bool Game::Pause() {
 
-    // èàóù //
+    // Âá¶ÁêÜ //
 
 
-    // ï`âÊ
+    // ÊèèÁîª
     DxLib::ClearDrawScreen();
 
     DxLib::ScreenFlip();
@@ -327,43 +327,43 @@ bool Game::Pause() {
 
 bool Game::SkillSelect() {
 
-    // èàóù //
+    // Âá¶ÁêÜ //
     if (this->FadeOutCount++ >= 15) {
         this->FadeOutCount = 0;
         this->Scene = this->STAGE;
-        //ÉvÉåÉCÉÑÅ[
+        //„Éó„É¨„Ç§„É§„Éº
         this->Player.Sprite.Pos.SetPos(48.0, this->Player.StartPos.GetY());
         this->Player.Sprite.Direction = 0.0;
-        // ÉXÉLÉã
+        // „Çπ„Ç≠„É´
         std::vector<player::skill> SkillLeft;
         for (auto s : this->Player.GetSkillLeft()) SkillLeft.push_back(s.first);
         int Rand = DxLib::GetRand(99);
         if (Rand < 80) this->Player.GiveSkill(SkillLeft[DxLib::GetRand(SkillLeft.size() - 1)]);
         else this->Player.GiveSkill(player::HEAL);
-        // É}ÉbÉv
+        // „Éû„ÉÉ„Éó
         this->Map.NextStage();
     }
     // Update
     pos *InputDirection = new pos;
     this->Player.JoystickInput(InputDirection);
     delete InputDirection;
-    for (int j = 0; j < 4; j++) {   // ÉXÉsÅ[ÉhÇè„Ç∞ÇÈÇΩÇﬂìÒèd
+    for (int j = 0; j < 4; j++) {   // „Çπ„Éî„Éº„Éâ„Çí‰∏ä„Åí„Çã„Åü„ÇÅ‰∫åÈáç
         for (int i = 0; i < this->Arrow.size(); i++) this->Arrow[i].Update();
     }
     for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Update();
 
-    // ï`âÊ
+    // ÊèèÁîª
     DxLib::ClearDrawScreen();
     int Scroll = this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX();
-    // îwåi
+    // ËÉåÊôØ
     this->Map.Draw(Scroll);
-    // ñÓ
+    // Áü¢
     for (arrow a : this->Arrow) a.Draw(Scroll);
-    // ÉvÉåÉCÉÑÅ[
+    // „Éó„É¨„Ç§„É§„Éº
     this->Player.Draw();
-    // ìGÇÃíe
+    // Êïµ„ÅÆÂºæ
     for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Draw(Scroll);
-    // ÉtÉFÅ[Éh
+    // „Éï„Çß„Éº„Éâ
     DxLib::SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 * FadeOutCount / 15);
     DxLib::DrawBox(0, 0, 1280, 720, 0x000000, TRUE);
     DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
@@ -376,42 +376,42 @@ bool Game::SkillSelect() {
 
 bool Game::Die() {
 
-    // èàóù //
+    // Âá¶ÁêÜ //
     this->FadeOutCount++;
     // Update
     if (this->FadeOutCount < 240) {
         pos *InputDirection = new pos;
         delete InputDirection;
-        for (int j = 0; j < 4; j++) {   // ÉXÉsÅ[ÉhÇè„Ç∞ÇÈÇΩÇﬂìÒèd
+        for (int j = 0; j < 4; j++) {   // „Çπ„Éî„Éº„Éâ„Çí‰∏ä„Åí„Çã„Åü„ÇÅ‰∫åÈáç
             for (int i = 0; i < this->Arrow.size(); i++) this->Arrow[i].Update();
         }
         for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Update();
     }
 
-    // ï`âÊ
+    // ÊèèÁîª
     DxLib::ClearDrawScreen();
     if (this->FadeOutCount < 240) {
         int Scroll = this->Player.Sprite.Pos.GetX() - this->Player.StartPos.GetX();
-        // îwåi
+        // ËÉåÊôØ
         this->Map.Draw(Scroll);
-        // ñÓ
+        // Áü¢
         for (arrow a : this->Arrow) a.Draw(Scroll);
-        // ìG
+        // Êïµ
         for (int i = 0; i < this->FlowerPlant.size(); i++) this->FlowerPlant[i].Draw(Scroll);
         for (int i = 0; i < this->Slime.size(); i++) this->Slime[i].Draw(Scroll);
         for (int i = 0; i < this->Golem.size(); i++) this->Golem[i].Draw(Scroll);
         for (int i = 0; i < this->Bat.size(); i++) this->Bat[i].Draw(Scroll);
         for (int i = 0; i < this->Tree.size(); i++) this->Tree[i].Draw(Scroll);
         for (int i = 0; i < this->Virus.size(); i++) this->Virus[i].Draw(Scroll);
-        // ìGÇÃíe
+        // Êïµ„ÅÆÂºæ
         for (int i = 0; i < this->Ball.size(); i++) this->Ball[i].Draw(Scroll);
     }
-    // ÉXÉRÉAâÊñ 
+    // „Çπ„Ç≥„Ç¢ÁîªÈù¢
     if (this->FadeOutCount > 180) {
         DxLib::SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 * (this->FadeOutCount - 180) / 60);
         DxLib::DrawGraph(0, 0, this->EndGraph, FALSE);
         DxLib::SetFontSize(48 * 3.2);
-        DxLib::DrawFormatString(64 * 3.2, 128 * 3.2, 0xff0000, "ÉXÉeÅ[ÉW%d", this->Map.GetStage());
+        DxLib::DrawFormatString(64 * 3.2, 128 * 3.2, 0xff0000, "„Çπ„ÉÜ„Éº„Ç∏%d", this->Map.GetStage());
         DxLib::SetFontSize(16);
         DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
     }
